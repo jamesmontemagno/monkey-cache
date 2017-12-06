@@ -151,6 +151,16 @@ $configFiles = Get-ChildItem . *.csproj -rec
 $assemblyVersionString = "<AssemblyVersion>" + $newVersion + "</AssemblyVersion>"
 $assemblyFileVersionString = "<AssemblyFileVersion>" + $newVersion + "</AssemblyFileVersion>"
 $versionString = "<Version>" + $newVersion + "</Version>"
+
+$packageString = "<PackageVersion>" + $newVersion + "</PackageVersion>"
+
+foreach ($file in $configFiles)
+{
+    (Get-Content $file.PSPath) |
+    Foreach-Object { $_ -replace "<PackageVersion>1.0.0.0</PackageVersion>", $packageString  } |
+    Set-Content $file.PSPath
+}
+
 foreach ($file in $configFiles)
 {
     (Get-Content $file.PSPath) |

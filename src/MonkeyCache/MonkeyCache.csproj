@@ -2,6 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+    <Version>1.0.0.0</Version>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageVersion>1.0.0.0</PackageVersion>
+    <Authors>James Montemagno</Authors>
+    <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/Xamarin-Templates/master/Templates/icons/plugin_icon_nuget.png</PackageIconUrl>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageLicenseUrl>https://github.com/jamesmontemagno/MonkeyCache/blob/master/LICENSE</PackageLicenseUrl>
+    <Owners>James Montemagno</Owners>
+    <PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
+    <Summary>The best cache that is always monkeying around with your data.</Summary>
+    <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
+    <Title>MonkeyCache</Title>
+    <Description>The best cache that is always monkeying around with your data.</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
+  </ItemGroup>
 </Project>
