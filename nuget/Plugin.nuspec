@@ -8,7 +8,7 @@
        <owners>James Montemagno</owners>
        <licenseUrl>https://github.com/jamesmontemagno/MonkeyCache/blob/master/LICENSE</licenseUrl>
        <projectUrl>http://github.com/jamesmontemagno/MonkeyCache</projectUrl>
-       <iconUrl></iconUrl>
+       <iconUrl>https://raw.githubusercontent.com/jamesmontemagno/Xamarin-Templates/master/Templates/icons/plugin_icon_nuget.png</iconUrl>
        <requireLicenseAcceptance>false</requireLicenseAcceptance>
        <description>
          Monkey Cache
