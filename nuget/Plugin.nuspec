@@ -51,7 +51,7 @@
    </metadata>
    <files>
      <!--Standard/PCL-->
-     <file src="src\Media.Plugin\bin\Release\netstandard1.0\MonkeyCache.*" target="lib\netstandard1.0" />
+     <file src="src\Media.Plugin\bin\Release\netstandard2.0\MonkeyCache.*" target="lib\netstandard2.0" />
 
      
    </files>
