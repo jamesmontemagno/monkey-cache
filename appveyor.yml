@@ -8,5 +8,5 @@ build_script:
 - cmd: >-
     powershell .\build.ps1 -Target Default -Verbosity diagnostic
 artifacts:
-- path: ./src/MonkeyCache/bin/Release/netstandard2.0/*.nupkg
+- path: ./src/MonkeyCache/bin/Release/*.nupkg
   name: NuGet
