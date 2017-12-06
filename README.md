@@ -39,10 +39,10 @@ MonkeyCache will never delete data unless you want to, which is pretty nice inca
 
 ```csharp
     //removes all data
-    await Barrel.EmptyExpiredAsync();
+    await Barrel.EmptyAsync();
 
     //param list of keys to flush
-    await Barrel.EmptyExpiredAsync(key: url);
+    await Barrel.EmptyAsync(key: url);
 ```
 
 Another goal of MonkeyCache is to offer a fast and native experience when storing and retrieving data from the Barrel.
