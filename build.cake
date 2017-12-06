@@ -37,7 +37,6 @@ Task ("AndroidSDK")
 });
 
 Task ("NuGet")
-	.IsDependentOn("AndroidSDK")
 	.IsDependentOn ("Libraries")
 	.Does (() =>
 {
