@@ -10,18 +10,18 @@ For instance you are making a web request and you get some `json` back from the 
 That may look something like this:
 
 ```csharp
-async Task<Monkey> GetMonkeysAsync()
+async Task<IEnumerable<Monkey>> GetMonkeysAsync()
 {
     var url = "http://montemagno.com/monkeys.json";
 
     //Dev handle online/offline scenario
     if(!CrossConnectivity.Current.IsConnected)
-        return await Barrel.GetAsync<IEnumerable<Monkey>>(key: url);
+        return Barrel.Get<IEnumerable<Monkey>>(key: url);
 
     //Dev handles checking if cache is expired
     if(!Barrel.IsExpired(key: url))
     {
-        return await Barrel.GetAsync<IEnumerable<Monkey>>(key: url);
+        return Barrel.Get<IEnumerable<Monkey>>(key: url);
     }
 
 
@@ -30,7 +30,7 @@ async Task<Monkey> GetMonkeysAsync()
     var monkeys = JsonConvert.DeserializeObject<IEnumerable<Monkey>>(json);
 
     //Saves the cache and pass it a timespan for expiration
-    await Barrel.AddAsync(key: url, data: monkeys, expiration: TimeSpan.FromDays(1);)
+    Barrel.Add(key: url, data: monkeys, expiration: TimeSpan.FromDays(1));
 
 }
 ```
@@ -39,10 +39,29 @@ MonkeyCache will never delete data unless you want to, which is pretty nice inca
 
 ```csharp
     //removes all data
-    await Barrel.EmptyAsync();
+    Barrel.Empty();
 
     //param list of keys to flush
-    await Barrel.EmptyAsync(key: url);
+    Barrel.Empty(key: url);
 ```
+
+The above shows how you can integrate MonkeyCache into your existing source code without any modifications to your network code. However, MonkeyCache can help you there too! MonkeyCache also offers helpers when dealing with network calls via HttpCache.
+
+HttpCache balances on top of the Barrel and offers helper methods to pass in a simple url that will handle adding and updating data into the Barrel.
+
+```csharp
+Task<IEnumerable<Monkey>> GetMonkeysAsync()
+{
+    var url = "http://montemagno.com/monkeys.json";
+
+    //Dev handle online/offline scenario
+    if(!CrossConnectivity.Current.IsConnected)
+        return Barrel.Get<IEnumerable<Monkey>>(key: url);
+
+    return HttpCache.GetAsync<IEnumerable<Monkey>>(key: url, expiration: TimeSpan.FromDays(1), headers: headers);
+
+}
+```
+
 
 Another goal of MonkeyCache is to offer a fast and native experience when storing and retrieving data from the Barrel.

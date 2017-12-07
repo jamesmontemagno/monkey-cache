@@ -8,12 +8,12 @@ namespace MonkeyCache
     /// </summary>
     public class Barrel
     {
-        public async Task<T> GetAsync<T>(string key)
+        public T Get<T>(string key)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> AddAsync<T>(string key, T data)
+        public T Add<T>(string key, T data)
         {
             throw new NotImplementedException(); 
         }
@@ -23,12 +23,12 @@ namespace MonkeyCache
             throw new NotImplementedException();
         }
 
-        public async Task<bool> EmptyAsync()
+        public bool Empty()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> EmptyAsync(params string[] key)
+        public bool Empty(params string[] key)
         {
             throw new NotImplementedException();
         }
