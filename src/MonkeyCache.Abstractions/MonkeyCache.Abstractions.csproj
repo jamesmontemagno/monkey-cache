@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>James Montemagno</Authors>
+    <Company>James Montemagno</Company>
+    <Description>Abstraction-Library for the best cache that is always monkeying around with your data.</Description>
+    <Copyright></Copyright>
+    <PackageLicenseUrl>https://github.com/jamesmontemagno/MonkeyCache/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/Xamarin-Templates/master/Templates/icons/plugin_icon_nuget.png</PackageIconUrl>
+    <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
+    <NeutralLanguage>English</NeutralLanguage>
+    <Version>1.0.0.0</Version>
+  </PropertyGroup>
+
+</Project>

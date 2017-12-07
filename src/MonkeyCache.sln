@@ -1,19 +1,26 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache", "MonkeyCache\MonkeyCache.csproj", "{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache", "MonkeyCache\MonkeyCache.csproj", "{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C6A331DA-BE42-4E98-AAAB-B246225B669E}"
 	ProjectSection(SolutionItems) = preProject
-		..\build.cake = ..\build.cake
 		..\appveyor.yml = ..\appveyor.yml
-		..\README.md = ..\README.md
-		..\LICENSE = ..\LICENSE
+		..\build.cake = ..\build.cake
 		..\build.ps1 = ..\build.ps1
-		..\cake.packages.config = ..\cake.packages.config
 		..\build.sh = ..\build.sh
+		..\cake.packages.config = ..\cake.packages.config
 		..\install-android-sdk.ps1 = ..\install-android-sdk.ps1
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.Abstractions", "MonkeyCache.Abstractions\MonkeyCache.Abstractions.csproj", "{DB6487BA-8A15-4FBC-9C72-C6AA5E5D95D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.InMemory", "MonkeyCache.InMemory\MonkeyCache.InMemory.csproj", "{91E1320E-6941-4F3E-A6F1-0F71C9E0FA61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.Monkey.EatingMonkey", "MonkeyCache.Monkey.EatingMonkey\MonkeyCache.Monkey.EatingMonkey.csproj", "{772EB4BA-28C6-4620-B96D-FD282330ECDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,5 +32,23 @@ Global
 		{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB6487BA-8A15-4FBC-9C72-C6AA5E5D95D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB6487BA-8A15-4FBC-9C72-C6AA5E5D95D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB6487BA-8A15-4FBC-9C72-C6AA5E5D95D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB6487BA-8A15-4FBC-9C72-C6AA5E5D95D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91E1320E-6941-4F3E-A6F1-0F71C9E0FA61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91E1320E-6941-4F3E-A6F1-0F71C9E0FA61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91E1320E-6941-4F3E-A6F1-0F71C9E0FA61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91E1320E-6941-4F3E-A6F1-0F71C9E0FA61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{772EB4BA-28C6-4620-B96D-FD282330ECDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{772EB4BA-28C6-4620-B96D-FD282330ECDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{772EB4BA-28C6-4620-B96D-FD282330ECDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{772EB4BA-28C6-4620-B96D-FD282330ECDD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5CA8BCA2-91A9-4CD0-B901-926DE7F5C820}
 	EndGlobalSection
 EndGlobal

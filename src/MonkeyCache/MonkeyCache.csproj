@@ -21,6 +21,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MonkeyCache.Abstractions" Version="1.0.0" />
+    <PackageReference Include="MonkeyCache.InMemory" Version="1.0.0" />
+    <PackageReference Include="MonkeyCache.Monkey.EatingMonkey" Version="1.0.0" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
   </ItemGroup>
