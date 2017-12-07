@@ -34,7 +34,7 @@ namespace MonkeyCache
         /// </summary>
         public static Barrel Current => (instance ?? (instance = new Barrel()));
 
-
+        JsonSerializerSettings jsonSettings;
         Barrel()
         {
             string path = Path.Combine(baseCacheDir.Value, "Barrel.sqlite");
@@ -45,6 +45,13 @@ namespace MonkeyCache
 
             db = new SQLiteConnection(path);
             db.CreateTable<Banana>();
+
+            jsonSettings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+            };
         }
 
         public T Get<T>(string key)
@@ -55,7 +62,7 @@ namespace MonkeyCache
                 ent = db.Find<Banana>(key);
             }
 
-            return JsonConvert.DeserializeObject<T>(ent.Contents);
+            return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSettings);
         }
 
         public void Add<T>(string key, T data, TimeSpan expireIn)
@@ -68,7 +75,7 @@ namespace MonkeyCache
             {
                 Url = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
-                Contents = JsonConvert.SerializeObject(data)
+                Contents = JsonConvert.SerializeObject(data, jsonSettings)
             };
             lock (dblock)
             {
