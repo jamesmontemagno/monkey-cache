@@ -54,6 +54,17 @@ namespace MonkeyCache
             };
         }
 
+        public bool Exists<T>(string key)
+        {
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Find<Banana>(key);
+            }
+
+            return ent != null;
+        }
+
         public T Get<T>(string key)
         {
             Banana ent;
@@ -61,6 +72,9 @@ namespace MonkeyCache
             {
                 ent = db.Find<Banana>(key);
             }
+
+            if (ent == null)
+                return default(T);
 
             return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSettings);
         }
@@ -97,7 +111,7 @@ namespace MonkeyCache
             return DateTime.UtcNow > ent.ExpirationDate;
         }
 
-        public bool Empty()
+        public bool EmptyAll()
         {
             lock(dblock)
             {
@@ -113,7 +127,7 @@ namespace MonkeyCache
             {
                 db.BeginTransaction();
                 foreach (var k in key)
-                    db.Delete(key);
+                    db.Delete<Banana>(primaryKey: k);
                 db.Commit();
             }
 
