@@ -2,7 +2,10 @@
 Just monkeying around with all that data to cache it!
 
 **Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/4/badge)
+
 **NuGet**: [![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)
+
+**Development NuGet Feed**: https://jamesmontemagno.pkgs.visualstudio.com/_packaging/MonkeyCache/nuget/v3/index.json
 
 The goal of MonkeyCache is to enable developers to easily cache any data for a limited amount of time. It is not MonkeyCache's mission to handle network requests to get or post data, only to cache data easily.
 
