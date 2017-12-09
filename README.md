@@ -3,7 +3,7 @@ Just monkeying around with all that data to cache it!
 
 **Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/4/badge)
 
-**NuGet (coming soon)**: [![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)
+**NuGet**: [![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)
 
 **Development NuGet source**: http://myget.org/F/monkey-cache
 
