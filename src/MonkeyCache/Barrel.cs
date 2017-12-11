@@ -53,7 +53,7 @@ namespace MonkeyCache
             };
         }
 
-        public bool Exists<T>(string key)
+        public bool Exists(string key)
         {
             Banana ent;
             lock (dblock)
@@ -64,6 +64,7 @@ namespace MonkeyCache
             return ent != null;
         }
 
+
         internal Banana GetBanana(string key)
         {
             Banana ent;
@@ -71,9 +72,6 @@ namespace MonkeyCache
             {
                 ent = db.Find<Banana>(key);
             }
-
-            if (ent == null)
-                return null;
 
             return ent;
         }
@@ -106,19 +104,7 @@ namespace MonkeyCache
             return ent.Contents;
         }
 
-        internal void Add(Banana banana)
-        {
-            if (banana == null)
-                return;
-
-
-            lock (dblock)
-            {
-                db.InsertOrReplace(banana);
-            }
-        }
-
-        public void Add(string key, string data, TimeSpan expireIn)
+        public void Add(string key, string data, TimeSpan expireIn, string etag = null)
         {
             if (data == null)
                 return;
@@ -128,6 +114,7 @@ namespace MonkeyCache
             {
                 Url = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
+                ETag = etag ?? string.Empty
                 Contents = data
             };
             lock (dblock)

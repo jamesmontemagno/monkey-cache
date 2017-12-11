@@ -27,7 +27,7 @@ namespace MonkeyCache.Tests
         [TestMethod]
         public async Task GetCachedTest()
         {
-            var result = await HttpCache.Current.GetCachedAsync(url, TimeSpan.FromSeconds(60));
+            var result = await HttpCache.Current.GetCachedAsync(url, TimeSpan.FromSeconds(60), TimeSpan.FromDays(1));
 
             Assert.IsNotNull(result);
         }

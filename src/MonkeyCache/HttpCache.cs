@@ -39,9 +39,13 @@ namespace MonkeyCache
 
         static System.Threading.SemaphoreSlim getThrottle = new System.Threading.SemaphoreSlim(4, 4);
 
-        public async Task<string> GetCachedAsync(string url, TimeSpan timeout)
+        public async Task<string> GetCachedAsync(string url, TimeSpan timeout, TimeSpan expireIn, bool forceUpdate = false)
         {
             var entry = Barrel.Current.GetBanana(url);
+
+            if (!forceUpdate && !string.IsNullOrEmpty(entry?.Contents) && !Barrel.Current.IsExpired(url))
+                return entry.Contents;
+
             var etag = entry?.ETag ?? null;
 
             await getThrottle.WaitAsync();
@@ -55,7 +59,7 @@ namespace MonkeyCache
                 //Console.WriteLine("GetCachedAsync " + url + " etag: " + etag);
 
                 var client = CreateClient(timeout);
-                if (!string.IsNullOrEmpty(etag) && !string.IsNullOrEmpty(entry?.Contents))
+                if (!forceUpdate && !string.IsNullOrEmpty(etag) && !string.IsNullOrEmpty(entry?.Contents))
                 {
                     client.DefaultRequestHeaders.IfNoneMatch.Clear();
                     client.DefaultRequestHeaders.IfNoneMatch.Add(new EntityTagHeaderValue(etag));
@@ -100,18 +104,8 @@ namespace MonkeyCache
                 var newEtag = r.Headers.ETag != null ? r.Headers.ETag.Tag : null;
                 if (!string.IsNullOrEmpty(newEtag) && newEtag != etag)
                 {
-
-                    if (entry == null)
-                    {
-                        entry = new Banana
-                        {
-                            Url = url,
-                        };
-                    }
-                    entry.ETag = newEtag;
-                    entry.Contents = c;
                     //Console.WriteLine("CACHING " + url + " etag: " + etag);
-                    Barrel.Current.Add(entry);
+                    Barrel.Current.Add(url, c, expireIn, newEtag);
                 }
 
                 return c;
