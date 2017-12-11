@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using SQLite;
 using Newtonsoft.Json;
 
 namespace MonkeyCache
 {
-    class Banana
+    internal class Banana
     {
         [PrimaryKey]
         public string Url { get; set; }
@@ -65,6 +64,20 @@ namespace MonkeyCache
             return ent != null;
         }
 
+        internal Banana GetBanana(string key)
+        {
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Find<Banana>(key);
+            }
+
+            if (ent == null)
+                return null;
+
+            return ent;
+        }
+
         public T Get<T>(string key)
         {
             Banana ent;
@@ -77,6 +90,50 @@ namespace MonkeyCache
                 return default(T);
 
             return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSettings);
+        }
+
+        public string Get(string key)
+        {
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Find<Banana>(key);
+            }
+
+            if (ent == null)
+                return null;
+
+            return ent.Contents;
+        }
+
+        internal void Add(Banana banana)
+        {
+            if (banana == null)
+                return;
+
+
+            lock (dblock)
+            {
+                db.InsertOrReplace(banana);
+            }
+        }
+
+        public void Add(string key, string data, TimeSpan expireIn)
+        {
+            if (data == null)
+                return;
+
+
+            var ent = new Banana
+            {
+                Url = key,
+                ExpirationDate = DateTime.UtcNow.Add(expireIn),
+                Contents = data
+            };
+            lock (dblock)
+            {
+                db.InsertOrReplace(ent);
+            }
         }
 
         public void Add<T>(string key, T data, TimeSpan expireIn)
