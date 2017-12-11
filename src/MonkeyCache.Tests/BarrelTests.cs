@@ -120,6 +120,27 @@ namespace MonkeyCache.Tests
         }
 
         [TestMethod]
+        public void EmptyExpiredTest()
+        {
+
+            var url2 = "url2";
+
+            //Saves the cache and pass it a timespan for expiration
+            barrel.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
+            barrel.Add(key: url2, data: monkeys, expireIn: TimeSpan.FromDays(-1));
+
+
+
+            Assert.IsTrue(barrel.Exists(url));
+            Assert.IsTrue(barrel.Exists(url2));
+
+            barrel.EmptyExpired();
+
+            Assert.IsTrue(barrel.Exists(url));
+            Assert.IsFalse(barrel.Exists(url2));
+        }
+
+        [TestMethod]
         public void ExistsTest()
         {
 
@@ -128,7 +149,7 @@ namespace MonkeyCache.Tests
             barrel.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
 
 
-            Assert.IsTrue(barrel.Exists<IEnumerable<Monkey>>(url));
+            Assert.IsTrue(barrel.Exists(url));
         }
 
         [TestMethod]
@@ -141,7 +162,7 @@ namespace MonkeyCache.Tests
 
             barrel.EmptyAll();
 
-            Assert.IsFalse(barrel.Exists<IEnumerable<Monkey>>(url));
+            Assert.IsFalse(barrel.Exists(url));
         }
 
         [TestCleanup]

@@ -156,6 +156,20 @@ namespace MonkeyCache
             return DateTime.UtcNow > ent.ExpirationDate;
         }
 
+        public bool EmptyExpired()
+        {
+            lock (dblock)
+            {
+                var entries = db.Query<Banana>($"SELECT * FROM Banana WHERE ExpirationDate < ?", DateTime.UtcNow.Ticks);
+                db.BeginTransaction();
+                foreach (var k in entries)
+                    db.Delete<Banana>(k.Url);
+                db.Commit();
+            }
+
+            return true;
+        }
+
         public bool EmptyAll()
         {
             lock(dblock)
