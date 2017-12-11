@@ -114,7 +114,7 @@ namespace MonkeyCache
             {
                 Url = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
-                ETag = etag ?? string.Empty
+                ETag = etag ?? string.Empty,
                 Contents = data
             };
             lock (dblock)
@@ -123,7 +123,7 @@ namespace MonkeyCache
             }
         }
 
-        public void Add<T>(string key, T data, TimeSpan expireIn)
+        public void Add<T>(string key, T data, TimeSpan expireIn, string etag = null)
         {
             if (data == null)
                 return;
@@ -133,6 +133,7 @@ namespace MonkeyCache
             {
                 Url = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
+                ETag = etag ?? string.Empty,
                 Contents = JsonConvert.SerializeObject(data, jsonSettings)
             };
             lock (dblock)
