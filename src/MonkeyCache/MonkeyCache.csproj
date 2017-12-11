@@ -9,7 +9,7 @@
     <Authors>James Montemagno</Authors>
     <PackageId>MonkeyCache</PackageId>
     <PackOnBuild>true</PackOnBuild>
-    <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/Xamarin-Templates/master/Templates/icons/plugin_icon_nuget.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageLicenseUrl>https://github.com/jamesmontemagno/MonkeyCache/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>James Montemagno</Owners>
