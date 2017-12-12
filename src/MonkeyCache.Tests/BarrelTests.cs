@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using SQLite;
 
 namespace MonkeyCache.Tests
 {
@@ -13,6 +16,8 @@ namespace MonkeyCache.Tests
         Barrel barrel;
         string url;
         string json;
+
+
         [TestInitialize]
         public void Setup()
         {

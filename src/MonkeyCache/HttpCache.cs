@@ -7,8 +7,6 @@ using SQLite;
 
 namespace MonkeyCache
 {
-    
-
     public class HttpCache
     {
 
