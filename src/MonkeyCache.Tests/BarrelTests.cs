@@ -23,6 +23,78 @@ namespace MonkeyCache.Tests
             monkeys = JsonConvert.DeserializeObject<IEnumerable<Monkey>>(json);
         }
 
+
+        #region Get Tests
+
+        [TestMethod]
+        public void GetStringTest()
+        {
+
+
+            //Saves the cache and pass it a timespan for expiration
+            barrel.Add(key: url, data: json, expireIn: TimeSpan.FromDays(1));
+
+
+            var cached = barrel.Get(url);
+            Assert.IsNotNull(cached);
+
+        }
+
+        [TestMethod]
+        public void GetTest()
+        {
+
+
+            //Saves the cache and pass it a timespan for expiration
+            barrel.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
+
+
+            var cached = barrel.Get<IEnumerable<Monkey>>(url);
+            Assert.IsNotNull(cached);
+
+        }
+
+
+        [TestMethod]
+        public void GetETagTest()
+        {
+
+            var tag = "etag";
+            //Saves the cache and pass it a timespan for expiration
+            barrel.Add(key: url, data: json, expireIn: TimeSpan.FromDays(1), eTag: tag);
+
+
+            var cached = barrel.GetETag(url);
+            Assert.AreEqual(cached, tag);
+
+        }
+
+        [TestMethod]
+        public void GetETagNullTest()
+        {
+            var cached = barrel.GetETag(url);
+            Assert.IsNull(cached);
+
+        }
+
+
+        #endregion
+
+        #region Add Tests
+        [TestMethod]
+        public void AddStringNullTest()
+        {
+
+
+            //Saves the cache and pass it a timespan for expiration
+            barrel.Add(key: url, data: null, expireIn: TimeSpan.FromDays(1));
+
+
+            var cached = barrel.Get(url);
+            Assert.IsNull(cached);
+
+        }
+
         [TestMethod]
         public void AddStringTest()
         {
@@ -34,6 +106,20 @@ namespace MonkeyCache.Tests
 
             var cached = barrel.Get(url);
             Assert.IsNotNull(cached);
+
+        }
+
+        [TestMethod]
+        public void AddNullTest()
+        {
+
+
+            //Saves the cache and pass it a timespan for expiration
+            barrel.Add<Monkey>(key: url, data: null, expireIn: TimeSpan.FromDays(1));
+
+
+            var cached = barrel.Get<Monkey>(url);
+            Assert.AreEqual(cached, default);
 
         }
 
@@ -50,6 +136,34 @@ namespace MonkeyCache.Tests
             Assert.IsNotNull(cached);
 
         }
+
+
+        [TestMethod]
+        public void AddTestNull()
+        {
+
+
+            //Saves the cache and pass it a timespan for expiration
+            barrel.Add(key: url, data: null, expireIn: TimeSpan.FromDays(1));
+
+
+            var cached = barrel.Get<IEnumerable<Monkey>>(url);
+            Assert.IsNull(cached);
+
+        }
+
+        #endregion
+
+        #region Expiration Tests
+
+        [TestMethod]
+        public void IsExpiredNullTest()
+        {
+            
+            Assert.IsFalse(barrel.IsExpired(url));
+
+        }
+
 
         [TestMethod]
         public void IsExpiredTest()
@@ -80,6 +194,10 @@ namespace MonkeyCache.Tests
             Assert.IsFalse(barrel.IsExpired(url));
 
         }
+
+        #endregion
+
+        #region Empty Tests
 
         [TestMethod]
         public void EmptyTest()
@@ -140,6 +258,10 @@ namespace MonkeyCache.Tests
             Assert.IsFalse(barrel.Exists(url2));
         }
 
+        #endregion
+
+
+        #region Exists Tests
         [TestMethod]
         public void ExistsTest()
         {
@@ -164,6 +286,8 @@ namespace MonkeyCache.Tests
 
             Assert.IsFalse(barrel.Exists(url));
         }
+
+        #endregion
 
         [TestCleanup]
         public void Teardown()

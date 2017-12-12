@@ -32,6 +32,14 @@ namespace MonkeyCache.Tests
             Assert.IsNotNull(result);
         }
 
+        [TestMethod]
+        public async Task GetCachedForceTest()
+        {
+            var result = await HttpCache.Current.GetCachedAsync(url, TimeSpan.FromSeconds(60), TimeSpan.FromDays(1), true);
+
+            Assert.IsNotNull(result);
+        }
+
 
     }
 }
