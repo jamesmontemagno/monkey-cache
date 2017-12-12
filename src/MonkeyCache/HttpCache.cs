@@ -41,12 +41,13 @@ namespace MonkeyCache
 
         public async Task<string> GetCachedAsync(string url, TimeSpan timeout, TimeSpan expireIn, bool forceUpdate = false)
         {
-            var entry = Barrel.Current.GetBanana(url);
+            var contents = Barrel.Current.Get(url);
+            var eTag = Barrel.Current.GetETag(url);
 
-            if (!forceUpdate && !string.IsNullOrEmpty(entry?.Contents) && !Barrel.Current.IsExpired(url))
-                return entry.Contents;
+            if (!forceUpdate && !string.IsNullOrEmpty(contents) && !Barrel.Current.IsExpired(url))
+                return contents;
 
-            var etag = entry?.ETag ?? null;
+            var etag = eTag ?? null;
 
             await getThrottle.WaitAsync();
 
@@ -59,7 +60,7 @@ namespace MonkeyCache
                 //Console.WriteLine("GetCachedAsync " + url + " etag: " + etag);
 
                 var client = CreateClient(timeout);
-                if (!forceUpdate && !string.IsNullOrEmpty(etag) && !string.IsNullOrEmpty(entry?.Contents))
+                if (!forceUpdate && !string.IsNullOrEmpty(etag) && !string.IsNullOrEmpty(contents))
                 {
                     client.DefaultRequestHeaders.IfNoneMatch.Clear();
                     client.DefaultRequestHeaders.IfNoneMatch.Add(new EntityTagHeaderValue(etag));
@@ -71,10 +72,10 @@ namespace MonkeyCache
 
                 if (r.StatusCode == HttpStatusCode.NotModified)
                 {
-                    if (string.IsNullOrEmpty(entry?.Contents))
+                    if (string.IsNullOrEmpty(contents))
                         throw new Exception("Cached value missing");
                     
-                    return entry.Contents;
+                    return contents;
                 }
 
                 if (r.StatusCode == HttpStatusCode.OK)

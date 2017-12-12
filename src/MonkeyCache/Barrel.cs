@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using SQLite;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace MonkeyCache
 {
-    internal class Banana
+    class Banana
     {
         [PrimaryKey]
         public string Url { get; set; }
@@ -20,7 +22,14 @@ namespace MonkeyCache
     /// </summary>
     public class Barrel
     {
-        static readonly Lazy<string> baseCacheDir = new Lazy<string>(() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MonkeyCache"));
+        static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
+        {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == "Xamarin.iOS"))
+                path = Path.GetFullPath(Path.Combine(path, "..", "Library", "Caches"));
+
+            return Path.Combine(path, "MonkeyCache");
+        });
 
         readonly SQLiteConnection db;
         readonly object dblock = new object();
@@ -63,25 +72,13 @@ namespace MonkeyCache
 
             return ent != null;
         }
-
-
-        internal Banana GetBanana(string key)
-        {
-            Banana ent;
-            lock (dblock)
-            {
-                ent = db.Find<Banana>(key);
-            }
-
-            return ent;
-        }
-
+        
         public T Get<T>(string key)
         {
             Banana ent;
             lock(dblock)
             {
-                ent = db.Find<Banana>(key);
+                ent = db.Query<Banana>($"SELECT Contents FROM Banana WHERE Url = ?", key).FirstOrDefault();
             }
 
             if (ent == null)
@@ -95,7 +92,7 @@ namespace MonkeyCache
             Banana ent;
             lock (dblock)
             {
-                ent = db.Find<Banana>(key);
+                ent = db.Query<Banana>($"SELECT Contents FROM Banana WHERE Url = ?", key).FirstOrDefault();
             }
 
             if (ent == null)
@@ -104,7 +101,21 @@ namespace MonkeyCache
             return ent.Contents;
         }
 
-        public void Add(string key, string data, TimeSpan expireIn, string etag = null)
+        public string GetETag(string key)
+        {
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Query<Banana>($"SELECT ETag FROM Banana WHERE Url = ?", key).FirstOrDefault();
+            }
+
+            if (ent == null)
+                return null;
+
+            return ent.ETag;
+        }
+
+        public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
         {
             if (data == null)
                 return;
@@ -114,7 +125,7 @@ namespace MonkeyCache
             {
                 Url = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
-                ETag = etag ?? string.Empty,
+                ETag = eTag,
                 Contents = data
             };
             lock (dblock)
@@ -123,17 +134,16 @@ namespace MonkeyCache
             }
         }
 
-        public void Add<T>(string key, T data, TimeSpan expireIn, string etag = null)
+        public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
         {
             if (data == null)
                 return;
-
-
+            
             var ent = new Banana
             {
                 Url = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
-                ETag = etag ?? string.Empty,
+                ETag = eTag,
                 Contents = JsonConvert.SerializeObject(data, jsonSettings)
             };
             lock (dblock)
@@ -161,10 +171,11 @@ namespace MonkeyCache
             lock (dblock)
             {
                 var entries = db.Query<Banana>($"SELECT * FROM Banana WHERE ExpirationDate < ?", DateTime.UtcNow.Ticks);
-                db.BeginTransaction();
-                foreach (var k in entries)
-                    db.Delete<Banana>(k.Url);
-                db.Commit();
+                db.RunInTransaction(() =>
+                {
+                    foreach (var k in entries)
+                        db.Delete<Banana>(k.Url);
+                });
             }
 
             return true;
@@ -184,10 +195,11 @@ namespace MonkeyCache
         {
             lock (dblock)
             {
-                db.BeginTransaction();
-                foreach (var k in key)
-                    db.Delete<Banana>(primaryKey: k);
-                db.Commit();
+                db.RunInTransaction(() =>
+                {
+                    foreach (var k in key)
+                        db.Delete<Banana>(primaryKey: k);
+                });
             }
 
             return true;
