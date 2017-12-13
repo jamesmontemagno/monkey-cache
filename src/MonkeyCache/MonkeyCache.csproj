@@ -20,17 +20,6 @@
     <Title>MonkeyCache</Title>
     <Description>The best cache that is always monkeying around with your data.</Description>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0'">
-    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-    <NugetTargetMoniker>UAP,Version=v10.0</NugetTargetMoniker>
-    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
-    <TargetFrameworkIdentifier>.NETCore</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <DefineConstants>$(DefineConstants);__UWP__</DefineConstants>
-    <LanguageTargets>$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets</LanguageTargets>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'Xamarin.iOS10'">
     <TargetFrameworkIdentifier>Xamarin.iOS</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
@@ -68,19 +57,9 @@
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">
     <Reference Include="Xamarin.iOS" />
-    <Reference Include="System" />
-    <Reference Include="System.Collections" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Threading.Tasks" />
-    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">
     <Reference Include="Xamarin.Mac" />
-    <Reference Include="System" />
-    <Reference Include="System.Collections" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Threading.Tasks" />
-    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">
     <Reference Include="Mono.Android" />
@@ -89,10 +68,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Net.Http" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.1" />
-
   </ItemGroup>
 
   <ItemGroup>
