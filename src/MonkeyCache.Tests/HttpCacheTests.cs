@@ -17,6 +17,7 @@ namespace MonkeyCache.Tests
         [TestInitialize]
         public void Setup()
         {
+            Barrel.UniqueId = "com.refractored.monkeycache";
             url = "http://montemagno.com/monkeys.json";
             barrel = Barrel.Current;
 

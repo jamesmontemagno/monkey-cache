@@ -4,6 +4,11 @@ using System.Linq;
 using SQLite;
 using Newtonsoft.Json;
 using System.Reflection;
+#if __IOS__ || __MACOS__
+using Foundation;
+#elif __ANDROID__
+using Android.App;
+#endif
 
 namespace MonkeyCache
 {
@@ -13,12 +18,24 @@ namespace MonkeyCache
     /// </summary>
     public class Barrel
     {
+        public static string UniqueId { get; set; } = string.Empty;
+
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
+            var path = string.Empty;
+
             ///Gets full path based on device type.
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == "Xamarin.iOS"))
-                path = Path.GetFullPath(Path.Combine(path, "..", "Library", "Databases"));
+#if __IOS__ || __MACOS__
+            path = NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
+#elif __ANDROID__
+            path = Application.Context.CacheDir.AbsolutePath;
+#elif __UWP__
+            path = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+#else
+            path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+#endif
+            if (!string.IsNullOrWhiteSpace(UniqueId))
+                path = Path.Combine(path, UniqueId);
 
             return Path.Combine(path, "MonkeyCache");
         });
@@ -54,7 +71,7 @@ namespace MonkeyCache
             };
         }
 
-        #region Exist and Expiration Methods
+#region Exist and Expiration Methods
         /// <summary>
         /// Checks to see if the key exists in the Barrel.
         /// </summary>
@@ -90,9 +107,9 @@ namespace MonkeyCache
             return DateTime.UtcNow > ent.ExpirationDate;
         }
 
-        #endregion
+#endregion
 
-        #region Get Methods
+#region Get Methods
 
         /// <summary>
         /// Gets the data entry for the specified key.
@@ -151,9 +168,9 @@ namespace MonkeyCache
             return ent.ETag;
         }
 
-        #endregion
+#endregion
 
-        #region Add Methods
+#region Add Methods
 
         /// <summary>
         /// Adds a string netry to the barrel
@@ -208,9 +225,9 @@ namespace MonkeyCache
             }
         }
 
-        #endregion
+#endregion
 
-        #region Empty Methods
+#region Empty Methods
         /// <summary>
         /// Empties all expired entries that are in the Barrel.
         /// Throws an exception if any deletions fail and rolls back changes.
@@ -260,6 +277,6 @@ namespace MonkeyCache
             }
         }
 
-        #endregion
+#endregion
     }
 }
