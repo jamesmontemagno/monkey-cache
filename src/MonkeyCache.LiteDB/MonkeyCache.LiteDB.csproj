@@ -17,7 +17,7 @@
     <PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
     <Summary>The best cache that is always monkeying around with your data.</Summary>
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>MonkeyCache</Title>
+    <Title>MonkeyCache - LiteDB</Title>
     <Description>The best cache that is always monkeying around with your data.</Description>
     <RootNamespace>MonkeyCache</RootNamespace>
   </PropertyGroup>
