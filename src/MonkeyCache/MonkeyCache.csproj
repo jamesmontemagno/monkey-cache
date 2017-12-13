@@ -15,10 +15,10 @@
     <PackageLicenseUrl>https://github.com/jamesmontemagno/MonkeyCache/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>James Montemagno</Owners>
     <PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
-    <Summary>The best cache that is always monkeying around with your data.</Summary>
+    <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>MonkeyCache</Title>
-    <Description>The best cache that is always monkeying around with your data.</Description>
+    <Title>MonkeyCache - A .NET Caching Library</Title>
+    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by SQLite.</Description>
     
     <LangVersion>default</LangVersion>
     
