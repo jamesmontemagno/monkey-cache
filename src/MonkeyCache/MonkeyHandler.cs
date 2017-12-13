@@ -16,9 +16,11 @@ namespace MonkeyCache
 
         public static class RequestProperties
         {
-            public const string ForceUpdate = "forceUpdate";
+            private const string Prefix = "Monkey_";
 
-            public const string ExpireIn = "expireIn";
+            public const string ForceUpdate = Prefix + nameof(ForceUpdate);
+
+            public const string ExpireIn = Prefix + nameof(ExpireIn);
         }
 
         static SemaphoreSlim getThrottle = new SemaphoreSlim(4, 4);
@@ -26,8 +28,18 @@ namespace MonkeyCache
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var url = request.RequestUri.ToString();
-            var forceUpdate = (request.Properties[RequestProperties.ForceUpdate] as bool?) ?? false;
-            var expireIn = (request.Properties[RequestProperties.ExpireIn] as TimeSpan?) ?? TimeSpan.MaxValue;
+            var forceUpdate = false;
+            var expireIn = TimeSpan.MaxValue;
+
+            if(request.Properties.TryGetValue(RequestProperties.ForceUpdate, out object forceUpdateValue))
+            {
+                forceUpdate = (bool)forceUpdateValue;
+            }
+
+            if (request.Properties.TryGetValue(RequestProperties.ExpireIn, out object expireInValue))
+            {
+                expireIn = (TimeSpan)expireInValue;
+            }
 
             var contents = Barrel.Current.Get(url);
             var eTag = Barrel.Current.GetETag(url);
