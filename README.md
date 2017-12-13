@@ -1,11 +1,31 @@
 # monkey-cache
-Just monkeying around with all that data to cache it!
+Easy cache any data structure for a specific amount of time in any .NET application.
 
 **Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/4/badge)
 
-**NuGet**: [![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)
+**NuGets**
+|Name|-|
+| ------------------- | :------------------: |
+|MonkeyCache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)|
+|MonkeyCache - Dev|[MyGet](http://myget.org/F/monkey-cache)|
+|MonkeyCache.LiteDB|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.LiteDB.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.LiteDB/)|
+|MonkeyCache.LiteDB - Dev|[MyGet](http://myget.org/F/monkey-cache-litedb)|
 
-**Development NuGet source**: http://myget.org/F/monkey-cache
+**Platform Support**
+
+MonkeyCache is a .NET Standard 2.0 library, but has some platform specific tweaks for storing data in the correct Cache directory.
+
+|Platform|Version|
+| ------------------- | :------------------: |
+|Xamarin.iOS|iOS 7+|
+|Xamarin.Mac|All|
+|Xamarin.Android|API 14+|
+|Windows 10 UWP|10.0.16299+|
+|.NET Core|2.0+|
+|ASP.NET Core|2.0+|
+|.NET|4.6.1+|
+
+### What is Monkey Cache?
 
 The goal of MonkeyCache is to enable developers to easily cache any data for a limited amount of time. It is not MonkeyCache's mission to handle network requests to get or post data, only to cache data easily.
 
@@ -45,7 +65,7 @@ MonkeyCache will never delete data unless you want to, which is pretty nice inca
 
 ```csharp
     //removes all data
-    Barrel.Empty();
+    Barrel.EmptyAll();
 
     //param list of keys to flush
     Barrel.Empty(key: url);
@@ -69,5 +89,22 @@ Task<IEnumerable<Monkey>> GetMonkeysAsync()
 }
 ```
 
+Another goal of MonkeyCache is to offer a fast and native experience when storing and retrieving data from the Barrel. MonkeyCache uses a SQLite database to store all data across all platforms. This is super fast and is supported natively on each platform. In addition to the SQLite implementation is an implementation based on [LiteDB](http://www.litedb.org/) for data storage. Each have their own NuGet package, but have the same API, namespaces, and class names. This means that they can not be installed at the same time, but one or the other. 
 
-Another goal of MonkeyCache is to offer a fast and native experience when storing and retrieving data from the Barrel.
+Regardless of implementation Cache will always be stored in the default platform specific location:
+
+|Platform|Location|
+| ------------------- | :------------------: |
+|Xamarin.iOS|NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];|
+|Xamarin.Mac|NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];|
+|Xamarin.Android|Application.Context.CacheDir.AbsolutePath|
+|Windows 10 UWP|Windows.Storage.ApplicationData.Current.LocalFolder.Path|
+|.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
+|ASP.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
+|.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
+
+For .NET Core/ASP.NET Core/.NET it is required that you set a UniqueId for your application so a folder is created specifically for your app on disk. This can be donw with a static string on Barrel before calling ANY method:
+
+```
+Barrel.UniqueId = "your_unique_name_here";
+```
