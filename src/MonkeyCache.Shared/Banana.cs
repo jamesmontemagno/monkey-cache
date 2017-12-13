@@ -1,4 +1,9 @@
-﻿using SQLite;
+﻿
+#if SQLITE
+using SQLite;
+#elif LITEDB
+using LiteDB;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,8 +18,13 @@ namespace MonkeyCache
         /// <summary>
         /// Unique Identifier
         /// </summary>
+#if SQLITE
         [PrimaryKey]
+#elif LITEDB
+        [BsonId]
+#endif
         public string Id { get; set; }
+
 
         /// <summary>
         /// Additional ETag to set for Http Caching

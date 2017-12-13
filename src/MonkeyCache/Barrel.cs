@@ -4,11 +4,7 @@ using System.Linq;
 using SQLite;
 using Newtonsoft.Json;
 using System.Reflection;
-#if __IOS__ || __MACOS__
-using Foundation;
-#elif __ANDROID__
-using Android.App;
-#endif
+
 
 namespace MonkeyCache
 {
@@ -16,24 +12,14 @@ namespace MonkeyCache
     /// Persistant Key/Value data store for any data object.
     /// Allows for saving data along with expiration dates and ETags.
     /// </summary>
-    public class Barrel
+    public class Barrel : IBarrel
     {
         public static string UniqueId { get; set; } = string.Empty;
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
-            var path = string.Empty;
+            var path = Utils.GetBasePath();
 
-            ///Gets full path based on device type.
-#if __IOS__ || __MACOS__
-            path = NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
-#elif __ANDROID__
-            path = Application.Context.CacheDir.AbsolutePath;
-#elif __UWP__
-            path = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
-#else
-            path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-#endif
             if (!string.IsNullOrWhiteSpace(UniqueId))
                 path = Path.Combine(path, UniqueId);
 
@@ -49,7 +35,7 @@ namespace MonkeyCache
         /// <summary>
         /// Gets the instance of the Barrel
         /// </summary>
-        public static Barrel Current => (instance ?? (instance = new Barrel()));
+        public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
         JsonSerializerSettings jsonSettings;
         Barrel()
@@ -250,14 +236,13 @@ namespace MonkeyCache
         /// Empties all expired entries that are in the Barrel.
         /// Throws an exception if any deletions fail and rolls back changes.
         /// </summary>
-        public bool EmptyAll()
+        public void EmptyAll()
         {
             lock(dblock)
             {
                 db.DeleteAll<Banana>();
             }
-
-            return true;
+            
         }
 
         /// <summary>

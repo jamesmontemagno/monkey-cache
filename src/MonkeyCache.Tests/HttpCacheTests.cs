@@ -11,7 +11,7 @@ namespace MonkeyCache.Tests
     public class HttpCacheTests
     {
         IEnumerable<Monkey> monkeys;
-        Barrel barrel;
+        IBarrel barrel;
         string url;
         string json;
         [TestInitialize]
