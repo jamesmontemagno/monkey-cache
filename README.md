@@ -4,7 +4,8 @@ Easy cache any data structure for a specific amount of time in any .NET applicat
 **Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/4/badge)
 
 **NuGets**
-|Name|-|
+
+|Name|Info|
 | ------------------- | :------------------: |
 |MonkeyCache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)|
 |MonkeyCache - Dev|[MyGet](http://myget.org/F/monkey-cache)|
