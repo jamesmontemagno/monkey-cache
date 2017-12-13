@@ -1,0 +1,8 @@
+﻿<Application
+    x:Class="MonkeyCache.TestApp.UWP.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MonkeyCache.TestApp.UWP"
+    RequestedTheme="Light">
+
+</Application>
