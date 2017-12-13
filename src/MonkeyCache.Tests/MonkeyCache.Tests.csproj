@@ -25,4 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
   </ItemGroup>
+
+  <Import Project="..\MonkeyCache.TestsShared\MonkeyCache.TestsShared.projitems" Label="Shared" />
 </Project>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>4b54b117-44fe-46f9-977e-7d5772da5d3f</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>MonkeyCache.TestsShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BarrelTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpCacheTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Monkey.cs" />
+  </ItemGroup>
+</Project>
