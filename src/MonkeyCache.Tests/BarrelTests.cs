@@ -13,7 +13,7 @@ namespace MonkeyCache.Tests
     public class BarrelTests
     {
         IEnumerable<Monkey> monkeys;
-        Barrel barrel;
+        IBarrel barrel;
         string url;
         string json;
 
