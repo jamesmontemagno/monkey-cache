@@ -125,7 +125,7 @@ namespace MonkeyCache
             }
 
             if (ent == null)
-                return default;
+                return default(T);
 
             return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSettings);
         }

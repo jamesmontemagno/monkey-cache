@@ -125,7 +125,7 @@ namespace MonkeyCache.Tests
 
 
             var cached = barrel.Get<Monkey>(url);
-            Assert.AreEqual(cached, default);
+            Assert.AreEqual(cached, default(Monkey));
 
         }
 
