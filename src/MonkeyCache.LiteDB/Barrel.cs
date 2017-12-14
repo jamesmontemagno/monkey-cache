@@ -41,7 +41,7 @@ namespace MonkeyCache
         Barrel()
         {
             var directory = baseCacheDir.Value;
-            string path = Path.Combine(directory, "Barrel.litedb");
+            string path = Path.Combine(directory, "Barrel.db");
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);

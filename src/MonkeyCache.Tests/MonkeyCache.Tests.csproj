@@ -8,10 +8,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>default</LangVersion>
+    <DefineConstants>TRACE;RELEASE;NETCOREAPP2_0;SQLITE;</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>default</LangVersion>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;SQLITE;</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -21,7 +21,11 @@ namespace MonkeyCache.Tests
         public void Setup()
         {
 
+#if SQLITE
             Barrel.UniqueId = "com.refractored.monkeycache";
+#else
+            Barrel.UniqueId = "com.refractored.monkeycacheldb";
+#endif
             url = "http://montemagno.com/monkeys.json";
             barrel = Barrel.Current;
 
@@ -30,7 +34,7 @@ namespace MonkeyCache.Tests
         }
 
 
-        #region Get Tests
+#region Get Tests
 
         [TestMethod]
         public void GetStringTest()
@@ -84,9 +88,9 @@ namespace MonkeyCache.Tests
         }
 
 
-        #endregion
+#endregion
 
-        #region Add Tests
+#region Add Tests
         [TestMethod]
         public void AddStringNullTest()
         {
@@ -158,9 +162,9 @@ namespace MonkeyCache.Tests
 
         }
 
-        #endregion
+#endregion
 
-        #region Expiration Tests
+#region Expiration Tests
 
         [TestMethod]
         public void IsExpiredNullTest()
@@ -201,9 +205,9 @@ namespace MonkeyCache.Tests
 
         }
 
-        #endregion
+#endregion
 
-        #region Empty Tests
+#region Empty Tests
 
         [TestMethod]
         public void EmptyTest()
@@ -264,10 +268,10 @@ namespace MonkeyCache.Tests
             Assert.IsFalse(barrel.Exists(url2));
         }
 
-        #endregion
+#endregion
 
 
-        #region Exists Tests
+#region Exists Tests
         [TestMethod]
         public void ExistsTest()
         {
@@ -293,7 +297,7 @@ namespace MonkeyCache.Tests
             Assert.IsFalse(barrel.Exists(url));
         }
 
-        #endregion
+#endregion
 
         [TestCleanup]
         public void Teardown()
