@@ -195,20 +195,8 @@ namespace MonkeyCache
         /// <param name="eTag">Optional eTag information</param>
         public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
         {
-            if (data == null)
-                return;
-            
-            var ent = new Banana
-            {
-                Id = key,
-                ExpirationDate = DateTime.UtcNow.Add(expireIn),
-                ETag = eTag,
-                Contents = JsonConvert.SerializeObject(data, jsonSettings)
-            };
-            lock (dblock)
-            {
-                db.InsertOrReplace(ent);
-            }
+            var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
+            Add(key, dataJson, expireIn, eTag);
         }
 
 #endregion
