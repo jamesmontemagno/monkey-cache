@@ -18,6 +18,9 @@ namespace MonkeyCache
             if (string.IsNullOrWhiteSpace(applicationId))
                 throw new ArgumentException("You must set a ApplicationId for MonkeyCache by using Barrel.ApplicationId.");
 
+            if (applicationId.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+                throw new ArgumentException("ApplicationId has invalid characters");
+
             var path = string.Empty;
             ///Gets full path based on device type.
 #if __IOS__ || __MACOS__
