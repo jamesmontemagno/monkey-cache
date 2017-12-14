@@ -20,8 +20,8 @@ namespace MonkeyCache.Tests
         public void Setup()
         {
 
-            Barrel.UniqueId = "com.monkey.barrel.encrypt"; 
-            Barrel.EncryptionKey = Barrel.UniqueId;
+            Barrel.ApplicationId = "com.monkey.barrel.encrypt"; 
+            Barrel.EncryptionKey = Barrel.ApplicationId;
             
             url = "http://montemagno.com/monkeys.json";
             barrel = Barrel.Current;

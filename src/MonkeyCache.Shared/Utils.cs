@@ -13,10 +13,10 @@ namespace MonkeyCache
 {
     static class Utils
     {
-        public static string GetBasePath(string uniqueId)
+        public static string GetBasePath(string applicationId)
         {
-            if (string.IsNullOrWhiteSpace(uniqueId))
-                throw new ArgumentException("You must set a UniqueId for MonkeyCache by using Barrel.UniqueId.");
+            if (string.IsNullOrWhiteSpace(applicationId))
+                throw new ArgumentException("You must set a ApplicationId for MonkeyCache by using Barrel.ApplicationId.");
 
             var path = string.Empty;
             ///Gets full path based on device type.
@@ -29,7 +29,7 @@ namespace MonkeyCache
 #else
             path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 #endif
-            return Path.Combine(path, uniqueId);
+            return Path.Combine(path, applicationId);
         }
     }
 }

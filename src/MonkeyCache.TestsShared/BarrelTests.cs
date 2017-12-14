@@ -22,9 +22,9 @@ namespace MonkeyCache.Tests
         {
 
 #if SQLITE
-            Barrel.UniqueId = "com.refractored.monkeycache";
+            Barrel.ApplicationId = "com.refractored.monkeycache";
 #else
-            Barrel.UniqueId = "com.refractored.monkeycacheldb";
+            Barrel.ApplicationId = "com.refractored.monkeycacheldb";
 #endif
             url = "http://montemagno.com/monkeys.json";
             barrel = Barrel.Current;

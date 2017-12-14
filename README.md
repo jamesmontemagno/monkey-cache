@@ -107,8 +107,8 @@ Regardless of implementation, Cache will always be stored in the default platfor
 
 ## Setup
 
-It is required that you set a UniqueId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
+It is required that you set a ApplicationId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
 
 ```
-Barrel.UniqueId = "your_unique_name_here";
+Barrel.ApplicationId = "your_unique_name_here";
 ```

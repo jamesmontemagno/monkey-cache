@@ -18,12 +18,12 @@ namespace MonkeyCache
     /// </summary>
     public class Barrel : IBarrel
     {
-        public static string UniqueId { get; set; } = string.Empty;
+        public static string ApplicationId { get; set; } = string.Empty;
         public static string EncryptionKey { get; set; } = string.Empty;
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
-            return Path.Combine(Utils.GetBasePath(UniqueId), "MonkeyCache");
+            return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCache");
         });
 
         readonly LiteDatabase db;

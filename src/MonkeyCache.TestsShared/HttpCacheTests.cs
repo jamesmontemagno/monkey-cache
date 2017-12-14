@@ -18,9 +18,9 @@ namespace MonkeyCache.Tests
         [TestInitialize]
         public void Setup()
         {
-            Barrel.UniqueId = "com.refractored.monkeycache";
+            Barrel.ApplicationId = "com.refractored.monkeycache";
             var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            path = Path.Combine(path, Barrel.UniqueId);
+            path = Path.Combine(path, Barrel.ApplicationId);
             if (System.IO.File.Exists(path))
                 File.Delete(path);
             url = "http://montemagno.com/monkeys.json";
