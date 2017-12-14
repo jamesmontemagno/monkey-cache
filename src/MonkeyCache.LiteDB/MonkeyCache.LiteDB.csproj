@@ -19,6 +19,11 @@
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
     <Title>MonkeyCache.LiteDB - A .NET Caching Library</Title>
     <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by LiteDB.</Description>
+
+    <PackageReleaseNotes>See: See: https://github.com/jamesmontemagno/MonkeyCache</PackageReleaseNotes>
+    <RepositoryUrl>See: https://github.com/jamesmontemagno/MonkeyCache </RepositoryUrl>
+    <Copyright>2017 Refractored LLC &amp; James Montemagno</Copyright>
+    
     <RootNamespace>MonkeyCache</RootNamespace>
 
     <LangVersion>default</LangVersion>
@@ -28,6 +33,7 @@
     <DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);LITEDB</DefineConstants>
     <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);LITEDB</DefineConstants>
     <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);LITEDB</DefineConstants>
+    
   </PropertyGroup>
 
 
