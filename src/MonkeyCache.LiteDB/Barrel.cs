@@ -23,12 +23,7 @@ namespace MonkeyCache
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
-            var path = Utils.GetBasePath();
-
-            if (!string.IsNullOrWhiteSpace(UniqueId))
-                path = Path.Combine(path, UniqueId);
-
-            return Path.Combine(path, "MonkeyCache");
+            return Path.Combine(Utils.GetBasePath(UniqueId), "MonkeyCache");
         });
 
         readonly LiteDatabase db;
@@ -45,10 +40,11 @@ namespace MonkeyCache
         JsonSerializerSettings jsonSettings;
         Barrel()
         {
-            string path = Path.Combine(baseCacheDir.Value, "Barrel.litedb");
-            if (!File.Exists(path))
+            var directory = baseCacheDir.Value;
+            string path = Path.Combine(directory, "Barrel.litedb");
+            if (!Directory.Exists(directory))
             {
-                Directory.CreateDirectory(baseCacheDir.Value);
+                Directory.CreateDirectory(directory);
             }
 
             if (!string.IsNullOrWhiteSpace(EncryptionKey))

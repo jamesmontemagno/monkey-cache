@@ -104,7 +104,10 @@ Regardless of implementation, Cache will always be stored in the default platfor
 |ASP.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 
-For .NET Core/ASP.NET Core/.NET it is required that you set a UniqueId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
+
+## Setup
+
+It is required that you set a UniqueId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
 
 ```
 Barrel.UniqueId = "your_unique_name_here";

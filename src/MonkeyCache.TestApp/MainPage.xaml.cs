@@ -21,6 +21,8 @@ namespace MonkeyCache.TestApp
             ButtonLoad.Clicked += ButtonLoad_Clicked;
             ButtonSave.Clicked += ButtonSave_Clicked;
 
+            Barrel.UniqueId = "com.refractored.monkeycachetest";
+
             var monkey = Barrel.Current.Get<Monkey>("monkey");
             if (monkey != null)
                 EntryName.Text = monkey.Name;

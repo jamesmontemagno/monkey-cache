@@ -16,8 +16,11 @@ namespace MonkeyCache
 {
     static class Utils
     {
-        public static string GetBasePath()
+        public static string GetBasePath(string uniqueId)
         {
+            if (string.IsNullOrWhiteSpace(uniqueId))
+                throw new ArgumentException("You must set a UniqueId for MonkeyCache by using Barrel.UniqueId.");
+
             var path = string.Empty;
             ///Gets full path based on device type.
 #if __IOS__ || __MACOS__

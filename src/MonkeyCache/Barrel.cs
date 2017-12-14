@@ -19,12 +19,7 @@ namespace MonkeyCache
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
-            var path = Utils.GetBasePath();
-
-            if (!string.IsNullOrWhiteSpace(UniqueId))
-                path = Path.Combine(path, UniqueId);
-
-            return Path.Combine(path, "MonkeyCache");
+            return Path.Combine(Utils.GetBasePath(UniqueId), "MonkeyCache");
         });
 
         readonly SQLiteConnection db;
@@ -41,10 +36,15 @@ namespace MonkeyCache
         JsonSerializerSettings jsonSettings;
         Barrel()
         {
-            string path = Path.Combine(baseCacheDir.Value, "Barrel.sqlite");
+            var directory = baseCacheDir.Value;
+            string path = Path.Combine(directory, "Barrel.sqlite");
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
             if (!File.Exists(path))
             {
-                Directory.CreateDirectory(baseCacheDir.Value);
+                File.Create(path);
             }
 
             db = new SQLiteConnection(path);
