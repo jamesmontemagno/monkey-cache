@@ -15,6 +15,7 @@ namespace MonkeyCache
     public class Barrel : IBarrel
     {
         public static string UniqueId { get; set; } = string.Empty;
+        
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {

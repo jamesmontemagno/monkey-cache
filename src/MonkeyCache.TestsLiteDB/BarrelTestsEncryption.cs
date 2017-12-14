@@ -9,19 +9,20 @@ using Newtonsoft.Json;
 namespace MonkeyCache.Tests
 {
     [TestClass]
-    public class BarrelTests
+    public class BarrelEncryptionTests
     {
         IEnumerable<Monkey> monkeys;
         IBarrel barrel;
         string url;
         string json;
 
-
         [TestInitialize]
         public void Setup()
         {
 
-            Barrel.UniqueId = "com.refractored.monkeycache";
+            Barrel.UniqueId = "com.monkey.barrel.encrypt"; 
+            Barrel.EncryptionKey = Barrel.UniqueId;
+            
             url = "http://montemagno.com/monkeys.json";
             barrel = Barrel.Current;
 

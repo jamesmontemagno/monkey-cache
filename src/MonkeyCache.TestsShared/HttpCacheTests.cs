@@ -1,5 +1,6 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -18,6 +19,10 @@ namespace MonkeyCache.Tests
         public void Setup()
         {
             Barrel.UniqueId = "com.refractored.monkeycache";
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            path = Path.Combine(path, Barrel.UniqueId);
+            if (System.IO.File.Exists(path))
+                File.Delete(path);
             url = "http://montemagno.com/monkeys.json";
             barrel = Barrel.Current;
 
@@ -44,3 +49,4 @@ namespace MonkeyCache.Tests
 
     }
 }
+*/

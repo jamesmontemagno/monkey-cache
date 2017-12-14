@@ -7,9 +7,14 @@ using Foundation;
 using Android.App;
 #endif
 
+#if SQLITE
+using System.IO;
+using System.Security.Cryptography;
+#endif
+
 namespace MonkeyCache
 {
-    class Utils
+    static class Utils
     {
         public static string GetBasePath()
         {

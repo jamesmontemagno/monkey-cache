@@ -23,10 +23,14 @@
     <LangVersion>default</LangVersion>
     
     <DefineConstants Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);SQLITE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">$(DefineConstants);SQLITE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);SQLITE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);SQLITE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);SQLITE</DefineConstants>
   </PropertyGroup>
  
 
-  <ItemGroup >
+  <ItemGroup>
     <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.5" />
     <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />

@@ -19,6 +19,7 @@ namespace MonkeyCache
     public class Barrel : IBarrel
     {
         public static string UniqueId { get; set; } = string.Empty;
+        public static string EncryptionKey { get; set; } = string.Empty;
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
@@ -50,6 +51,9 @@ namespace MonkeyCache
                 Directory.CreateDirectory(baseCacheDir.Value);
             }
 
+            if (!string.IsNullOrWhiteSpace(EncryptionKey))
+                path = $"Filename={path}; Password={EncryptionKey}";
+
             db = new LiteDatabase(path);
             col = db.GetCollection<Banana>();
 
@@ -59,6 +63,8 @@ namespace MonkeyCache
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.All,
             };
+
+            
         }
 
         #region Exist and Expiration Methods
@@ -179,15 +185,7 @@ namespace MonkeyCache
             if (data == null)
                 return;
 
-            var ent = new Banana
-            {
-                Id = key,
-                ExpirationDate = DateTime.UtcNow.Add(expireIn),
-                ETag = eTag,
-                Contents = JsonConvert.SerializeObject(data, jsonSettings)
-            };
-
-            col.Upsert(ent);
+            Add(key, JsonConvert.SerializeObject(data, jsonSettings), expireIn, eTag);
         }
 
         #endregion
