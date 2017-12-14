@@ -43,12 +43,12 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
 
     //Dev handle online/offline scenario
     if(!CrossConnectivity.Current.IsConnected)
-        return Barrel.Get<IEnumerable<Monkey>>(key: url);
+        return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
 
     //Dev handles checking if cache is expired
-    if(!Barrel.IsExpired(key: url))
+    if(!Barrel.Current.IsExpired(key: url))
     {
-        return Barrel.Get<IEnumerable<Monkey>>(key: url);
+        return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
     }
 
 
@@ -57,7 +57,7 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
     var monkeys = JsonConvert.DeserializeObject<IEnumerable<Monkey>>(json);
 
     //Saves the cache and pass it a timespan for expiration
-    Barrel.Add(key: url, data: monkeys, expiration: TimeSpan.FromDays(1));
+    Barrel.Current.Add(key: url, data: monkeys, expiration: TimeSpan.FromDays(1));
 
 }
 ```
@@ -66,10 +66,10 @@ MonkeyCache will never delete data unless you want to, which is pretty nice inca
 
 ```csharp
     //removes all data
-    Barrel.EmptyAll();
+    Barrel.Current.EmptyAll();
 
     //param list of keys to flush
-    Barrel.Empty(key: url);
+    Barrel.Current.Empty(key: url);
 ```
 
 The above shows how you can integrate MonkeyCache into your existing source code without any modifications to your network code. However, MonkeyCache can help you there too! MonkeyCache also offers helpers when dealing with network calls via HttpCache.
@@ -83,7 +83,7 @@ Task<IEnumerable<Monkey>> GetMonkeysAsync()
 
     //Dev handle online/offline scenario
     if(!CrossConnectivity.Current.IsConnected)
-        return Barrel.Get<IEnumerable<Monkey>>(key: url);
+        return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
 
     return HttpCache.GetAsync<IEnumerable<Monkey>>(key: url, expiration: TimeSpan.FromDays(1), headers: headers);
 
