@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 #if __IOS__ || __MACOS__
 using Foundation;
 #elif __ANDROID__
 using Android.App;
 #endif
 
-#if SQLITE
-using System.IO;
-using System.Security.Cryptography;
-#endif
 
 namespace MonkeyCache
 {
@@ -32,7 +29,7 @@ namespace MonkeyCache
 #else
             path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 #endif
-            return path;
+            return Path.Combine(path, uniqueId);
         }
     }
 }
