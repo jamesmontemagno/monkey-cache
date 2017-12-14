@@ -42,10 +42,6 @@ namespace MonkeyCache
             {
                 Directory.CreateDirectory(directory);
             }
-            if (!File.Exists(path))
-            {
-                File.Create(path);
-            }
 
             db = new SQLiteConnection(path);
             db.CreateTable<Banana>();
