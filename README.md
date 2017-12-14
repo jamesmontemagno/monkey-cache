@@ -1,5 +1,5 @@
 # monkey-cache
-Easy cache any data structure for a specific amount of time in any .NET application.
+Easily cache any data structure for a specific amount of time in any .NET application.
 
 **Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/4/badge)
 
@@ -62,7 +62,7 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
 }
 ```
 
-MonkeyCache will never delete data unless you want to, which is pretty nice incase you are offline for long period of time. However, there should be additional helpers to clean up data:
+MonkeyCache will never delete data unless you want to, which is pretty nice incase you are offline for long period of time. However, there are additional helpers to clean up data:
 
 ```csharp
     //removes all data
@@ -92,7 +92,7 @@ Task<IEnumerable<Monkey>> GetMonkeysAsync()
 
 Another goal of MonkeyCache is to offer a fast and native experience when storing and retrieving data from the Barrel. MonkeyCache uses a SQLite database to store all data across all platforms. This is super fast and is supported natively on each platform. In addition to the SQLite implementation is an implementation based on [LiteDB](http://www.litedb.org/) for data storage. Each have their own NuGet package, but have the same API, namespaces, and class names. This means that they can not be installed at the same time, but one or the other. 
 
-Regardless of implementation Cache will always be stored in the default platform specific location:
+Regardless of implementation, Cache will always be stored in the default platform specific location:
 
 |Platform|Location|
 | ------------------- | :------------------: |
@@ -104,7 +104,7 @@ Regardless of implementation Cache will always be stored in the default platform
 |ASP.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 
-For .NET Core/ASP.NET Core/.NET it is required that you set a UniqueId for your application so a folder is created specifically for your app on disk. This can be donw with a static string on Barrel before calling ANY method:
+For .NET Core/ASP.NET Core/.NET it is required that you set a UniqueId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
 
 ```
 Barrel.UniqueId = "your_unique_name_here";
