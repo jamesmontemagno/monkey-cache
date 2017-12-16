@@ -12,16 +12,16 @@
     <PackOnBuild>true</PackOnBuild>
     <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <PackageLicenseUrl>https://github.com/jamesmontemagno/MonkeyCache/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>James Montemagno</Owners>
-    <PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
     <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
     <Title>MonkeyCache - A .NET Caching Library</Title>
     <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by SQLite.</Description>
     <Copyright>2017 Refractored LLC &amp; James Montemagno</Copyright>
-    <RepositoryUrl>https://github.com/jamesmontemagno/MonkeyCache</RepositoryUrl>
-    <PackageReleaseNotes>See: https://github.com/jamesmontemagno/MonkeyCache </PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
+    <PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
     
     <LangVersion>default</LangVersion>
 
