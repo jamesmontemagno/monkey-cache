@@ -17,7 +17,7 @@
     <PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
     <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>🐒 MonkeyCache.SQLite - A .NET Caching Library</Title>
+    <Title>🙊 MonkeyCache.SQLite - A .NET Caching Library</Title>
     <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by SQLite.</Description>
     <Copyright>2017 Refractored LLC &amp; James Montemagno</Copyright>
     <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>

@@ -17,7 +17,7 @@
     <PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
     <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>🐒 MonkeyCache.LiteDB - A .NET Caching Library</Title>
+    <Title>🙉 MonkeyCache.LiteDB - A .NET Caching Library</Title>
     <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by LiteDB.</Description>
 
     <PackageReleaseNotes>See: See: https://github.com/jamesmontemagno/MonkeyCache</PackageReleaseNotes>
