@@ -15,36 +15,33 @@
     <PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>James Montemagno</Owners>
     <PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
-    <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
+    <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Requires backend MonkeyCache package to be installed.</Summary>
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>MonkeyCache - A .NET Caching Library</Title>
-    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by SQLite.</Description>
+    <Title>MonkeyCache.Core - A .NET Caching Library</Title>
+    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data.</Description>
     <Copyright>2017 Refractored LLC &amp; James Montemagno</Copyright>
     <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
     <PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
-    
+
     <LangVersion>default</LangVersion>
 
-    <DefineConstants Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);SQLITE</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">$(DefineConstants);SQLITE</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);SQLITE</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);SQLITE</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);SQLITE</DefineConstants>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">$(DefineConstants);</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);</DefineConstants>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RootNamespace>MonkeyCache</RootNamespace>
 
   </PropertyGroup>
- 
+
 
   <ItemGroup>
     <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.5" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2-build.16" PrivateAssets="All" />
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2-build.23" PrivateAssets="All" />
+
+    <Reference Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' " Include="System.Net.Http" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
-  </ItemGroup>
-  
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 </Project>

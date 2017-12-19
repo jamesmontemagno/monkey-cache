@@ -36,12 +36,12 @@ namespace MonkeyCache
 
         static System.Threading.SemaphoreSlim getThrottle = new System.Threading.SemaphoreSlim(4, 4);
 
-        public async Task<string> GetCachedAsync(string url, TimeSpan timeout, TimeSpan expireIn, bool forceUpdate = false)
+        public async Task<string> GetCachedAsync(IBarrel barrel, string url, TimeSpan timeout, TimeSpan expireIn, bool forceUpdate = false)
         {
-            var contents = Barrel.Current.Get(url);
-            var eTag = Barrel.Current.GetETag(url);
+            var contents = barrel.Get(url);
+            var eTag = barrel.GetETag(url);
 
-            if (!forceUpdate && !string.IsNullOrEmpty(contents) && !Barrel.Current.IsExpired(url))
+            if (!forceUpdate && !string.IsNullOrEmpty(contents) && !barrel.IsExpired(url))
                 return contents;
 
             var etag = eTag ?? null;
@@ -103,7 +103,7 @@ namespace MonkeyCache
                 if (!string.IsNullOrEmpty(newEtag) && newEtag != etag)
                 {
                     //Console.WriteLine("CACHING " + url + " etag: " + etag);
-                    Barrel.Current.Add(url, c, expireIn, newEtag);
+                    barrel.Add(url, c, expireIn, newEtag);
                 }
 
                 return c;

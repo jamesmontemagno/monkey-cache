@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MonkeyCache.LiteDB;
 using Newtonsoft.Json;
 
 namespace MonkeyCache.Tests

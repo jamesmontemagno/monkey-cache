@@ -6,6 +6,12 @@ using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
+#if SQLITE
+using Barrel = MonkeyCache.SQLite.Barrel;
+#else
+using Barrel = MonkeyCache.LiteDB.Barrel;
+#endif
+
 namespace MonkeyCache.Tests
 {
     [TestClass]

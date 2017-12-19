@@ -8,10 +8,14 @@ using Foundation;
 using Android.App;
 #endif
 
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("MonkeyCache.SQLite")]
+[assembly: InternalsVisibleTo("MonkeyCache.LiteDB")]
+[assembly: InternalsVisibleTo("MonkeyCache.FileStore")]
 namespace MonkeyCache
 {
-    static class Utils
+    internal static class Utils
     {
         public static string GetBasePath(string applicationId)
         {
