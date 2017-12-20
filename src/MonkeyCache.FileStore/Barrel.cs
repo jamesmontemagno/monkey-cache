@@ -1,66 +1,232 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace MonkeyCache.FileStore
 {
     public class Barrel : IBarrel
     {
-		public static string ApplicationId { get; set; } = string.Empty;
+        JsonSerializerSettings jsonSettings;
 
-		static Barrel instance = null;
+        Barrel()
+        {
+            jsonSettings = new JsonSerializerSettings {
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.All,
+            };
+
+            index = new Dictionary<string, Tuple<string, DateTime>>();
+
+            LoadIndex();
+        }
+
+        public static string ApplicationId { get; set; } = string.Empty;
+
+        static Barrel instance = null;
 
 		/// <summary>
 		/// Gets the instance of the Barrel
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
-		public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
+        public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
         {
-            throw new NotImplementedException();
+            if (data == null)
+                return;
+
+            lock (indexLock) {
+
+                var hash = Hash(key);
+                var path = Path.Combine(baseDirectory.Value, hash);
+
+                File.WriteAllText(path, data);
+
+                index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, DateTime.UtcNow.Add(expireIn));
+
+                WriteIndex();
+            }
         }
 
         public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
         {
-            throw new NotImplementedException();
+            var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
+
+            Add(key, dataJson, expireIn, eTag);
         }
 
         public void Empty(params string[] key)
         {
-            throw new NotImplementedException();
+            lock (indexLock) {
+
+                foreach (var k in key) {
+                    File.Delete(Path.Combine(baseDirectory.Value, Hash(k)));
+                    index.Remove(k);
+                }
+
+                WriteIndex();
+            }
         }
 
         public void EmptyAll()
         {
-            throw new NotImplementedException();
+            lock (indexLock) {
+                foreach (var item in index) {
+                    var hash = Hash(item.Key);
+                    File.Delete(Path.Combine(baseDirectory.Value, hash));
+                }
+
+                index.Clear();
+
+                WriteIndex();
+            }
         }
 
         public void EmptyExpired()
         {
-            throw new NotImplementedException();
+            lock (indexLock) {
+                var expired = index.Where(k => k.Value.Item2 < DateTime.UtcNow);
+
+                var toRem = new List<string>();
+
+                foreach (var item in expired) {
+                    var hash = Hash(item.Key);
+                    File.Delete(Path.Combine(baseDirectory.Value, hash));
+                    toRem.Add(item.Key);
+                }
+
+                foreach (var key in toRem)
+                    index.Remove(key);
+
+                WriteIndex();
+            }
         }
 
         public bool Exists(string key)
         {
-            throw new NotImplementedException();
+            lock (indexLock) {
+                return index.ContainsKey(key);
+            }
         }
 
         public string Get(string key)
         {
-            throw new NotImplementedException();
+            lock (indexLock) {
+                var hash = Hash(key);
+                var path = Path.Combine(baseDirectory.Value, hash);
+
+                if (!index.ContainsKey(key) || !File.Exists(path))
+                    return null;
+
+                return File.ReadAllText(path);
+            }
         }
 
         public T Get<T>(string key)
         {
-            throw new NotImplementedException();
+            lock (indexLock) {
+                var hash = Hash(key);
+                var path = Path.Combine(baseDirectory.Value, hash);
+
+                if (!index.ContainsKey(key) || !File.Exists(path))
+                    return default(T);
+
+                var contents = File.ReadAllText(path);
+
+                return JsonConvert.DeserializeObject<T>(contents, jsonSettings);
+            }
         }
 
         public string GetETag(string key)
         {
-            throw new NotImplementedException();
+            if (key == null)
+                return null;
+            
+            string etag = null;
+
+            lock (indexLock) {
+                if (!index.ContainsKey(key))
+                    return null;
+                etag = index[key]?.Item1;
+            }
+
+            return etag;
         }
 
         public bool IsExpired(string key)
         {
-            throw new NotImplementedException();
+            lock (indexLock) {
+                if (!index.ContainsKey(key))
+                    return false;
+
+                return index[key].Item2 < DateTime.UtcNow;
+            }
+        }
+
+        Lazy<string> baseDirectory = new Lazy<string>(() => {
+            return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCacheFS");
+        });
+
+        Dictionary<string, Tuple<string, DateTime>> index;
+
+        static readonly object indexLock = new object();
+
+        const string INDEX_FILENAME = "index.dat";
+
+        string indexFile;
+
+        void WriteIndex()
+        {
+            if (string.IsNullOrEmpty(indexFile))
+                indexFile = Path.Combine(baseDirectory.Value, INDEX_FILENAME);
+
+            if (!Directory.Exists(baseDirectory.Value))
+                Directory.CreateDirectory(baseDirectory.Value);
+            
+            using (var f = File.Open(indexFile, FileMode.Create))
+            using (var sw = new StreamWriter(f)) {
+                foreach (var kvp in index)
+                    sw.WriteLine($"{kvp.Key}\t{kvp.Value.Item1}\t{kvp.Value.Item2.ToString("o")}");
+            }
+        }
+
+        void LoadIndex()
+        {
+            if (string.IsNullOrEmpty(indexFile))
+                indexFile = Path.Combine(baseDirectory.Value, INDEX_FILENAME);
+            
+            if (!File.Exists(indexFile))
+                return;
+
+            index.Clear();
+
+            using (var f = File.OpenRead(indexFile))
+            using (var sw = new StreamReader(f)) {
+                string line = null;
+                while ((line = sw.ReadLine()) != null) {
+                    var parts = line.Split('\t');
+                    if (parts.Length == 3) {
+                        var key = parts[0];
+                        var etag = parts[1];
+                        var dt = parts[2];
+
+                        DateTime date;
+                        if (!string.IsNullOrEmpty(key) && DateTime.TryParse(dt, out date) && !index.ContainsKey(key))
+                            index.Add(key, new Tuple<string, DateTime>(etag, date));
+                    }
+                }
+            }
+        }
+
+        static string Hash(string input)
+        {
+            MD5 md5Hasher = MD5.Create();
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+            return BitConverter.ToString(data);
         }
     }
 }
