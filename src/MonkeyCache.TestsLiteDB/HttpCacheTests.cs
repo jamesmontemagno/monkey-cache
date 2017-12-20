@@ -1,11 +1,9 @@
-﻿using MonkeyCache.FileStore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using MonkeyCache.LiteDB;
 
 namespace MonkeyCache.Tests
 {
-	public partial class BarrelTests
+	public partial class HttpCacheTests
 	{
 		void SetupBarrel()
 		{
