@@ -185,7 +185,7 @@ namespace MonkeyCache.FileStore
 
         public bool IsExpired(string key)
         {
-            var expired = false;
+            var expired = true;
 
             indexLocker.EnterReadLock();
 
