@@ -295,6 +295,43 @@ namespace MonkeyCache.Tests
         #endregion
 
         #region Performance Tests
+
+        [TestMethod]
+        public void PerformanceTestsJson1()
+        {
+            PerformanceTestRunner(1, true, 1, true);
+        }
+
+        [TestMethod]
+        public void PerformanceTestsJson10()
+        {
+            PerformanceTestRunner(1, true, 1000, true);
+        }
+
+        [TestMethod]
+        public void PerformanceTestsJson100()
+        {
+            PerformanceTestRunner(1, true, 100, true);
+        }
+
+        [TestMethod]
+        public void PerformanceTestsJson1000()
+        {
+            PerformanceTestRunner(1, true, 1000, true);
+        }
+
+        [TestMethod]
+        public void PerformanceTestsMultiThreadedJson()
+        {
+            PerformanceTestRunner(4, false, 1000, true);
+        }
+
+        [TestMethod]
+        public void PerformanceTestsMultiThreadedWithDuplicatesJson()
+        {
+            PerformanceTestRunner(4, true, 1000, true);
+        }
+
         [TestMethod]
         public void PerformanceTests()
         {
@@ -313,7 +350,7 @@ namespace MonkeyCache.Tests
             PerformanceTestRunner(4, true, 1000);
         }
 
-        void PerformanceTestRunner (int threads, bool allowDuplicateKeys, int keysPerThread)
+        void PerformanceTestRunner (int threads, bool allowDuplicateKeys, int keysPerThread, bool useJson = false)
         {
             var tasks = new List<Task>();
 
@@ -335,8 +372,12 @@ namespace MonkeyCache.Tests
 
                     // Add a lot of items
                     foreach (var key in keys)
-                        barrel.Add(key: key, data: monkeys, expireIn: TimeSpan.FromDays(1));
-
+                    {
+                        if(useJson)
+                            barrel.Add(key: key, data: json, expireIn: TimeSpan.FromDays(1));
+                        else
+                            barrel.Add(key: key, data: monkeys, expireIn: TimeSpan.FromDays(1));
+                    }
                     stopwatch.Stop();
                     Debug.WriteLine($"Add ({tId}) took {stopwatch.ElapsedMilliseconds} ms");
                     stopwatch.Restart();
