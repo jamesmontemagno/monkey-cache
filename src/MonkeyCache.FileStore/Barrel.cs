@@ -210,7 +210,7 @@ namespace MonkeyCache.FileStore
 
 		Dictionary<string, Tuple<string, DateTime>> index;
 
-		const string INDEX_FILENAME = "index.dat";
+		const string INDEX_FILENAME = "idx.dat";
 
 		string indexFile;
 
@@ -218,15 +218,15 @@ namespace MonkeyCache.FileStore
 		{
 			if (string.IsNullOrEmpty(indexFile))
 				indexFile = Path.Combine(baseDirectory.Value, INDEX_FILENAME);
-
 			if (!Directory.Exists(baseDirectory.Value))
 				Directory.CreateDirectory(baseDirectory.Value);
 
 			using (var f = File.Open(indexFile, FileMode.Create))
-			using (var sw = new StreamWriter(f))
-			{
-				foreach (var kvp in index)
-					sw.WriteLine($"{kvp.Key}\t{kvp.Value.Item1}\t{kvp.Value.Item2.ToString("o")}");
+			using (var sw = new StreamWriter(f)) {
+				foreach (var kvp in index) {
+					var dtEpoch = DateTimeToEpochSeconds(kvp.Value.Item2);
+					sw.WriteLine($"{kvp.Key}\t{kvp.Value.Item1}\t{dtEpoch.ToString()}");
+				}
 			}
 		}
 
@@ -253,8 +253,9 @@ namespace MonkeyCache.FileStore
 						var etag = parts[1];
 						var dt = parts[2];
 
-						if (!string.IsNullOrEmpty(key) && DateTime.TryParse(dt, out var date) && !index.ContainsKey(key))
-							index.Add(key, new Tuple<string, DateTime>(etag, date));
+						int secondsSinceEpoch;
+						if (!string.IsNullOrEmpty(key) && int.TryParse(dt, out secondsSinceEpoch) && !index.ContainsKey(key))
+							index.Add(key, new Tuple<string, DateTime>(etag, EpochSecondsToDateTime(secondsSinceEpoch)));
 					}
 				}
 			}
@@ -265,6 +266,20 @@ namespace MonkeyCache.FileStore
 			var md5Hasher = MD5.Create();
 			var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
 			return BitConverter.ToString(data);
+		}
+
+
+		static readonly DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+		static int DateTimeToEpochSeconds (DateTime date)
+		{
+			var diff = date - epoch;
+			return (int)diff.TotalSeconds;
+		}
+
+		static DateTime EpochSecondsToDateTime (int seconds)
+		{
+			return epoch + TimeSpan.FromSeconds(seconds);
 		}
 	}
 }
