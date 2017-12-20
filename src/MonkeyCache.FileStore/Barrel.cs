@@ -4,16 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
 
 namespace MonkeyCache.FileStore
 {
     public class Barrel : IBarrel
     {
+        ReaderWriterLockSlim indexLocker;
+
         JsonSerializerSettings jsonSettings;
 
         Barrel()
         {
+            indexLocker = new ReaderWriterLockSlim();
+
             jsonSettings = new JsonSerializerSettings {
                 ObjectCreationHandling = ObjectCreationHandling.Replace,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -39,17 +44,18 @@ namespace MonkeyCache.FileStore
             if (data == null)
                 return;
 
-            lock (indexLock) {
+            indexLocker.EnterWriteLock();
 
-                var hash = Hash(key);
-                var path = Path.Combine(baseDirectory.Value, hash);
+            var hash = Hash(key);
+            var path = Path.Combine(baseDirectory.Value, hash);
 
-                File.WriteAllText(path, data);
+            File.WriteAllText(path, data);
 
-                index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, DateTime.UtcNow.Add(expireIn));
+            index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, DateTime.UtcNow.Add(expireIn));
 
-                WriteIndex();
-            }
+            WriteIndex();
+
+            indexLocker.ExitWriteLock();
         }
 
         public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
@@ -61,84 +67,103 @@ namespace MonkeyCache.FileStore
 
         public void Empty(params string[] key)
         {
-            lock (indexLock) {
+            indexLocker.EnterWriteLock();
 
-                foreach (var k in key) {
-                    File.Delete(Path.Combine(baseDirectory.Value, Hash(k)));
-                    index.Remove(k);
-                }
-
-                WriteIndex();
+            foreach (var k in key) {
+                File.Delete(Path.Combine(baseDirectory.Value, Hash(k)));
+                index.Remove(k);
             }
+
+            WriteIndex();
+
+            indexLocker.ExitWriteLock();
         }
 
         public void EmptyAll()
         {
-            lock (indexLock) {
-                foreach (var item in index) {
-                    var hash = Hash(item.Key);
-                    File.Delete(Path.Combine(baseDirectory.Value, hash));
-                }
+            indexLocker.EnterWriteLock();
 
-                index.Clear();
-
-                WriteIndex();
+            foreach (var item in index) {
+                var hash = Hash(item.Key);
+                File.Delete(Path.Combine(baseDirectory.Value, hash));
             }
+
+            index.Clear();
+
+            WriteIndex();
+
+            indexLocker.ExitWriteLock();
         }
 
         public void EmptyExpired()
         {
-            lock (indexLock) {
-                var expired = index.Where(k => k.Value.Item2 < DateTime.UtcNow);
+            indexLocker.EnterWriteLock();
 
-                var toRem = new List<string>();
+            var expired = index.Where(k => k.Value.Item2 < DateTime.UtcNow);
 
-                foreach (var item in expired) {
-                    var hash = Hash(item.Key);
-                    File.Delete(Path.Combine(baseDirectory.Value, hash));
-                    toRem.Add(item.Key);
-                }
+            var toRem = new List<string>();
 
-                foreach (var key in toRem)
-                    index.Remove(key);
-
-                WriteIndex();
+            foreach (var item in expired) {
+                var hash = Hash(item.Key);
+                File.Delete(Path.Combine(baseDirectory.Value, hash));
+                toRem.Add(item.Key);
             }
+
+            foreach (var key in toRem)
+                index.Remove(key);
+
+            WriteIndex();
+
+            indexLocker.ExitWriteLock();
         }
 
         public bool Exists(string key)
         {
-            lock (indexLock) {
-                return index.ContainsKey(key);
-            }
+            var exists = false;
+
+            indexLocker.EnterReadLock();
+
+            exists = index.ContainsKey(key);
+
+            indexLocker.ExitReadLock();
+
+            return exists;
         }
 
         public string Get(string key)
         {
-            lock (indexLock) {
-                var hash = Hash(key);
-                var path = Path.Combine(baseDirectory.Value, hash);
+            string result = null;
 
-                if (!index.ContainsKey(key) || !File.Exists(path))
-                    return null;
+            indexLocker.EnterReadLock();
 
-                return File.ReadAllText(path);
-            }
+            var hash = Hash(key);
+            var path = Path.Combine(baseDirectory.Value, hash);
+
+            if (index.ContainsKey(key) && File.Exists(path))
+                result = File.ReadAllText(path);
+
+            indexLocker.ExitReadLock();
+
+            return result;
         }
 
         public T Get<T>(string key)
         {
-            lock (indexLock) {
-                var hash = Hash(key);
-                var path = Path.Combine(baseDirectory.Value, hash);
+            T result = default(T);
 
-                if (!index.ContainsKey(key) || !File.Exists(path))
-                    return default(T);
+            indexLocker.EnterReadLock();
 
+            var hash = Hash(key);
+            var path = Path.Combine(baseDirectory.Value, hash);
+
+            if (index.ContainsKey(key) && File.Exists(path)) {
                 var contents = File.ReadAllText(path);
-
-                return JsonConvert.DeserializeObject<T>(contents, jsonSettings);
+                result = JsonConvert.DeserializeObject<T>(contents, jsonSettings);
             }
+
+            indexLocker.ExitReadLock();
+
+            return result;
         }
 
         public string GetETag(string key)
@@ -148,23 +173,28 @@ namespace MonkeyCache.FileStore
             
             string etag = null;
 
-            lock (indexLock) {
-                if (!index.ContainsKey(key))
-                    return null;
+            indexLocker.EnterReadLock();
+
+            if (index.ContainsKey(key))
                 etag = index[key]?.Item1;
-            }
+
+            indexLocker.ExitReadLock();
 
             return etag;
         }
 
         public bool IsExpired(string key)
         {
-            lock (indexLock) {
-                if (!index.ContainsKey(key))
-                    return false;
+            var expired = false;
 
-                return index[key].Item2 < DateTime.UtcNow;
-            }
+            indexLocker.EnterReadLock();
+
+            if (index.ContainsKey(key))
+                expired = index[key].Item2 < DateTime.UtcNow;
+
+            indexLocker.ExitReadLock();
+
+            return expired;
         }
 
         Lazy<string> baseDirectory = new Lazy<string>(() => {
@@ -172,8 +202,6 @@ namespace MonkeyCache.FileStore
         });
 
         Dictionary<string, Tuple<string, DateTime>> index;
-
-        static readonly object indexLock = new object();
 
         const string INDEX_FILENAME = "index.dat";
 
