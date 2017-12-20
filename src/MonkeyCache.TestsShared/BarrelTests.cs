@@ -414,7 +414,7 @@ namespace MonkeyCache.Tests
                     stopwatch.Stop();
                     Debug.WriteLine($"Empty ({tId}) took {stopwatch.ElapsedMilliseconds} ms");
 
-                    Assert.IsTrue(stopwatch.ElapsedMilliseconds > 0);
+                    Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 0);
                 });
 
                 task.ContinueWith(t => {
