@@ -18,7 +18,7 @@ namespace MonkeyCache.Tests
         public void Setup()
         {
             SetupBarrel();
-            url = "http://montemagno.com/monkeys.json";
+            url = "https://raw.githubusercontent.com/jamesmontemagno/app-monkeys/master/MonkeysApp/monkeydata.json";
         }
 
         [TestMethod]
