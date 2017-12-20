@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
@@ -293,50 +294,91 @@ namespace MonkeyCache.Tests
 
         #endregion
 
-#region Performance Tests
+        #region Performance Tests
         [TestMethod]
         public void PerformanceTests()
         {
+            PerformanceTestRunner(1, true, 1000);
+        }
 
+        [TestMethod]
+        public void PerformanceTestsMultiThreaded()
+        {
+            PerformanceTestRunner(4, false, 1000);
+        }
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+        [TestMethod]
+        public void PerformanceTestsMultiThreadedWithDuplicates()
+        {
+            PerformanceTestRunner(4, true, 1000);
+        }
 
-            var keys = Enumerable.Range(0, 1000).Select(x => $"key-{x}").ToArray();
+        void PerformanceTestRunner (int threads, bool allowDuplicateKeys, int keysPerThread)
+        {
+            var tasks = new List<Task>();
 
-            // Add a lot of items
-            foreach (var key in keys)
-                barrel.Add(key: key, data: monkeys, expireIn: TimeSpan.FromDays(1));
-            
-            stopwatch.Stop();
-            Debug.WriteLine($"Add took {stopwatch.ElapsedMilliseconds} ms");
-            stopwatch.Restart();
+            var mainStopwatch = new Stopwatch();
+            mainStopwatch.Start();
 
-            foreach (var key in keys) {
-                var content = barrel.Get(key);
-                Assert.IsNotNull(content);
+            for (int i = 0; i < threads; i++) {
+                var i2 = i;
+
+                var task = Task.Factory.StartNew(() => {
+                    var tId = i2;
+
+                    var keyModifier = allowDuplicateKeys ? string.Empty : tId.ToString();
+
+                    var keys = Enumerable.Range(0, keysPerThread).Select(x => $"key-{keyModifier}-{x}").ToArray();
+
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
+                    // Add a lot of items
+                    foreach (var key in keys)
+                        barrel.Add(key: key, data: monkeys, expireIn: TimeSpan.FromDays(1));
+
+                    stopwatch.Stop();
+                    Debug.WriteLine($"Add ({tId}) took {stopwatch.ElapsedMilliseconds} ms");
+                    stopwatch.Restart();
+
+                    foreach (var key in keys) {
+                        var content = barrel.Get(key);
+                    }
+
+                    stopwatch.Stop();
+                    Debug.WriteLine($"Gets ({tId}) took {stopwatch.ElapsedMilliseconds} ms");
+                    stopwatch.Restart();
+
+                    foreach (var key in keys) {
+                        var content = barrel.GetETag(key);
+                    }
+
+                    stopwatch.Stop();
+                    Debug.WriteLine($"Get ({tId}) eTags took {stopwatch.ElapsedMilliseconds} ms");
+                    stopwatch.Restart();
+
+                    // Delete all
+                    barrel.Empty(keys);
+
+                    stopwatch.Stop();
+                    Debug.WriteLine($"Empty ({tId}) took {stopwatch.ElapsedMilliseconds} ms");
+
+                    Assert.IsTrue(stopwatch.ElapsedMilliseconds > 1);
+                });
+
+                task.ContinueWith(t => {
+                    if (t.Exception?.InnerException != null)
+                        Debug.WriteLine(t.Exception.InnerException);
+
+                    Assert.IsNull(t.Exception);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+                tasks.Add(task);
             }
 
-            stopwatch.Stop();
-            Debug.WriteLine($"Gets took {stopwatch.ElapsedMilliseconds} ms");
-            stopwatch.Restart();
+            Task.WaitAll(tasks.ToArray());
 
-            foreach (var key in keys) {
-                var content = barrel.GetETag(key);
-                Assert.IsNotNull(content);
-            }
-
-            stopwatch.Stop();
-            Debug.WriteLine($"Get eTags took {stopwatch.ElapsedMilliseconds} ms");
-            stopwatch.Restart();
-
-            // Delete all
-            barrel.Empty(keys);
-
-            stopwatch.Stop();
-            Debug.WriteLine($"Empty took {stopwatch.ElapsedMilliseconds} ms");
-
-            Assert.IsTrue(stopwatch.ElapsedMilliseconds > 1);
+            mainStopwatch.Stop();
+            Debug.WriteLine($"Entire Test took {mainStopwatch.ElapsedMilliseconds} ms");
         }
 
 #endregion
