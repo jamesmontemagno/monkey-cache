@@ -9,252 +9,261 @@ using Newtonsoft.Json;
 
 namespace MonkeyCache.FileStore
 {
-    public class Barrel : IBarrel
-    {
-        ReaderWriterLockSlim indexLocker;
+	public class Barrel : IBarrel
+	{
+		ReaderWriterLockSlim indexLocker;
 
-        JsonSerializerSettings jsonSettings;
+		JsonSerializerSettings jsonSettings;
 
-        Barrel()
-        {
-            indexLocker = new ReaderWriterLockSlim();
+		Barrel()
+		{
+			indexLocker = new ReaderWriterLockSlim();
 
-            jsonSettings = new JsonSerializerSettings {
-                ObjectCreationHandling = ObjectCreationHandling.Replace,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.All,
-            };
+			jsonSettings = new JsonSerializerSettings
+			{
+				ObjectCreationHandling = ObjectCreationHandling.Replace,
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+				TypeNameHandling = TypeNameHandling.All,
+			};
 
-            index = new Dictionary<string, Tuple<string, DateTime>>();
+			index = new Dictionary<string, Tuple<string, DateTime>>();
 
-            LoadIndex();
-        }
+			LoadIndex();
+		}
 
-        public static string ApplicationId { get; set; } = string.Empty;
+		public static string ApplicationId { get; set; } = string.Empty;
 
-        static Barrel instance = null;
+		static Barrel instance = null;
 
 		/// <summary>
 		/// Gets the instance of the Barrel
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
-        public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
-        {
-            if (data == null)
-                return;
+		public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
+		{
+			if (data == null)
+				return;
 
-            indexLocker.EnterWriteLock();
+			indexLocker.EnterWriteLock();
 
-            var hash = Hash(key);
-            var path = Path.Combine(baseDirectory.Value, hash);
+			var hash = Hash(key);
+			var path = Path.Combine(baseDirectory.Value, hash);
 
-            File.WriteAllText(path, data);
+			File.WriteAllText(path, data);
 
-            index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, DateTime.UtcNow.Add(expireIn));
+			index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, DateTime.UtcNow.Add(expireIn));
 
-            WriteIndex();
+			WriteIndex();
 
-            indexLocker.ExitWriteLock();
-        }
+			indexLocker.ExitWriteLock();
+		}
 
-        public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
-        {
-            var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
+		public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
+		{
+			var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
 
-            Add(key, dataJson, expireIn, eTag);
-        }
+			Add(key, dataJson, expireIn, eTag);
+		}
 
-        public void Empty(params string[] key)
-        {
-            indexLocker.EnterWriteLock();
+		public void Empty(params string[] key)
+		{
+			indexLocker.EnterWriteLock();
 
-            foreach (var k in key) {
-                File.Delete(Path.Combine(baseDirectory.Value, Hash(k)));
-                index.Remove(k);
-            }
+			foreach (var k in key)
+			{
+				File.Delete(Path.Combine(baseDirectory.Value, Hash(k)));
+				index.Remove(k);
+			}
 
-            WriteIndex();
+			WriteIndex();
 
-            indexLocker.ExitWriteLock();
-        }
+			indexLocker.ExitWriteLock();
+		}
 
-        public void EmptyAll()
-        {
-            indexLocker.EnterWriteLock();
+		public void EmptyAll()
+		{
+			indexLocker.EnterWriteLock();
 
-            foreach (var item in index) {
-                var hash = Hash(item.Key);
-                File.Delete(Path.Combine(baseDirectory.Value, hash));
-            }
+			foreach (var item in index)
+			{
+				var hash = Hash(item.Key);
+				File.Delete(Path.Combine(baseDirectory.Value, hash));
+			}
 
-            index.Clear();
+			index.Clear();
 
-            WriteIndex();
+			WriteIndex();
 
-            indexLocker.ExitWriteLock();
-        }
+			indexLocker.ExitWriteLock();
+		}
 
-        public void EmptyExpired()
-        {
-            indexLocker.EnterWriteLock();
+		public void EmptyExpired()
+		{
+			indexLocker.EnterWriteLock();
 
-            var expired = index.Where(k => k.Value.Item2 < DateTime.UtcNow);
+			var expired = index.Where(k => k.Value.Item2 < DateTime.UtcNow);
 
-            var toRem = new List<string>();
+			var toRem = new List<string>();
 
-            foreach (var item in expired) {
-                var hash = Hash(item.Key);
-                File.Delete(Path.Combine(baseDirectory.Value, hash));
-                toRem.Add(item.Key);
-            }
+			foreach (var item in expired)
+			{
+				var hash = Hash(item.Key);
+				File.Delete(Path.Combine(baseDirectory.Value, hash));
+				toRem.Add(item.Key);
+			}
 
-            foreach (var key in toRem)
-                index.Remove(key);
+			foreach (var key in toRem)
+				index.Remove(key);
 
-            WriteIndex();
+			WriteIndex();
 
-            indexLocker.ExitWriteLock();
-        }
+			indexLocker.ExitWriteLock();
+		}
 
-        public bool Exists(string key)
-        {
-            var exists = false;
+		public bool Exists(string key)
+		{
+			var exists = false;
 
-            indexLocker.EnterReadLock();
+			indexLocker.EnterReadLock();
 
-            exists = index.ContainsKey(key);
+			exists = index.ContainsKey(key);
 
-            indexLocker.ExitReadLock();
+			indexLocker.ExitReadLock();
 
-            return exists;
-        }
+			return exists;
+		}
 
-        public string Get(string key)
-        {
-            string result = null;
+		public string Get(string key)
+		{
+			string result = null;
 
-            indexLocker.EnterReadLock();
+			indexLocker.EnterReadLock();
 
-            var hash = Hash(key);
-            var path = Path.Combine(baseDirectory.Value, hash);
+			var hash = Hash(key);
+			var path = Path.Combine(baseDirectory.Value, hash);
 
-            if (index.ContainsKey(key) && File.Exists(path))
-                result = File.ReadAllText(path);
+			if (index.ContainsKey(key) && File.Exists(path))
+				result = File.ReadAllText(path);
 
-            indexLocker.ExitReadLock();
+			indexLocker.ExitReadLock();
 
-            return result;
-        }
+			return result;
+		}
 
-        public T Get<T>(string key)
-        {
-            T result = default(T);
+		public T Get<T>(string key)
+		{
+			var result = default(T);
 
-            indexLocker.EnterReadLock();
+			indexLocker.EnterReadLock();
 
-            var hash = Hash(key);
-            var path = Path.Combine(baseDirectory.Value, hash);
+			var hash = Hash(key);
+			var path = Path.Combine(baseDirectory.Value, hash);
 
-            if (index.ContainsKey(key) && File.Exists(path)) {
-                var contents = File.ReadAllText(path);
-                result = JsonConvert.DeserializeObject<T>(contents, jsonSettings);
-            }
+			if (index.ContainsKey(key) && File.Exists(path))
+			{
+				var contents = File.ReadAllText(path);
+				result = JsonConvert.DeserializeObject<T>(contents, jsonSettings);
+			}
 
-            indexLocker.ExitReadLock();
+			indexLocker.ExitReadLock();
 
-            return result;
-        }
+			return result;
+		}
 
-        public string GetETag(string key)
-        {
-            if (key == null)
-                return null;
-            
-            string etag = null;
+		public string GetETag(string key)
+		{
+			if (key == null)
+				return null;
 
-            indexLocker.EnterReadLock();
+			string etag = null;
 
-            if (index.ContainsKey(key))
-                etag = index[key]?.Item1;
+			indexLocker.EnterReadLock();
 
-            indexLocker.ExitReadLock();
+			if (index.ContainsKey(key))
+				etag = index[key]?.Item1;
 
-            return etag;
-        }
+			indexLocker.ExitReadLock();
 
-        public bool IsExpired(string key)
-        {
-            var expired = true;
+			return etag;
+		}
 
-            indexLocker.EnterReadLock();
+		public bool IsExpired(string key)
+		{
+			var expired = true;
 
-            if (index.ContainsKey(key))
-                expired = index[key].Item2 < DateTime.UtcNow;
+			indexLocker.EnterReadLock();
 
-            indexLocker.ExitReadLock();
+			if (index.ContainsKey(key))
+				expired = index[key].Item2 < DateTime.UtcNow;
 
-            return expired;
-        }
+			indexLocker.ExitReadLock();
 
-        Lazy<string> baseDirectory = new Lazy<string>(() => {
-            return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCacheFS");
-        });
+			return expired;
+		}
 
-        Dictionary<string, Tuple<string, DateTime>> index;
+		Lazy<string> baseDirectory = new Lazy<string>(() =>
+		{
+			return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCacheFS");
+		});
 
-        const string INDEX_FILENAME = "index.dat";
+		Dictionary<string, Tuple<string, DateTime>> index;
 
-        string indexFile;
+		const string INDEX_FILENAME = "index.dat";
 
-        void WriteIndex()
-        {
-            if (string.IsNullOrEmpty(indexFile))
-                indexFile = Path.Combine(baseDirectory.Value, INDEX_FILENAME);
+		string indexFile;
 
-            if (!Directory.Exists(baseDirectory.Value))
-                Directory.CreateDirectory(baseDirectory.Value);
-            
-            using (var f = File.Open(indexFile, FileMode.Create))
-            using (var sw = new StreamWriter(f)) {
-                foreach (var kvp in index)
-                    sw.WriteLine($"{kvp.Key}\t{kvp.Value.Item1}\t{kvp.Value.Item2.ToString("o")}");
-            }
-        }
+		void WriteIndex()
+		{
+			if (string.IsNullOrEmpty(indexFile))
+				indexFile = Path.Combine(baseDirectory.Value, INDEX_FILENAME);
 
-        void LoadIndex()
-        {
-            if (string.IsNullOrEmpty(indexFile))
-                indexFile = Path.Combine(baseDirectory.Value, INDEX_FILENAME);
-            
-            if (!File.Exists(indexFile))
-                return;
+			if (!Directory.Exists(baseDirectory.Value))
+				Directory.CreateDirectory(baseDirectory.Value);
 
-            index.Clear();
+			using (var f = File.Open(indexFile, FileMode.Create))
+			using (var sw = new StreamWriter(f))
+			{
+				foreach (var kvp in index)
+					sw.WriteLine($"{kvp.Key}\t{kvp.Value.Item1}\t{kvp.Value.Item2.ToString("o")}");
+			}
+		}
 
-            using (var f = File.OpenRead(indexFile))
-            using (var sw = new StreamReader(f)) {
-                string line = null;
-                while ((line = sw.ReadLine()) != null) {
-                    var parts = line.Split('\t');
-                    if (parts.Length == 3) {
-                        var key = parts[0];
-                        var etag = parts[1];
-                        var dt = parts[2];
+		void LoadIndex()
+		{
+			if (string.IsNullOrEmpty(indexFile))
+				indexFile = Path.Combine(baseDirectory.Value, INDEX_FILENAME);
 
-                        DateTime date;
-                        if (!string.IsNullOrEmpty(key) && DateTime.TryParse(dt, out date) && !index.ContainsKey(key))
-                            index.Add(key, new Tuple<string, DateTime>(etag, date));
-                    }
-                }
-            }
-        }
+			if (!File.Exists(indexFile))
+				return;
 
-        static string Hash(string input)
-        {
-            MD5 md5Hasher = MD5.Create();
-            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
-            return BitConverter.ToString(data);
-        }
-    }
+			index.Clear();
+
+			using (var f = File.OpenRead(indexFile))
+			using (var sw = new StreamReader(f))
+			{
+				string line = null;
+				while ((line = sw.ReadLine()) != null)
+				{
+					var parts = line.Split('\t');
+					if (parts.Length == 3)
+					{
+						var key = parts[0];
+						var etag = parts[1];
+						var dt = parts[2];
+
+						if (!string.IsNullOrEmpty(key) && DateTime.TryParse(dt, out var date) && !index.ContainsKey(key))
+							index.Add(key, new Tuple<string, DateTime>(etag, date));
+					}
+				}
+			}
+		}
+
+		static string Hash(string input)
+		{
+			var md5Hasher = MD5.Create();
+			var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+			return BitConverter.ToString(data);
+		}
+	}
 }

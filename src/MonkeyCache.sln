@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestApp.iOS", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestApp.UWP", "MonkeyCache.TestApp.UWP\MonkeyCache.TestApp.UWP.csproj", "{FC53661D-701E-4F1F-9B3E-5ED64013E1C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestsFileStore", "MonkeyCache.TestsFileStore\MonkeyCache.TestsFileStore.csproj", "{F1A8B5F0-2DA6-4002-9CEB-B21F880897BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.TestsFileStore", "MonkeyCache.TestsFileStore\MonkeyCache.TestsFileStore.csproj", "{F1A8B5F0-2DA6-4002-9CEB-B21F880897BD}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

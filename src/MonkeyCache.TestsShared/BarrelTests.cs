@@ -296,7 +296,7 @@ namespace MonkeyCache.Tests
 
         #region Performance Tests
 
-#if DEGUG
+#if DEBUG
         [TestMethod]
         public void PerformanceTestsJson1()
         {
