@@ -292,12 +292,19 @@ namespace MonkeyCache.Tests
             Assert.IsFalse(barrel.Exists(url));
         }
 
-        #endregion
+		#endregion
 
-        #region Performance Tests
+		#region Performance Tests
 
 #if DEBUG
-        [TestMethod]
+
+		[TestMethod]
+		public void PerformanceTests1()
+		{
+			PerformanceTestRunner(1, true, 1);
+		}
+
+		[TestMethod]
         public void PerformanceTestsJson1()
         {
             PerformanceTestRunner(1, true, 1, true);
@@ -306,7 +313,7 @@ namespace MonkeyCache.Tests
         [TestMethod]
         public void PerformanceTestsJson10()
         {
-            PerformanceTestRunner(1, true, 1000, true);
+            PerformanceTestRunner(1, true, 10, true);
         }
 
         [TestMethod]
@@ -332,6 +339,7 @@ namespace MonkeyCache.Tests
         {
             PerformanceTestRunner(4, true, 1000, true);
         }
+
 
         [TestMethod]
         public void PerformanceTests()
@@ -406,7 +414,7 @@ namespace MonkeyCache.Tests
                     stopwatch.Stop();
                     Debug.WriteLine($"Empty ({tId}) took {stopwatch.ElapsedMilliseconds} ms");
 
-                    Assert.IsTrue(stopwatch.ElapsedMilliseconds > 1);
+                    Assert.IsTrue(stopwatch.ElapsedMilliseconds > 0);
                 });
 
                 task.ContinueWith(t => {

@@ -29,6 +29,7 @@ namespace MonkeyCache.FileStore
 			index = new Dictionary<string, Tuple<string, DateTime>>();
 
 			LoadIndex();
+			WriteIndex();
 		}
 
 		public static string ApplicationId { get; set; } = string.Empty;
