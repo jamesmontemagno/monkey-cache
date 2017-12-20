@@ -1,4 +1,4 @@
-# monkey-cache
+# 🐒Cache
 Easily cache any data structure for a specific amount of time in any .NET application.
 
 MonkeyCache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for MonkeyCache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A light weight file based MonkeyCache is also provided. A full breakdown of performance can be found in the performance.xlsx. When dealing with small amount of records such as inserting under 50 records the performance difference between each provider is negligible and it is only when dealing with a large amount of records at a single time should you have to worry about the provider type.
