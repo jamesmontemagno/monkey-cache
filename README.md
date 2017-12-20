@@ -8,9 +8,8 @@ Easily cache any data structure for a specific amount of time in any .NET applic
 |Name|Info|
 | ------------------- | :------------------: |
 |MonkeyCache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)|
-|MonkeyCache - Dev|[MyGet](http://myget.org/F/monkey-cache)|
 |MonkeyCache.LiteDB|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.LiteDB.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.LiteDB/)|
-|MonkeyCache.LiteDB - Dev|[MyGet](http://myget.org/F/monkey-cache-litedb)|
+|Development Feed|[MyGet](http://myget.org/F/monkey-cache)|
 
 **Platform Support**
 
