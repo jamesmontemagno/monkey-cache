@@ -9,7 +9,7 @@ namespace MonkeyCache.Tests
     {
 		void SetupBarrel()
 		{
-			Barrel.ApplicationId = "com.refractored.monkeycacheldb";
+			Barrel.ApplicationId = "com.refractored.monkeyfile";
 			barrel = Barrel.Current;
 		}
 	}
