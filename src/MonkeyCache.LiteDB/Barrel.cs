@@ -86,7 +86,7 @@ namespace MonkeyCache
             var ent = col.FindById(key);
           
             if (ent == null)
-                return false;
+                return true;
 
             return DateTime.UtcNow > ent.ExpirationDate;
         }

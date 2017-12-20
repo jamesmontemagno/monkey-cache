@@ -85,7 +85,7 @@ namespace MonkeyCache
             }
 
             if (ent == null)
-                return false;
+                return true;
 
             return DateTime.UtcNow > ent.ExpirationDate;
         }
