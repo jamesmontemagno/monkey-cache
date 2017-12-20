@@ -165,7 +165,7 @@ namespace MonkeyCache.Tests
         public void IsExpiredNullTest()
         {
 
-            Assert.IsFalse(barrel.IsExpired(url));
+            Assert.IsTrue(barrel.IsExpired(url));
 
         }
 
