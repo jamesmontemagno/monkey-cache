@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -288,6 +289,54 @@ namespace MonkeyCache.Tests
             barrel.EmptyAll();
 
             Assert.IsFalse(barrel.Exists(url));
+        }
+
+        #endregion
+
+#region Performance Tests
+        [TestMethod]
+        public void PerformanceTests()
+        {
+
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            var keys = Enumerable.Range(0, 1000).Select(x => $"key-{x}").ToArray();
+
+            // Add a lot of items
+            foreach (var key in keys)
+                barrel.Add(key: key, data: monkeys, expireIn: TimeSpan.FromDays(1));
+            
+            stopwatch.Stop();
+            Debug.WriteLine($"Add took {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Restart();
+
+            foreach (var key in keys) {
+                var content = barrel.Get(key);
+                Assert.IsNotNull(content);
+            }
+
+            stopwatch.Stop();
+            Debug.WriteLine($"Gets took {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Restart();
+
+            foreach (var key in keys) {
+                var content = barrel.GetETag(key);
+                Assert.IsNotNull(content);
+            }
+
+            stopwatch.Stop();
+            Debug.WriteLine($"Get eTags took {stopwatch.ElapsedMilliseconds} ms");
+            stopwatch.Restart();
+
+            // Delete all
+            barrel.Empty(keys);
+
+            stopwatch.Stop();
+            Debug.WriteLine($"Empty took {stopwatch.ElapsedMilliseconds} ms");
+
+            Assert.IsTrue(stopwatch.ElapsedMilliseconds > 1);
         }
 
 #endregion
