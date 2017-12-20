@@ -1,6 +1,8 @@
 # monkey-cache
 Easily cache any data structure for a specific amount of time in any .NET application.
 
+MonkeyCache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for MonkeyCache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A light weight file based MonkeyCache is also provided. A full breakdown of performance can be found in the performance.xlsx. When dealing with small amount of records such as inserting under 50 records the performance difference between each provider is negligible and it is only when dealing with a large amount of records at a single time should you have to worry about the provider type.
+
 **Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/4/badge)
 
 **NuGets**
@@ -8,9 +10,10 @@ Easily cache any data structure for a specific amount of time in any .NET applic
 |Name|Info|
 | ------------------- | :------------------: |
 |MonkeyCache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)|
-|MonkeyCache - Dev|[MyGet](http://myget.org/F/monkey-cache)|
+|MonkeyCache.SQLite|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.SQLite.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.SQLite/)|
 |MonkeyCache.LiteDB|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.LiteDB.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.LiteDB/)|
-|MonkeyCache.LiteDB - Dev|[MyGet](http://myget.org/F/monkey-cache-litedb)|
+|MonkeyCache.FileStore|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.FileStore.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.FileStore/)|
+|Development Feed|[MyGet](http://myget.org/F/monkey-cache)|
 
 **Platform Support**
 
@@ -25,6 +28,15 @@ MonkeyCache is a .NET Standard 2.0 library, but has some platform specific tweak
 |.NET Core|2.0+|
 |ASP.NET Core|2.0+|
 |.NET|4.6.1+|
+
+## Setup
+
+It is required that you set an ApplicationId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
+
+```
+Barrel.ApplicationId = "your_unique_name_here";
+```
+
 
 ### What is Monkey Cache?
 
@@ -107,10 +119,3 @@ Regardless of implementation, Cache will always be stored in the default platfor
 |.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 
 
-## Setup
-
-It is required that you set an ApplicationId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
-
-```
-Barrel.ApplicationId = "your_unique_name_here";
-```
