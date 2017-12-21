@@ -142,7 +142,7 @@
       <Name>MonkeyCache.SQLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\MonkeyCache.TestApp\MonkeyCache.TestApp.csproj">
-      <Project>{74D2D876-A61D-4722-A2C4-7AC2427C1FAF}</Project>
+      <Project>{5D12F957-A5A3-4089-B92A-5F7C8B7F3B92}</Project>
       <Name>MonkeyCache.TestApp</Name>
     </ProjectReference>
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj">
