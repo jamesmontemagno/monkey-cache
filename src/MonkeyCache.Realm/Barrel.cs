@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Realms;
 
@@ -7,6 +8,17 @@ namespace MonkeyCache.Realm
 {
     public class Barrel : IBarrel
     {
+        protected RealmConfiguration configuration;
+
+        protected Realm realm;
+
+        public Barrel(){
+            var cacheDirectory = Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCache");
+            var database = Path.Combine(cacheDirectory, "barrel.realm");
+            configuration = new RealmConfiguration(database);
+            realm = new Realm(configuration);
+        }
+
         public void Add(string key, string data, TimeSpan expireIn, string eTag = null){
             
         }
