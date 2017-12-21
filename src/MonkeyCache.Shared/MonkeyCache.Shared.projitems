@@ -10,8 +10,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Banana.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpCache.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IBarrel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
   </ItemGroup>
 </Project>

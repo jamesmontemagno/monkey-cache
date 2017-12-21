@@ -8,7 +8,7 @@
     <Version>1.0.0.0</Version>
     <PackageVersion>1.0.0.0</PackageVersion>
     <Authors>James Montemagno</Authors>
-    <PackageId>MonkeyCache.LiteDB</PackageId>
+    <PackageId>MonkeyCache.FileStore</PackageId>
     <PackOnBuild>true</PackOnBuild>
     <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
     <NeutralLanguage>en</NeutralLanguage>
@@ -17,38 +17,37 @@
     <PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
     <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>🙉 MonkeyCache.LiteDB - A .NET Caching Library</Title>
-    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by LiteDB.</Description>
+    <Title>🙈 MonkeyCache.FileStore - A .NET Caching Library</Title>
+    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by FileStore.</Description>
 
     <PackageReleaseNotes>See: See: https://github.com/jamesmontemagno/MonkeyCache</PackageReleaseNotes>
     <RepositoryUrl>See: https://github.com/jamesmontemagno/MonkeyCache </RepositoryUrl>
     <Copyright>2017 Refractored LLC &amp; James Montemagno</Copyright>
-    
-    <RootNamespace>MonkeyCache.LiteDB</RootNamespace>
+
+    <RootNamespace>MonkeyCache.FileSore</RootNamespace>
 
     <LangVersion>default</LangVersion>
 
-    <DefineConstants Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);LITEDB</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">$(DefineConstants);LITEDB</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);LITEDB</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);LITEDB</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);LITEDB</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);FILESTORE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">$(DefineConstants);FILESTORE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);FILESTORE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);FILESTORE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);FILESTORE</DefineConstants>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    
+
   </PropertyGroup>
 
 
   <ItemGroup>
     <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.5" />
-    <PackageReference Include="LiteDB" Version="4.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2-build.23" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
   </ItemGroup>

@@ -1,16 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using LiteDB;
+using SQLite;
 using Newtonsoft.Json;
 using System.Reflection;
-#if __IOS__ || __MACOS__
-using Foundation;
-#elif __ANDROID__
-using Android.App;
-#endif
 
-namespace MonkeyCache.LiteDB
+
+namespace MonkeyCache.SQLite
 {
     /// <summary>
     /// Persistant Key/Value data store for any data object.
@@ -19,18 +15,18 @@ namespace MonkeyCache.LiteDB
     public class Barrel : IBarrel
     {
         public static string ApplicationId { get; set; } = string.Empty;
-        public static string EncryptionKey { get; set; } = string.Empty;
+        
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
             return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCache");
         });
 
-        readonly LiteDatabase db;
+        readonly SQLiteConnection db;
+        readonly object dblock = new object();
 
 
         static Barrel instance = null;
-        static LiteCollection<Banana> col;
 
         /// <summary>
         /// Gets the instance of the Barrel
@@ -41,17 +37,14 @@ namespace MonkeyCache.LiteDB
         Barrel()
         {
             var directory = baseCacheDir.Value;
-            string path = Path.Combine(directory, "Barrel.db");
+            var path = Path.Combine(directory, "Barrel.db");
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            if (!string.IsNullOrWhiteSpace(EncryptionKey))
-                path = $"Filename={path}; Password={EncryptionKey}";
-
-            db = new LiteDatabase(path);
-            col = db.GetCollection<Banana>();
+            db = new SQLiteConnection(path);
+            db.CreateTable<Banana>();
 
             jsonSettings = new JsonSerializerSettings
             {
@@ -59,11 +52,9 @@ namespace MonkeyCache.LiteDB
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.All,
             };
-
-            
         }
 
-        #region Exist and Expiration Methods
+#region Exist and Expiration Methods
         /// <summary>
         /// Checks to see if the key exists in the Barrel.
         /// </summary>
@@ -71,7 +62,11 @@ namespace MonkeyCache.LiteDB
         /// <returns>If the key exists</returns>
         public bool Exists(string key)
         {
-            var ent = col.FindById(key);
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Find<Banana>(key);
+            }
 
             return ent != null;
         }
@@ -83,17 +78,21 @@ namespace MonkeyCache.LiteDB
         /// <returns>If the expiration data has been met</returns>
         public bool IsExpired(string key)
         {
-            var ent = col.FindById(key);
-          
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Find<Banana>(key);
+            }
+
             if (ent == null)
                 return true;
 
             return DateTime.UtcNow > ent.ExpirationDate;
         }
 
-        #endregion
+#endregion
 
-        #region Get Methods
+#region Get Methods
 
         /// <summary>
         /// Gets the data entry for the specified key.
@@ -102,7 +101,11 @@ namespace MonkeyCache.LiteDB
         /// <returns>The data object that was stored if found, else default(T)</returns>
         public T Get<T>(string key)
         {
-            var ent = col.FindById(key);
+            Banana ent;
+            lock(dblock)
+            {
+                ent = db.Query<Banana>($"SELECT {nameof(ent.Contents)} FROM {nameof(Banana)} WHERE {nameof(ent.Id)} = ?", key).FirstOrDefault();
+            }
 
             if (ent == null)
                 return default(T);
@@ -117,7 +120,11 @@ namespace MonkeyCache.LiteDB
         /// <returns>The string that was stored if found, else null</returns>
         public string Get(string key)
         {
-            var ent = col.FindById(key);
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Query<Banana>($"SELECT {nameof(ent.Contents)} FROM {nameof(Banana)} WHERE {nameof(ent.Id)} = ?", key).FirstOrDefault();
+            }
 
             if (ent == null)
                 return null;
@@ -132,7 +139,11 @@ namespace MonkeyCache.LiteDB
         /// <returns>The ETag if the key is found, else null</returns>
         public string GetETag(string key)
         {
-            var ent = col.FindById(key);
+            Banana ent;
+            lock (dblock)
+            {
+                ent = db.Query<Banana>($"SELECT {nameof(ent.ETag)} FROM {nameof(Banana)} WHERE {nameof(ent.Id)} = ?", key).FirstOrDefault();
+            }
 
             if (ent == null)
                 return null;
@@ -140,9 +151,9 @@ namespace MonkeyCache.LiteDB
             return ent.ETag;
         }
 
-        #endregion
+#endregion
 
-        #region Add Methods
+#region Add Methods
 
         /// <summary>
         /// Adds a string netry to the barrel
@@ -157,6 +168,7 @@ namespace MonkeyCache.LiteDB
             if (data == null)
                 return;
 
+
             var ent = new Banana
             {
                 Id = key,
@@ -164,8 +176,10 @@ namespace MonkeyCache.LiteDB
                 ETag = eTag,
                 Contents = data
             };
-
-            col.Upsert(ent);
+            lock (dblock)
+            {
+                db.InsertOrReplace(ent);
+            }
         }
 
         /// <summary>
@@ -178,22 +192,29 @@ namespace MonkeyCache.LiteDB
         /// <param name="eTag">Optional eTag information</param>
         public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
         {
-            if (data == null)
-                return;
-
-            Add(key, JsonConvert.SerializeObject(data, jsonSettings), expireIn, eTag);
+            var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
+            Add(key, dataJson, expireIn, eTag);
         }
 
-        #endregion
+#endregion
 
-        #region Empty Methods
+#region Empty Methods
         /// <summary>
         /// Empties all expired entries that are in the Barrel.
         /// Throws an exception if any deletions fail and rolls back changes.
         /// </summary>
         public void EmptyExpired()
         {
-            col.Delete(b => b.ExpirationDate < DateTime.UtcNow);
+            lock (dblock)
+            {
+                var entries = db.Query<Banana>($"SELECT * FROM Banana WHERE ExpirationDate < ?", DateTime.UtcNow.Ticks);
+                db.RunInTransaction(() =>
+                {
+                    foreach (var k in entries)
+                        db.Delete<Banana>(k.Id);
+                });
+            }
+            
         }
 
         /// <summary>
@@ -202,7 +223,10 @@ namespace MonkeyCache.LiteDB
         /// </summary>
         public void EmptyAll()
         {
-            col.Delete(Query.All());
+            lock(dblock)
+            {
+                db.DeleteAll<Banana>();
+            }
             
         }
 
@@ -213,9 +237,16 @@ namespace MonkeyCache.LiteDB
         /// <param name="key">keys to empty</param>
         public void Empty(params string[] key)
         {
-            foreach (var k in key)
-                col.Delete(k);
+            lock (dblock)
+            {
+                db.RunInTransaction(() =>
+                {
+                    foreach (var k in key)
+                        db.Delete<Banana>(primaryKey: k);
+                });
+            }
         }
-        #endregion
+
+#endregion
     }
 }

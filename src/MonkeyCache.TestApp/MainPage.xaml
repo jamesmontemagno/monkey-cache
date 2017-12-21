@@ -5,7 +5,19 @@
              x:Class="MonkeyCache.TestApp.MainPage">
 
     <StackLayout Padding="20">
-        <Entry Placeholder="Enter Name" HeightRequest="40" x:Name="EntryName"/>
+		<StackLayout Orientation="Horizontal">
+			<Label Text="Use SQLite"/>
+			<Switch x:Name="UseSQLite" IsToggled="True"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+		<Label Text="Use LiteDB"/>
+			<Switch x:Name="UseLiteDB" IsToggled="False"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<Label Text="Use FileStore"/>
+			<Switch x:Name="UseFileStore" IsToggled="False"/>
+		</StackLayout>
+		<Entry Placeholder="Enter Name" HeightRequest="40" x:Name="EntryName"/>
         <Button Text="Save Monkey" x:Name="ButtonSave"/>
         <Button Text="Load" x:Name="ButtonLoad"/>
         <Button Text="Is Expired" x:Name="ButtonExpired"/>

@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using BarrelSQL = MonkeyCache.SQLite.Barrel;
+using BarrelFile = MonkeyCache.FileStore.Barrel;
+using BarrelLite = MonkeyCache.LiteDB.Barrel;
 
 namespace MonkeyCache.TestApp
 {
@@ -13,6 +16,9 @@ namespace MonkeyCache.TestApp
         {
             public string Name { get; set; }
         }
+		IBarrel sql;
+		IBarrel file;
+		IBarrel lite;
         public MainPage()
         {
             InitializeComponent();
@@ -21,24 +27,43 @@ namespace MonkeyCache.TestApp
             ButtonLoad.Clicked += ButtonLoad_Clicked;
             ButtonSave.Clicked += ButtonSave_Clicked;
 
-            Barrel.ApplicationId = "com.refractored.monkeycachetest";
+            BarrelLite.ApplicationId = "com.refractored.monkeycachetestlite";
+			BarrelFile.ApplicationId = "com.refractored.monkeycachetestfile";
+			BarrelSQL.ApplicationId = "com.refractored.monkeycachetestsql";
 
-            var monkey = Barrel.Current.Get<Monkey>("monkey");
-            if (monkey != null)
-                EntryName.Text = monkey.Name;
-            else
-                EntryName.Text = "Sebastian";
 
-            ButtonExpired.Clicked += ButtonExpired_Clicked;
+			sql = BarrelSQL.Current;
+			lite = BarrelLite.Current;
+			file = BarrelFile.Current;
+
+
+			ButtonExpired.Clicked += ButtonExpired_Clicked;
 
         }
 
         private void ButtonExpired_Clicked(object sender, EventArgs e)
-        {
-            DisplayAlert("Is Expired?", Barrel.Current.IsExpired("monkey") ? "Yes" : "No", "OK");
-        }
+		{
+			
 
-        private void ButtonSave_Clicked(object sender, EventArgs e)
+			DisplayAlert("Is Expired?", GetCurrent().IsExpired("monkey") ? "Yes" : "No", "OK");
+		}
+
+		private IBarrel GetCurrent()
+		{
+			IBarrel current = null;
+			if (UseSQLite.IsToggled)
+				current = sql;
+			else if (UseFileStore.IsToggled)
+				current = file;
+			else if (UseLiteDB.IsToggled)
+				current = lite;
+			else
+				current = sql;//fallback
+
+			return current;
+		}
+
+		private void ButtonSave_Clicked(object sender, EventArgs e)
         {
             if(string.IsNullOrWhiteSpace(EntryName.Text))
             {
@@ -46,13 +71,13 @@ namespace MonkeyCache.TestApp
                 return;
             }
             var monkey = new Monkey { Name =  EntryName.Text};
-            Barrel.Current.Add<Monkey>("monkey", monkey, TimeSpan.FromDays(1));
+			GetCurrent().Add<Monkey>("monkey", monkey, TimeSpan.FromDays(1));
             DisplayAlert(":)", "Saved!", "OK");
         }
 
         private void ButtonLoad_Clicked(object sender, EventArgs e)
         {
-            var monkey = Barrel.Current.Get<Monkey>("monkey");
+            var monkey = GetCurrent().Get<Monkey>("monkey");
             if (monkey == null)
                 DisplayAlert(":(", "No Monkey", "OK");
             else

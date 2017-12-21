@@ -8,24 +8,24 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>default</LangVersion>
-    <DefineConstants>TRACE;RELEASE;NETCOREAPP2_0;LITEDB</DefineConstants>
+    <DefineConstants>TRACE;RELEASE;NETCOREAPP2_0;SQLITE;</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>default</LangVersion>
-    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;LITEDB;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;SQLITE;</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB" Version="4.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonkeyCache.LiteDB\MonkeyCache.LiteDB.csproj" />
+    <ProjectReference Include="..\MonkeyCache.SQLite\MonkeyCache.SQLite.csproj" />
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
   </ItemGroup>
 
