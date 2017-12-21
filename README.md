@@ -76,11 +76,46 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
 }
 ```
 
+Ideally, you can make these calls extremely generic and just pass in a string:
+
+```csharp
+public async Task<T> GetAsync<T>(string url, int days = 7, bool forceRefresh = false)
+{
+    var json = string.Empty;
+
+    if (!CrossConnectivity.Current.IsConnected)
+        json = Barrel.Current.Get(url);
+
+    if (!forceRefresh && !Barrel.Current.IsExpired(url))
+        json = Barrel.Current.Get(url);
+
+    try
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            json = await client.GetStringAsync(url);
+            Barrel.Current.Add(url, json, TimeSpan.FromDays(days));
+        }
+        return await Task.Run(() => JsonConvert.DeserializeObject<T>(json));
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Unable to get information from server {ex}");
+        //probably re-throw here :)
+    }
+
+    return default(T);
+}
+```
+
 MonkeyCache will never delete data unless you want to, which is pretty nice incase you are offline for a long period of time. However, there are additional helpers to clean up data:
 
 ```csharp
     //removes all data
     Barrel.Current.EmptyAll();
+	
+	//removes all expired data
+    Barrel.Current.EmptyExpired();
 
     //param list of keys to flush
     Barrel.Current.Empty(key: url);
@@ -88,7 +123,7 @@ MonkeyCache will never delete data unless you want to, which is pretty nice inca
 
 The above shows how you can integrate MonkeyCache into your existing source code without any modifications to your network code. However, MonkeyCache can help you there too! MonkeyCache also offers helpers when dealing with network calls via HttpCache.
 
-HttpCache balances on top of the Barrel and offers helper methods to pass in a simple url that will handle adding and updating data into the Barrel.
+HttpCache balances on top of the Barrel and offers helper methods to pass in a simple url that will handle adding and updating data into the Barrel based on the ETag if possible.
 
 ```csharp
 Task<IEnumerable<Monkey>> GetMonkeysAsync()
@@ -96,17 +131,13 @@ Task<IEnumerable<Monkey>> GetMonkeysAsync()
     var url = "http://montemagno.com/monkeys.json";
 
     //Dev handle online/offline scenario
-    if(!CrossConnectivity.Current.IsConnected)
-        return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
-
-    return HttpCache.GetAsync<IEnumerable<Monkey>>(key: url, expiration: TimeSpan.FromDays(1), headers: headers);
-
+   
+	var result = await HttpCache.Current.GetCachedAsync(barrel, url, TimeSpan.FromSeconds(60), TimeSpan.FromDays(1));
+    return JsonConvert.DeserializeObject<IEnumerable<Monkey>>(result);
 }
 ```
 
-Another goal of MonkeyCache is to offer a fast and native experience when storing and retrieving data from the Barrel. MonkeyCache uses a SQLite database to store all data across all platforms. This is super fast and is supported natively on each platform. In addition to the SQLite implementation, there is an implementation based on [LiteDB](http://www.litedb.org/) for data storage. Each have their own NuGet package, but have the same API, namespaces, and class names. This means that they cannot be installed at the same time, but one or the other. 
-
-Regardless of implementation, Cache will always be stored in the default platform specific location:
+Cache will always be stored in the default platform specific location:
 
 |Platform|Location|
 | ------------------- | :------------------: |
