@@ -20,8 +20,15 @@ namespace MonkeyCache
 		{
 		}
 
+
+		HttpClient client;
+
 		internal HttpClient CreateClient(TimeSpan timeout)
 		{
+
+			if (client != null)
+				return client;
+
 			var h = new HttpClientHandler {
 				AllowAutoRedirect = true,
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
@@ -30,7 +37,9 @@ namespace MonkeyCache
 			};
 			var cli = new HttpClient(h);
 			cli.Timeout = timeout;
-			return cli;
+			client = cli;
+
+			return client;
 		}
 
 		public Task<string> GetCachedAsync(IBarrel barrel, string url, TimeSpan timeout, TimeSpan expireIn, bool forceUpdate = false, bool throttled = true)
@@ -69,7 +78,7 @@ namespace MonkeyCache
 					req.Headers.IfNoneMatch.Add(new EntityTagHeaderValue(etag));
 				}
 
-				r = await http.SendAsync(req);
+				r = await http.SendAsync(req).ConfigureAwait(false);
 
 				if (r.StatusCode == HttpStatusCode.NotModified) {
 					if (string.IsNullOrEmpty(contents))

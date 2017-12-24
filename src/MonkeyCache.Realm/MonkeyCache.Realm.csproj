@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;Xamarin.iOS10;MonoAndroid50;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
@@ -6,7 +7,7 @@
 		<AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
 		<Version>1.0.0.0</Version>
 		<PackageVersion>1.0.0.0</PackageVersion>
-		<Authors>James Montemagno</Authors>
+		<Authors>James Montemagno; Michael Stonis</Authors>
 		<PackageId>MonkeyCache.Realm</PackageId>
 		<PackOnBuild>true</PackOnBuild>
 		<PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
@@ -15,28 +16,41 @@
 		<Owners>James Montemagno</Owners>
 		<PackageProjectUrl>https://github.com/jamesmontemagno/MonkeyCache</PackageProjectUrl>
 		<Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
-		<PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
+		<PackageTags>xamarin, windows, ios, android, cache, http, realm</PackageTags>
 		<Title>🙉 MonkeyCache.Realm - A .NET Caching Library</Title>
 		<Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by Realm.</Description>
-		<PackageReleaseNotes>See: See: https://github.com/jamesmontemagno/MonkeyCache</PackageReleaseNotes>
+		
+		<PackageReleaseNotes>See: https://github.com/jamesmontemagno/MonkeyCache</PackageReleaseNotes>
 		<RepositoryUrl>See: https://github.com/jamesmontemagno/MonkeyCache </RepositoryUrl>
 		<Copyright>2017 Refractored LLC &amp; James Montemagno</Copyright>
+		
 		<RootNamespace>MonkeyCache.Realm</RootNamespace>
+		
 		<LangVersion>default</LangVersion>
+		
 		<DefineConstants Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);REALM</DefineConstants>
 		<DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">$(DefineConstants);REALM</DefineConstants>
 		<DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);REALM</DefineConstants>
 		<DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);REALM</DefineConstants>
 		<DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);REALM</DefineConstants>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    
 	</PropertyGroup>
+
 	<ItemGroup>
-		<Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
-	</ItemGroup>
-	<ItemGroup>
+		<PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.5" />
+		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
 	  <PackageReference Include="Realm.Database" Version="2.1.0" />
-	</ItemGroup>
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2-build.23" PrivateAssets="All" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
+  </ItemGroup>
+  
 	<ItemGroup>
 	  <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
 	</ItemGroup>
+  
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 </Project>

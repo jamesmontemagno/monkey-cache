@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.SQLite", "MonkeyCache.SQLite\MonkeyCache.SQLite.csproj", "{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.SQLite", "MonkeyCache.SQLite\MonkeyCache.SQLite.csproj", "{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C6A331DA-BE42-4E98-AAAB-B246225B669E}"
 	ProjectSection(SolutionItems) = preProject
@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestsSQLite", "MonkeyCache.TestsSQLite\MonkeyCache.TestsSQLite.csproj", "{8F2C43E8-9618-4733-A0A8-5DE90782DF0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.TestsSQLite", "MonkeyCache.TestsSQLite\MonkeyCache.TestsSQLite.csproj", "{8F2C43E8-9618-4733-A0A8-5DE90782DF0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.LiteDB", "MonkeyCache.LiteDB\MonkeyCache.LiteDB.csproj", "{A92C8CD7-6A47-4969-BEFA-0919561F3947}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.LiteDB", "MonkeyCache.LiteDB\MonkeyCache.LiteDB.csproj", "{A92C8CD7-6A47-4969-BEFA-0919561F3947}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8401CC77-D72B-40D4-85E2-C699DBACB397}"
 EndProject
@@ -23,19 +23,19 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MonkeyCache.TestsShared", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{34894015-719F-4F31-905E-276F6B42E86E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache", "MonkeyCache\MonkeyCache.csproj", "{9CAD910F-0E32-491F-9953-819BBA78B89F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache", "MonkeyCache\MonkeyCache.csproj", "{9CAD910F-0E32-491F-9953-819BBA78B89F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.FileStore", "MonkeyCache.FileStore\MonkeyCache.FileStore.csproj", "{E8A4C08D-1911-4721-9513-08C5FF0846E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.FileStore", "MonkeyCache.FileStore\MonkeyCache.FileStore.csproj", "{E8A4C08D-1911-4721-9513-08C5FF0846E3}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MonkeyCache.Shared", "MonkeyCache.Shared\MonkeyCache.Shared.shproj", "{E0C1434C-0663-4C0B-B35D-E88F4DE2A608}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApps", "TestApps", "{8770D550-16AF-47CC-8BAD-1A848E9627CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestApp", "MonkeyCache.TestApp\MonkeyCache.TestApp.csproj", "{5D12F957-A5A3-4089-B92A-5F7C8B7F3B92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.TestApp", "MonkeyCache.TestApp\MonkeyCache.TestApp.csproj", "{5D12F957-A5A3-4089-B92A-5F7C8B7F3B92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestApp.Android", "MonkeyCache.TestApp.Android\MonkeyCache.TestApp.Android.csproj", "{B2BA8943-0E18-4B33-8603-3ACD8CCAA40F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestApp.AspNetCore", "MonkeyCache.TestApp.AspNetCore\MonkeyCache.TestApp.AspNetCore.csproj", "{A3119222-0737-4BD8-AE6D-466FEB68840F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.TestApp.AspNetCore", "MonkeyCache.TestApp.AspNetCore\MonkeyCache.TestApp.AspNetCore.csproj", "{A3119222-0737-4BD8-AE6D-466FEB68840F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestApp.iOS", "MonkeyCache.TestApp.iOS\MonkeyCache.TestApp.iOS.csproj", "{9C15D3EB-4FB8-44C3-9F53-85A95117E566}"
 EndProject
@@ -43,7 +43,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestApp.UWP", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.TestsFileStore", "MonkeyCache.TestsFileStore\MonkeyCache.TestsFileStore.csproj", "{F1A8B5F0-2DA6-4002-9CEB-B21F880897BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonkeyCache.Realm", "MonkeyCache.Realm\MonkeyCache.Realm.csproj", "{56A46E1D-2183-4C36-AE3A-1A27DC592DC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.Realm", "MonkeyCache.Realm\MonkeyCache.Realm.csproj", "{56A46E1D-2183-4C36-AE3A-1A27DC592DC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.TestsRealm", "MonkeyCache.TestsRealm\MonkeyCache.TestsRealm.csproj", "{BC17E729-776F-4E09-A7F2-F687A139DE26}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -721,6 +723,54 @@ Global
 		{56A46E1D-2183-4C36-AE3A-1A27DC592DC6}.Release|x64.Build.0 = Release|Any CPU
 		{56A46E1D-2183-4C36-AE3A-1A27DC592DC6}.Release|x86.ActiveCfg = Release|Any CPU
 		{56A46E1D-2183-4C36-AE3A-1A27DC592DC6}.Release|x86.Build.0 = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|Any CPU.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|ARM.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|ARM.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|x64.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|x64.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|x86.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Ad-Hoc|x86.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|ARM.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|ARM.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|iPhone.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|x64.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|x64.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|x86.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.AppStore|x86.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|ARM.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|x64.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Debug|x86.Build.0 = Debug|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|ARM.ActiveCfg = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|ARM.Build.0 = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|iPhone.Build.0 = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|x64.ActiveCfg = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|x64.Build.0 = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC17E729-776F-4E09-A7F2-F687A139DE26}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -739,6 +789,7 @@ Global
 		{FC53661D-701E-4F1F-9B3E-5ED64013E1C2} = {8770D550-16AF-47CC-8BAD-1A848E9627CD}
 		{F1A8B5F0-2DA6-4002-9CEB-B21F880897BD} = {8401CC77-D72B-40D4-85E2-C699DBACB397}
 		{56A46E1D-2183-4C36-AE3A-1A27DC592DC6} = {34894015-719F-4F31-905E-276F6B42E86E}
+		{BC17E729-776F-4E09-A7F2-F687A139DE26} = {8401CC77-D72B-40D4-85E2-C699DBACB397}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B9A5B16B-3153-4FAA-B47A-EBD165657238}

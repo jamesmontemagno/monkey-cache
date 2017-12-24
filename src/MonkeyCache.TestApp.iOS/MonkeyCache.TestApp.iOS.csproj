@@ -137,6 +137,10 @@
       <Project>{a92c8cd7-6a47-4969-befa-0919561f3947}</Project>
       <Name>MonkeyCache.LiteDB</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MonkeyCache.Realm\MonkeyCache.Realm.csproj">
+      <Project>{56a46e1d-2183-4c36-ae3a-1a27dc592dc6}</Project>
+      <Name>MonkeyCache.Realm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MonkeyCache.SQLite\MonkeyCache.SQLite.csproj">
       <Project>{ea91cb9d-339a-410e-8ef0-8b765d3bfe3c}</Project>
       <Name>MonkeyCache.SQLite</Name>
