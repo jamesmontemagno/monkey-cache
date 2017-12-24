@@ -37,6 +37,7 @@ namespace MonkeyCache.TestApp
 			sql = BarrelSQL.Current;
 			lite = BarrelLite.Current;
 			file = BarrelFile.Current;
+			realm = BarrelRealm.Current;
 
 
 			ButtonExpired.Clicked += ButtonExpired_Clicked;
