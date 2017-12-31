@@ -1,7 +1,9 @@
 # 🐒Cache
 Easily cache any data structure for a specific amount of time in any .NET application.
 
-MonkeyCache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for MonkeyCache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A lightweight file based MonkeyCache is also provided. 
+Monkey Cache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for Monkey Cache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A lightweight file based Monkey Cache is also provided.
+
+Listen to our podcast [Merge Conflict: Episode 76](http://www.mergeconflict.fm/76) for an overview of Monkey Cache and it's creation.
 
 A full breakdown of performance can be found in the performance.xlsx. When dealing with a small amount of records such as inserting under 50 records, the performance difference between each provider is negligible and it is only when dealing with a large amount of records at a single time that you should have to worry about the provider type.
 
@@ -19,7 +21,7 @@ A full breakdown of performance can be found in the performance.xlsx. When deali
 
 **Platform Support**
 
-MonkeyCache is a .NET Standard 2.0 library, but has some platform specific tweaks for storing data in the correct Cache directory.
+Monkey Cache is a .NET Standard 2.0 library, but has some platform specific tweaks for storing data in the correct Cache directory.
 
 |Platform|Version|
 | ------------------- | :------------------: |
@@ -42,9 +44,9 @@ Barrel.ApplicationId = "your_unique_name_here";
 
 ### What is Monkey Cache?
 
-The goal of MonkeyCache is to enable developers to easily cache any data for a limited amount of time. It is not MonkeyCache's mission to handle network requests to get or post data, only to cache data easily.
+The goal of Monkey Cache is to enable developers to easily cache any data for a limited amount of time. It is not Monkey Cache's mission to handle network requests to get or post data, only to cache data easily.
 
-All data for MonkeyCache is stored and retrieved in a Barrel. 
+All data for Monkey Cache is stored and retrieved in a Barrel. 
 
 For instance you are making a web request and you get some `json` back from the server. You would want the ability to cache this data incase you go offline, but also you need it to expire after 24 hours.
 
@@ -123,7 +125,7 @@ MonkeyCache will never delete data unless you want to, which is pretty nice inca
     Barrel.Current.Empty(key: url);
 ```
 
-The above shows how you can integrate MonkeyCache into your existing source code without any modifications to your network code. However, MonkeyCache can help you there too! MonkeyCache also offers helpers when dealing with network calls via HttpCache.
+The above shows how you can integrate Monkey Cache into your existing source code without any modifications to your network code. However, MonkeyCache can help you there too! MonkeyCache also offers helpers when dealing with network calls via HttpCache.
 
 HttpCache balances on top of the Barrel and offers helper methods to pass in a simple url that will handle adding and updating data into the Barrel based on the ETag if possible.
 
@@ -150,5 +152,22 @@ Cache will always be stored in the default platform specific location:
 |.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |ASP.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
+
+
+### FAQ
+
+Have questions? Open up an issue. Here are a few:
+
+#### How does Monkey Cache differ from the Settings Plugin?
+Great question. I would also first say to read through this: https://github.com/jamesmontemagno/SettingsPlugin#settings-plugin-or-xamarinforms-appproperties as it will compare it to app.properties.
+
+So with the Settings Plugin it is storing properties to the users local preferences/settings api of each platform. This is great for simple data (bool, int, and small strings). Each platform has different limitations when it comes to these different types of data and strings especially should never house a large amount of data. In fact if you try to store a super huge string on Android you could easily get an exception.
+
+Monkey Cache enables you to easily store any type of data or just a simple string that you can easily serialize and deserialize back and forth. The key here is that you can set an expiration data associated with that data. So you can say this data should be used for the next few days. A key here is the ETag that is extra data that can be used to help with http caching and is used in the http caching library.
+
+
+#### Isn't this just Akavache?
+Akavache offers up a great and super fast asnchronous, pesistent key-value store that is based on SQLite and Reactive Extensions. I love me some Akavache and works great for applications, but wasn't exactly what I was looking for in a data caching library. Akavache offers up a lot of different features and really cool Reactive type of programming, but Monkey Cache focuses in on trying to create a drop dead simple API with a focus on data expiration. My goal was also to minimize dependencies on the NuGet package, which is why Monkey Cache offers a SQLite, LiteDB, or a simple FileStore implementation for use.
+
 
 
