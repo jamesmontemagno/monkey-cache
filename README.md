@@ -170,4 +170,8 @@ Monkey Cache enables you to easily store any type of data or just a simple strin
 Akavache offers up a great and super fast asnchronous, pesistent key-value store that is based on SQLite and Reactive Extensions. I love me some Akavache and works great for applications, but wasn't exactly what I was looking for in a data caching library. Akavache offers up a lot of different features and really cool Reactive type of programming, but Monkey Cache focuses in on trying to create a drop dead simple API with a focus on data expiration. My goal was also to minimize dependencies on the NuGet package, which is why Monkey Cache offers a SQLite, LiteDB, or a simple FileStore implementation for use.
 
 
+#### Where Can I Learn More?
+Listen to our podcast [Merge Conflict: Episode 76](http://www.mergeconflict.fm/76) for an overview of Monkey Cache and it's creation.
+
+
 
