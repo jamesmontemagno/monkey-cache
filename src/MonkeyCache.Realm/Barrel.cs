@@ -25,11 +25,6 @@ namespace MonkeyCache.Realm
 
 		readonly RealmConfiguration configuration;
 
-		Realms.Realm realm
-		{
-			get => Realms.Realm.GetInstance(configuration);
-		}
-
 		JsonSerializerSettings jsonSettings;
 
 		static Barrel instance = null;
@@ -53,6 +48,8 @@ namespace MonkeyCache.Realm
 			};
 		}
 
+		Realms.Realm GetRealm() => Realms.Realm.GetInstance(configuration);
+
 		#region Add Methods
 
 		/// <summary>
@@ -67,6 +64,8 @@ namespace MonkeyCache.Realm
 		{
 			if (data == null)
 				return;
+
+			var realm = GetRealm();
 
 			realm.Write(() =>
 			{
@@ -120,6 +119,7 @@ namespace MonkeyCache.Realm
 		/// <returns>If the key exists</returns>
 		public bool Exists(string key)
 		{
+			var realm = GetRealm();
 			var ent = realm.Find<Banana>(key);
 
 			return ent != null;
@@ -132,6 +132,7 @@ namespace MonkeyCache.Realm
 		/// <returns>If the expiration data has been met</returns>
 		public bool IsExpired(string key)
 		{
+			var realm = GetRealm();
 			var ent = realm.Find<Banana>(key);
 
 			if (ent == null)
@@ -151,6 +152,7 @@ namespace MonkeyCache.Realm
 		/// <returns>The data object that was stored if found, else default(T)</returns>
 		public T Get<T>(string key)
 		{
+			var realm = GetRealm();
 			var ent = realm.Find<Banana>(key);
 
 			if (ent == null)
@@ -166,6 +168,7 @@ namespace MonkeyCache.Realm
 		/// <returns>The string that was stored if found, else null</returns>
 		public string Get(string key)
 		{
+			var realm = GetRealm();
 			var ent = realm.Find<Banana>(key);
 
 			if (ent == null)
@@ -181,6 +184,7 @@ namespace MonkeyCache.Realm
 		/// <returns>The ETag if the key is found, else null</returns>
 		public string GetETag(string key)
 		{
+			var realm = GetRealm();
 			var ent = realm.Find<Banana>(key);
 
 			if (ent == null)
@@ -199,6 +203,7 @@ namespace MonkeyCache.Realm
 		public void EmptyExpired()
 		{
 			var now = DateTimeOffset.Now;
+			var realm = GetRealm();
 			realm.Write(() => {
 				realm.RemoveRange(realm.All<Banana>().Where(b => b.ExpirationDate < now));
 			});
@@ -210,6 +215,7 @@ namespace MonkeyCache.Realm
 		/// </summary>
 		public void EmptyAll()
 		{
+			var realm = GetRealm();
 			realm.Write(() => realm.RemoveAll<Banana>());
 		}
 
@@ -220,6 +226,7 @@ namespace MonkeyCache.Realm
 		/// <param name="key">keys to empty</param>
 		public void Empty(params string[] key)
 		{
+			var realm = GetRealm();
 			realm.Write(() => {
 				foreach (var item in key)
 				{
