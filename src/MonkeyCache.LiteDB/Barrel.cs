@@ -88,7 +88,7 @@ namespace MonkeyCache.LiteDB
             if (ent == null)
                 return true;
 
-            return DateTime.UtcNow > ent.ExpirationDate;
+            return DateTime.UtcNow > ent.ExpirationDate.ToUniversalTime();
         }
 
         #endregion
@@ -193,7 +193,7 @@ namespace MonkeyCache.LiteDB
         /// </summary>
         public void EmptyExpired()
         {
-            col.Delete(b => b.ExpirationDate < DateTime.UtcNow);
+            col.Delete(b => b.ExpirationDate.ToUniversalTime() < DateTime.UtcNow);
         }
 
         /// <summary>
