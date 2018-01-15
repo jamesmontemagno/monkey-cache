@@ -173,5 +173,10 @@ Akavache offers up a great and super fast asnchronous, pesistent key-value store
 #### Where Can I Learn More?
 Listen to our podcast [Merge Conflict: Episode 76](http://www.mergeconflict.fm/76) for an overview of Monkey Cache and it's creation.
 
+### License
+Under MIT (see license file)
+
+### Want To Support This Project?
+All I have ever asked is to be active by submitting bugs, features, and sending those pull requests down! Want to go further? Make sure to subscribe to my weekly development podcast [Merge Conflict](http://mergeconflict.fm), where I talk all about awesome Xamarin goodies and you can optionally support the show by becoming a [supporter on Patreon](https://www.patreon.com/mergeconflictfm).
 
 
