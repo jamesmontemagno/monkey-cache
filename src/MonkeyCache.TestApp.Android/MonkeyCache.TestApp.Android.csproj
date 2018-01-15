@@ -50,6 +50,9 @@
     <PackageReference Include="LiteDB">
       <Version>4.1.0</Version>
     </PackageReference>
+    <PackageReference Include="Realm.Database">
+      <Version>2.1.0</Version>
+    </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.4.118</Version>
     </PackageReference>
@@ -99,13 +102,16 @@
       <Name>MonkeyCache.SQLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\MonkeyCache.TestApp\MonkeyCache.TestApp.csproj">
-      <Project>{74D2D876-A61D-4722-A2C4-7AC2427C1FAF}</Project>
+      <Project>{5D12F957-A5A3-4089-B92A-5F7C8B7F3B92}</Project>
       <Name>MonkeyCache.TestApp</Name>
     </ProjectReference>
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj">
       <Project>{9cad910f-0e32-491f-9953-819bba78b89f}</Project>
       <Name>MonkeyCache</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

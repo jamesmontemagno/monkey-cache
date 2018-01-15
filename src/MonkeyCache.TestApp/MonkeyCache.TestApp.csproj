@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="4.1.0" />
+    <PackageReference Include="Realm.Database" Version="2.1.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
     <PackageReference Include="Xamarin.Forms" Version="2.4.0.38779" />
   </ItemGroup>
@@ -13,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MonkeyCache.FileStore\MonkeyCache.FileStore.csproj" />
     <ProjectReference Include="..\MonkeyCache.LiteDB\MonkeyCache.LiteDB.csproj" />
+    <ProjectReference Include="..\MonkeyCache.Realm\MonkeyCache.Realm.csproj" />
     <ProjectReference Include="..\MonkeyCache.SQLite\MonkeyCache.SQLite.csproj" />
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
   </ItemGroup>

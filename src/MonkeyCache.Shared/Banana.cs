@@ -3,6 +3,8 @@
 using SQLite;
 #elif LITEDB
 using LiteDB;
+#elif REALM
+using Realms;
 #endif
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,14 @@ namespace MonkeyCache
     /// Data object for Barrel
     /// </summary>
     class Banana
+#if REALM
+        : RealmObject
+#endif
     {
         /// <summary>
         /// Unique Identifier
         /// </summary>
-#if SQLITE
+#if SQLITE || REALM
         [PrimaryKey]
 #elif LITEDB
         [BsonId]
@@ -36,9 +41,16 @@ namespace MonkeyCache
         /// </summary>
         public string Contents { get; set; }
 
+#if REALM
+        /// <summary>
+        /// Expiration data of the object
+        /// </summary>
+        public DateTimeOffset ExpirationDate { get; set; }
+#else
         /// <summary>
         /// Expiration data of the object, stored in UTC
         /// </summary>
         public DateTime ExpirationDate { get; set; }
+#endif
     }
 }

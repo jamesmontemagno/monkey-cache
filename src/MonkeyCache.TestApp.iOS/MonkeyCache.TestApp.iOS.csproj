@@ -122,6 +122,9 @@
     <PackageReference Include="LiteDB">
       <Version>4.1.0</Version>
     </PackageReference>
+    <PackageReference Include="Realm.Database">
+      <Version>2.1.0</Version>
+    </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.4.118</Version>
     </PackageReference>
@@ -137,17 +140,24 @@
       <Project>{a92c8cd7-6a47-4969-befa-0919561f3947}</Project>
       <Name>MonkeyCache.LiteDB</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MonkeyCache.Realm\MonkeyCache.Realm.csproj">
+      <Project>{56a46e1d-2183-4c36-ae3a-1a27dc592dc6}</Project>
+      <Name>MonkeyCache.Realm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MonkeyCache.SQLite\MonkeyCache.SQLite.csproj">
       <Project>{ea91cb9d-339a-410e-8ef0-8b765d3bfe3c}</Project>
       <Name>MonkeyCache.SQLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\MonkeyCache.TestApp\MonkeyCache.TestApp.csproj">
-      <Project>{74D2D876-A61D-4722-A2C4-7AC2427C1FAF}</Project>
+      <Project>{5D12F957-A5A3-4089-B92A-5F7C8B7F3B92}</Project>
       <Name>MonkeyCache.TestApp</Name>
     </ProjectReference>
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj">
       <Project>{9cad910f-0e32-491f-9953-819bba78b89f}</Project>
       <Name>MonkeyCache</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xml" />
   </ItemGroup>
 </Project>

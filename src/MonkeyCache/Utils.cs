@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("MonkeyCache.SQLite")]
 [assembly: InternalsVisibleTo("MonkeyCache.LiteDB")]
 [assembly: InternalsVisibleTo("MonkeyCache.FileStore")]
+[assembly: InternalsVisibleTo("MonkeyCache.Realm")]
 namespace MonkeyCache
 {
     internal static class Utils

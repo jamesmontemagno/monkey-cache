@@ -10,6 +10,7 @@
     <PackageReference Include="Ooui" Version="0.4.114" />
     <PackageReference Include="Ooui.AspNetCore" Version="0.4.114" />
     <PackageReference Include="Ooui.Forms" Version="0.4.114" />
+    <PackageReference Include="Realm.Database" Version="2.1.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
     <PackageReference Include="Xamarin.Forms" Version="2.4.0.38779" />
   </ItemGroup>
