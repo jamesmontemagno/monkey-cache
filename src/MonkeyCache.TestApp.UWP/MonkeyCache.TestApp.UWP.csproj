@@ -149,13 +149,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteDB">
-      <Version>4.1.0</Version>
+      <Version>4.1.1</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.4.118</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="2.4.0.38779" />
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.5" />
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonkeyCache.FileStore\MonkeyCache.FileStore.csproj">

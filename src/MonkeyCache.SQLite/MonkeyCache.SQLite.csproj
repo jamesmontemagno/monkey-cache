@@ -37,10 +37,10 @@
  
 
   <ItemGroup>
-    <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.5" />
+    <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.6" />
     <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2-build.23" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

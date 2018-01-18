@@ -120,7 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteDB">
-      <Version>4.1.0</Version>
+      <Version>4.1.1</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.4.118</Version>
