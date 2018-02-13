@@ -34,7 +34,10 @@
     <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);FILESTORE</DefineConstants>
     <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);FILESTORE</DefineConstants>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
+    <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
+    <!-- Workaround until Xamarin supports PPDB -->
+    <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
 
