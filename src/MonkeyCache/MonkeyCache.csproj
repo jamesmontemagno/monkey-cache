@@ -25,17 +25,10 @@
 
     <LangVersion>default</LangVersion>
 
-    <DefineConstants Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">$(DefineConstants);</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'MonoAndroid50' ">$(DefineConstants);</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' ">$(DefineConstants);</DefineConstants>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">$(DefineConstants);</DefineConstants>
+    <DefineConstants>$(DefineConstants);</DefineConstants>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RootNamespace>MonkeyCache</RootNamespace>
     <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
-    <!-- Workaround until Xamarin supports PPDB -->
-    <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
-    <DebugType>full</DebugType>
   </PropertyGroup>
 
 
