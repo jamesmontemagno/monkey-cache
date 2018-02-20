@@ -34,6 +34,8 @@ namespace MonkeyCache.FileStore
 
 		public static string ApplicationId { get; set; } = string.Empty;
 
+		public static ILid Lid { get; set; }
+
 		static Barrel instance = null;
 
 		/// <summary>
@@ -53,7 +55,12 @@ namespace MonkeyCache.FileStore
 				var hash = Hash(key);
 				var path = Path.Combine(baseDirectory.Value, hash);
 
-				File.WriteAllText(path, data);
+				var contents = (Lid != null) ? Lid.AddingToBarrel(data) : data;
+
+				if (contents == null)
+					return;
+
+				File.WriteAllText(path, contents);
 
 				index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, DateTime.UtcNow.Add(expireIn));
 
@@ -67,6 +74,9 @@ namespace MonkeyCache.FileStore
 
 		public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
 		{
+			if (data == null)
+				return;
+
 			var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
 
 			Add(key, dataJson, expireIn, eTag);
@@ -172,7 +182,11 @@ namespace MonkeyCache.FileStore
 				var path = Path.Combine(baseDirectory.Value, hash);
 
 				if (index.ContainsKey(key) && File.Exists(path))
+				{
 					result = File.ReadAllText(path);
+					if (Lid != null)
+						result = Lid.GettingFromBarrel(result);
+				}
 			}
 			finally
 			{
@@ -185,23 +199,11 @@ namespace MonkeyCache.FileStore
 		public T Get<T>(string key)
 		{
 			var result = default(T);
+			var resultJson = Get(key);
 
-			indexLocker.EnterReadLock();
-
-			try
+			if (resultJson != null)
 			{
-				var hash = Hash(key);
-				var path = Path.Combine(baseDirectory.Value, hash);
-
-				if (index.ContainsKey(key) && File.Exists(path))
-				{
-					var contents = File.ReadAllText(path);
-					result = JsonConvert.DeserializeObject<T>(contents, jsonSettings);
-				}
-			}
-			finally
-			{
-				indexLocker.ExitReadLock();
+				result = JsonConvert.DeserializeObject<T>(resultJson, jsonSettings);
 			}
 
 			return result;

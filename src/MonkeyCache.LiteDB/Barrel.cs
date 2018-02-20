@@ -20,6 +20,7 @@ namespace MonkeyCache.LiteDB
     {
         public static string ApplicationId { get; set; } = string.Empty;
         public static string EncryptionKey { get; set; } = string.Empty;
+		public static ILid Lid { get; set; }
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
@@ -41,7 +42,7 @@ namespace MonkeyCache.LiteDB
         Barrel()
         {
             var directory = baseCacheDir.Value;
-            string path = Path.Combine(directory, "Barrel.db");
+            var path = Path.Combine(directory, "Barrel.db");
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
@@ -102,12 +103,12 @@ namespace MonkeyCache.LiteDB
         /// <returns>The data object that was stored if found, else default(T)</returns>
         public T Get<T>(string key)
         {
-            var ent = col.FindById(key);
+			var dataJson = Get(key);
 
-            if (ent == null)
+            if (dataJson == null)
                 return default(T);
 
-            return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSettings);
+            return JsonConvert.DeserializeObject<T>(dataJson, jsonSettings);
         }
 
         /// <summary>
@@ -122,7 +123,8 @@ namespace MonkeyCache.LiteDB
             if (ent == null)
                 return null;
 
-            return ent.Contents;
+            var contents = (Lid != null) ? Lid.GettingFromBarrel(ent.Contents) : ent.Contents;
+            return contents;
         }
 
         /// <summary>
@@ -157,12 +159,17 @@ namespace MonkeyCache.LiteDB
             if (data == null)
                 return;
 
+            var contents = (Lid != null) ? Lid.AddingToBarrel(data) : data;
+
+			if (contents == null)
+				return;
+
             var ent = new Banana
             {
                 Id = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
                 ETag = eTag,
-                Contents = data
+                Contents = contents
             };
 
             col.Upsert(ent);
@@ -181,7 +188,9 @@ namespace MonkeyCache.LiteDB
             if (data == null)
                 return;
 
-            Add(key, JsonConvert.SerializeObject(data, jsonSettings), expireIn, eTag);
+			var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
+
+			Add(key, dataJson, expireIn, eTag);
         }
 
         #endregion

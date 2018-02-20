@@ -15,7 +15,7 @@ namespace MonkeyCache.SQLite
     public class Barrel : IBarrel
     {
         public static string ApplicationId { get; set; } = string.Empty;
-        
+        public static ILid Lid { get; set; }
 
         static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
         {
@@ -101,16 +101,12 @@ namespace MonkeyCache.SQLite
         /// <returns>The data object that was stored if found, else default(T)</returns>
         public T Get<T>(string key)
         {
-            Banana ent;
-            lock(dblock)
-            {
-                ent = db.Query<Banana>($"SELECT {nameof(ent.Contents)} FROM {nameof(Banana)} WHERE {nameof(ent.Id)} = ?", key).FirstOrDefault();
-            }
+			var resultJson = Get(key);
 
-            if (ent == null)
-                return default(T);
+			if (resultJson == null)
+				return default(T);
 
-            return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSettings);
+            return JsonConvert.DeserializeObject<T>(resultJson, jsonSettings);
         }
 
         /// <summary>
@@ -129,7 +125,9 @@ namespace MonkeyCache.SQLite
             if (ent == null)
                 return null;
 
-            return ent.Contents;
+			var contents = (Lid != null) ? Lid.GettingFromBarrel(ent.Contents) : ent.Contents;
+
+            return contents;
         }
 
         /// <summary>
@@ -168,13 +166,17 @@ namespace MonkeyCache.SQLite
             if (data == null)
                 return;
 
+			var contents = (Lid != null) ? Lid.AddingToBarrel(data) : data;
+
+			if (contents == null)
+				return;
 
             var ent = new Banana
             {
                 Id = key,
                 ExpirationDate = DateTime.UtcNow.Add(expireIn),
                 ETag = eTag,
-                Contents = data
+                Contents = contents
             };
             lock (dblock)
             {
@@ -192,8 +194,12 @@ namespace MonkeyCache.SQLite
         /// <param name="eTag">Optional eTag information</param>
         public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
         {
-            var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
-            Add(key, dataJson, expireIn, eTag);
+			if (data == null)
+				return;
+
+			var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
+
+			Add(key, dataJson, expireIn, eTag);
         }
 
 #endregion
