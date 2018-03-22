@@ -32,7 +32,7 @@ namespace MonkeyCache
 #elif __ANDROID__
             path = Application.Context.CacheDir.AbsolutePath;
 #elif __UWP__
-            path = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+            path = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path;
 #else
             path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 #endif
