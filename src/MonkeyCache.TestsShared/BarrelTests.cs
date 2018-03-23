@@ -45,6 +45,14 @@ namespace MonkeyCache.Tests
 
         }
 
+		[TestMethod]
+		public void GetStringWithLidTest()
+		{
+			SetupLid();
+			GetStringTest();
+			Assert.IsTrue(LidWasUsed());
+		}
+
         [TestMethod]
         public void GetTest()
         {
@@ -59,8 +67,16 @@ namespace MonkeyCache.Tests
 
         }
 
+		[TestMethod]
+		public void GetWithLidTest()
+		{
+			SetupLid();
+			GetTest();
+			Assert.IsTrue(LidWasUsed());
+		}
 
-        [TestMethod]
+
+		[TestMethod]
         public void GetETagTest()
         {
 
@@ -100,7 +116,15 @@ namespace MonkeyCache.Tests
 
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void AddStringNullWithLidTest()
+		{
+			SetupLid();
+			AddStringNullTest();
+			Assert.IsFalse(LidWasUsed());
+		}
+
+		[TestMethod]
         public void AddStringTest()
         {
 
@@ -114,7 +138,15 @@ namespace MonkeyCache.Tests
 
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void AddStringWithLidTest()
+		{
+			SetupLid();
+			AddStringTest();
+			Assert.IsTrue(LidWasUsed());
+		}
+
+		[TestMethod]
         public void AddNullTest()
         {
 
@@ -128,7 +160,15 @@ namespace MonkeyCache.Tests
 
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void AddNullWithLidTest()
+		{
+			SetupLid();
+			AddNullTest();
+			Assert.IsFalse(LidWasUsed());
+		}
+
+		[TestMethod]
         public void AddTest()
         {
 
@@ -142,8 +182,15 @@ namespace MonkeyCache.Tests
 
         }
 
+		[TestMethod]
+		public void AddWithLidTest()
+		{
+			SetupLid();
+			AddTest();
+			Assert.IsTrue(LidWasUsed());
+		}
 
-        [TestMethod]
+		[TestMethod]
         public void AddTestNull()
         {
 
@@ -157,11 +204,19 @@ namespace MonkeyCache.Tests
 
         }
 
-        #endregion
+		[TestMethod]
+		public void AddTestWithLidNull()
+		{
+			SetupLid();
+			AddTestNull();
+			Assert.IsFalse(LidWasUsed());
+		}
 
-        #region Expiration Tests
+		#endregion
 
-        [TestMethod]
+		#region Expiration Tests
+
+		[TestMethod]
         public void IsExpiredNullTest()
         {
             Assert.IsTrue(barrel.IsExpired(url));

@@ -41,6 +41,26 @@ It is required that you set an ApplicationId for your application so a folder is
 Barrel.ApplicationId = "your_unique_name_here";
 ```
 
+You can optionally intercept data being put into or taken out of your barrel by assigning a lid to it. Lids are used to evaluate or modify data, or to cancel a barrel operation.  Create a lid by adding a class that implements the ILid interface, then assign it to Barrel's Lid property before calling ANY method:
+
+```
+Barrel.Lid = new TestLid();
+
+public class TestLid : ILid
+{
+	// Return null from either method to cancel the calling barrel's operation
+	
+	public string AddingToBarrel(string content) => Reverse(content);
+	public string GettingFromBarrel(string content) => Reverse(content);
+
+	string Reverse(string data)
+	{
+		var chars = data.ToCharArray();
+		Array.Reverse(chars);
+		return new string(chars);
+	}
+}
+```
 
 ### What is Monkey Cache?
 
@@ -182,5 +202,8 @@ Under MIT (see license file)
 
 ### Want To Support This Project?
 All I have ever asked is to be active by submitting bugs, features, and sending those pull requests down! Want to go further? Make sure to subscribe to my weekly development podcast [Merge Conflict](http://mergeconflict.fm), where I talk all about awesome Xamarin goodies and you can optionally support the show by becoming a [supporter on Patreon](https://www.patreon.com/mergeconflictfm).
+
+
+
 
 
