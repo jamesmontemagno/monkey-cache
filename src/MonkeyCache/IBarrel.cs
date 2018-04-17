@@ -14,5 +14,6 @@ namespace MonkeyCache
         T Get<T>(string key);
         string GetETag(string key);
         bool IsExpired(string key);
+        DateTime? GetWhenExpired(string key);
     }
 }

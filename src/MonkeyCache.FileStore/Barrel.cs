@@ -248,6 +248,25 @@ namespace MonkeyCache.FileStore
 			return expired;
 		}
 
+		public DateTime? GetWhenExpired(string key)
+		{
+			DateTime? expires = null;
+
+			indexLocker.EnterReadLock();
+
+			try
+			{
+				if (index.ContainsKey(key))
+					expires = index[key].Item2;
+			}
+			finally
+			{
+				indexLocker.ExitReadLock();
+			}
+
+			return expires;
+		}
+
 		Lazy<string> baseDirectory = new Lazy<string>(() =>
 		{
 			return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCacheFS");
