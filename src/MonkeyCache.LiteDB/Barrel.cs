@@ -140,6 +140,21 @@ namespace MonkeyCache.LiteDB
             return ent.ETag;
         }
 
+		/// <summary>
+		///Gets when the specified key is expired
+		/// </summary>
+		/// <param name="key">Unique identifier for entry to get</param>
+		/// <returns>The Expiration Date (UTC) if the key is found, else null</returns>
+		public DateTime? GetWhenExpired(string key)
+		{
+			var ent = col.FindById(key);
+
+			if (ent == null)
+				return null;
+
+			return ent.ExpirationDate.ToUniversalTime();
+		}
+
         #endregion
 
         #region Add Methods

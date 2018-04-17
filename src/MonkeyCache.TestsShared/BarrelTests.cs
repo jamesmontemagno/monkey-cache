@@ -198,6 +198,17 @@ namespace MonkeyCache.Tests
 
         }
 
+		[TestMethod]
+		public void GetExpiredTest()
+		{
+			//saves the cache and pass it a timespan for expiration
+			barrel.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
+
+			var whenCacheExpires = barrel.GetWhenExpired(url);
+			Assert.IsTrue(whenCacheExpires.HasValue);
+			Assert.AreEqual(DateTime.UtcNow.AddDays(1).Ticks, whenCacheExpires.Value.Ticks, TimeSpan.TicksPerMillisecond);
+		}
+
         #endregion
 
         #region Empty Tests

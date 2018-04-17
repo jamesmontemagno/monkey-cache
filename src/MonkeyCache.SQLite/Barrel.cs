@@ -151,6 +151,25 @@ namespace MonkeyCache.SQLite
             return ent.ETag;
         }
 
+		/// <summary>
+		/// Gets when the specified key is expired
+		/// </summary>
+		/// <param name="key">Unique identifier for entry to get</param>
+		/// <returns>The Expiration Date (UTC) if the key is found, else null</returns>
+		public DateTime? GetWhenExpired(string key)
+		{
+			Banana ent;
+			lock(dblock)
+			{
+				ent = db.Query<Banana>($"SELECT {nameof(ent.ExpirationDate)} FROM {nameof(Banana)} WHERE {nameof(ent.Id)} = ?", key).FirstOrDefault();
+			}
+
+			if (ent == null)
+				return null;
+
+			return ent.ExpirationDate;
+		}
+
 #endregion
 
 #region Add Methods
