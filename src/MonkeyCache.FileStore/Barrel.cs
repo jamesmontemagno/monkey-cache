@@ -55,7 +55,7 @@ namespace MonkeyCache.FileStore
 
 				File.WriteAllText(path, data);
 
-				index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, DateTime.UtcNow.Add(expireIn));
+				index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, Utils.GetExpiration(expireIn));
 
 				WriteIndex();
 			}

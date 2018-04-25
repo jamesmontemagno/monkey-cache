@@ -99,8 +99,35 @@ namespace MonkeyCache.Tests
             Assert.IsNull(cached);
 
         }
+		[TestMethod]
+		public void AddMaxTime()
+		{
 
-        [TestMethod]
+
+			//Saves the cache and pass it a timespan for expiration
+			barrel.Add(key: url, data: json, expireIn: TimeSpan.MaxValue);
+
+
+			var cached = barrel.Get(url);
+			Assert.IsNotNull(cached);
+
+		}
+
+		[TestMethod]
+		public void AddMinTime()
+		{
+
+
+			//Saves the cache and pass it a timespan for expiration
+			barrel.Add(key: url, data: json, expireIn: TimeSpan.MinValue);
+
+
+			var cached = barrel.Get(url);
+			Assert.IsNotNull(cached);
+
+		}
+
+		[TestMethod]
         public void AddStringTest()
         {
 

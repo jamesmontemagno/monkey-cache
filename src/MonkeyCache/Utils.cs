@@ -15,18 +15,18 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("MonkeyCache.FileStore")]
 namespace MonkeyCache
 {
-    internal static class Utils
-    {
-        public static string GetBasePath(string applicationId)
-        {
-            if (string.IsNullOrWhiteSpace(applicationId))
-                throw new ArgumentException("You must set a ApplicationId for MonkeyCache by using Barrel.ApplicationId.");
+	internal static class Utils
+	{
+		public static string GetBasePath(string applicationId)
+		{
+			if (string.IsNullOrWhiteSpace(applicationId))
+				throw new ArgumentException("You must set a ApplicationId for MonkeyCache by using Barrel.ApplicationId.");
 
-            if (applicationId.IndexOfAny(Path.GetInvalidPathChars()) != -1)
-                throw new ArgumentException("ApplicationId has invalid characters");
+			if (applicationId.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+				throw new ArgumentException("ApplicationId has invalid characters");
 
-            var path = string.Empty;
-            ///Gets full path based on device type.
+			var path = string.Empty;
+			///Gets full path based on device type.
 #if __IOS__ || __MACOS__
             path = NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
 #elif __ANDROID__
@@ -34,9 +34,24 @@ namespace MonkeyCache
 #elif __UWP__
             path = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path;
 #else
-            path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+			path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 #endif
-            return Path.Combine(path, applicationId);
-        }
+			return Path.Combine(path, applicationId);
+		}
+
+		public static DateTime GetExpiration(TimeSpan timeSpan)
+		{
+			try
+			{
+				return DateTime.UtcNow.Add(timeSpan);
+			}
+			catch
+			{
+				if (timeSpan.Milliseconds < 0)
+					return DateTime.MinValue;
+
+				return DateTime.MaxValue;
+			}
+		}
     }
 }

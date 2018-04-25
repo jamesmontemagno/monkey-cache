@@ -172,7 +172,7 @@ namespace MonkeyCache.SQLite
             var ent = new Banana
             {
                 Id = key,
-                ExpirationDate = DateTime.UtcNow.Add(expireIn),
+                ExpirationDate = Utils.GetExpiration(expireIn),
                 ETag = eTag,
                 Contents = data
             };
