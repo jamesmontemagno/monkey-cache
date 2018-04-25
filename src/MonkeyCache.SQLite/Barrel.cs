@@ -151,19 +151,38 @@ namespace MonkeyCache.SQLite
             return ent.ETag;
         }
 
-#endregion
+		/// <summary>
+		/// Gets the DateTime that the item will expire for the specified key.
+		/// </summary>
+		/// <param name="key">Unique identifier for entry to get</param>
+		/// <returns>The expiration date if the key is found, else null</returns>
+		public DateTime? GetExpiration(string key)
+		{
+			Banana ent;
+			lock (dblock)
+			{
+				ent = db.Query<Banana>($"SELECT {nameof(ent.ETag)} FROM {nameof(Banana)} WHERE {nameof(ent.Id)} = ?", key).FirstOrDefault();
+			}
 
-#region Add Methods
+			if (ent == null)
+				return null;
 
-        /// <summary>
-        /// Adds a string netry to the barrel
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key">Unique identifier for the entry</param>
-        /// <param name="data">Data string to store</param>
-        /// <param name="expireIn">Time from UtcNow to expire entry in</param>
-        /// <param name="eTag">Optional eTag information</param>
-        public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
+			return ent.ExpirationDate;
+		}
+
+		#endregion
+
+		#region Add Methods
+
+		/// <summary>
+		/// Adds a string netry to the barrel
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="key">Unique identifier for the entry</param>
+		/// <param name="data">Data string to store</param>
+		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
+		/// <param name="eTag">Optional eTag information</param>
+		public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
         {
             if (data == null)
                 return;

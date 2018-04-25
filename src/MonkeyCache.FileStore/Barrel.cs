@@ -207,6 +207,28 @@ namespace MonkeyCache.FileStore
 			return result;
 		}
 
+		public DateTime? GetExpiration(string key)
+		{
+			if (key == null)
+				return null;
+
+			DateTime? date = null;
+
+			indexLocker.EnterReadLock();
+
+			try
+			{
+				if (index.ContainsKey(key))
+					date = index[key]?.Item2;
+			}
+			finally
+			{
+				indexLocker.ExitReadLock();
+			}
+
+			return date;
+		}
+
 		public string GetETag(string key)
 		{
 			if (key == null)

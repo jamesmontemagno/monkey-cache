@@ -210,7 +210,24 @@ namespace MonkeyCache.Tests
 
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void GetDate()
+		{
+
+
+			//Saves the cache and pass it a timespan for expiration
+			barrel.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
+
+
+			var cached = barrel.Get<IEnumerable<Monkey>>(url);
+			
+			var date = barrel.GetExpiration(url);
+			Assert.IsNotNull(date);
+			Assert.IsTrue(date <= DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
+
+		}
+
+		[TestMethod]
         public void IsNotExpiredTest()
         {
 
