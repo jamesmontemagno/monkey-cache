@@ -5,13 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiteDB" Version="4.1.1" />
+    <PackageReference Include="LiteDB" Version="4.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
-    <PackageReference Include="Ooui" Version="0.5.123" />
-    <PackageReference Include="Ooui.AspNetCore" Version="0.5.123" />
-    <PackageReference Include="Ooui.Forms" Version="0.5.123" />
+    <PackageReference Include="Ooui" Version="0.10.222" />
+    <PackageReference Include="Ooui.AspNetCore" Version="0.10.222" />
+    <PackageReference Include="Ooui.Forms" Version="0.10.222" />
     <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
-    <PackageReference Include="Xamarin.Forms" Version="2.4.0.38779" />
+    <PackageReference Include="Xamarin.Forms" Version="2.5.0.122203" />
   </ItemGroup>
 
   <ItemGroup>
