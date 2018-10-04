@@ -409,7 +409,7 @@ namespace MonkeyCache.Tests
             var mainStopwatch = new Stopwatch();
             mainStopwatch.Start();
 
-            for (int i = 0; i < threads; i++) {
+            for (var i = 0; i < threads; i++) {
                 var i2 = i;
 
                 var task = Task.Factory.StartNew(() => {

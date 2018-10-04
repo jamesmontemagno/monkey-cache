@@ -12,8 +12,7 @@ namespace MonkeyCache.FileStore
 	public class Barrel : IBarrel
 	{
 		ReaderWriterLockSlim indexLocker;
-
-		JsonSerializerSettings jsonSettings;
+		readonly JsonSerializerSettings jsonSettings;
 
 		Barrel()
 		{
@@ -41,6 +40,13 @@ namespace MonkeyCache.FileStore
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
+		/// <summary>
+		/// Adds an entry to the barrel
+		/// </summary>
+		/// <param name="key">Unique identifier for the entry</param>
+		/// <param name="data">Data object to store</param>
+		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
+		/// <param name="eTag">Optional eTag information</param>
 		public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
 		{
 			if (data == null)
@@ -65,13 +71,27 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
-		public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null)
+		/// <summary>
+		/// Adds an entry to the barrel
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="key">Unique identifier for the entry</param>
+		/// <param name="data">Data object to store</param>
+		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
+		/// <param name="eTag">Optional eTag information</param>
+		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
+		public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null, JsonSerializerSettings jsonSerializationSettings = null)
 		{
-			var dataJson = JsonConvert.SerializeObject(data, jsonSettings);
+			var dataJson = JsonConvert.SerializeObject(data, jsonSerializationSettings ?? jsonSettings);
 
 			Add(key, dataJson, expireIn, eTag);
 		}
 
+		/// <summary>
+		/// Empties all specified entries regardless if they are expired.
+		/// Throws an exception if any deletions fail and rolls back changes.
+		/// </summary>
+		/// <param name="key">keys to empty</param>
 		public void Empty(params string[] key)
 		{
 			indexLocker.EnterWriteLock();
@@ -92,6 +112,10 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
+		/// <summary>
+		/// Empties all expired entries that are in the Barrel.
+		/// Throws an exception if any deletions fail and rolls back changes.
+		/// </summary>
 		public void EmptyAll()
 		{
 			indexLocker.EnterWriteLock();
@@ -114,6 +138,10 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
+		/// <summary>
+		/// Empties all expired entries that are in the Barrel.
+		/// Throws an exception if any deletions fail and rolls back changes.
+		/// </summary>
 		public void EmptyExpired()
 		{
 			indexLocker.EnterWriteLock();
@@ -142,6 +170,11 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
+		/// <summary>
+		/// Checks to see if the key exists in the Barrel.
+		/// </summary>
+		/// <param name="key">Unique identifier for the entry to check</param>
+		/// <returns>If the key exists</returns>
 		public bool Exists(string key)
 		{
 			var exists = false;
@@ -160,6 +193,11 @@ namespace MonkeyCache.FileStore
 			return exists;
 		}
 
+		/// <summary>
+		/// Gets the string entry for the specified key.
+		/// </summary>
+		/// <param name="key">Unique identifier for the entry to get</param>
+		/// <returns>The string that was stored if found, else null</returns>
 		public string Get(string key)
 		{
 			string result = null;
@@ -182,7 +220,13 @@ namespace MonkeyCache.FileStore
 			return result;
 		}
 
-		public T Get<T>(string key)
+		/// <summary>
+		/// Gets the data entry for the specified key.
+		/// </summary>
+		/// <param name="key">Unique identifier for the entry to get</param>
+		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
+		/// <returns>The data object that was stored if found, else default(T)</returns>
+		public T Get<T>(string key, JsonSerializerSettings jsonSerializationSettings = null)
 		{
 			var result = default(T);
 
@@ -196,7 +240,7 @@ namespace MonkeyCache.FileStore
 				if (index.ContainsKey(key) && File.Exists(path))
 				{
 					var contents = File.ReadAllText(path);
-					result = JsonConvert.DeserializeObject<T>(contents, jsonSettings);
+					result = JsonConvert.DeserializeObject<T>(contents, jsonSerializationSettings ?? jsonSettings);
 				}
 			}
 			finally
@@ -207,6 +251,11 @@ namespace MonkeyCache.FileStore
 			return result;
 		}
 
+		/// <summary>
+		/// Gets the DateTime that the item will expire for the specified key.
+		/// </summary>
+		/// <param name="key">Unique identifier for entry to get</param>
+		/// <returns>The expiration date if the key is found, else null</returns>
 		public DateTime? GetExpiration(string key)
 		{
 			if (key == null)
@@ -229,6 +278,11 @@ namespace MonkeyCache.FileStore
 			return date;
 		}
 
+		/// <summary>
+		/// Gets the ETag for the specified key.
+		/// </summary>
+		/// <param name="key">Unique identifier for entry to get</param>
+		/// <returns>The ETag if the key is found, else null</returns>
 		public string GetETag(string key)
 		{
 			if (key == null)
@@ -251,6 +305,11 @@ namespace MonkeyCache.FileStore
 			return etag;
 		}
 
+		/// <summary>
+		/// Checks to see if the entry for the key is expired.
+		/// </summary>
+		/// <param name="key">Key to check</param>
+		/// <returns>If the expiration data has been met</returns>
 		public bool IsExpired(string key)
 		{
 			var expired = true;
@@ -289,8 +348,10 @@ namespace MonkeyCache.FileStore
 				Directory.CreateDirectory(baseDirectory.Value);
 
 			using (var f = File.Open(indexFile, FileMode.Create))
-			using (var sw = new StreamWriter(f)) {
-				foreach (var kvp in index) {
+			using (var sw = new StreamWriter(f))
+			{
+				foreach (var kvp in index)
+				{
 					var dtEpoch = DateTimeToEpochSeconds(kvp.Value.Item2);
 					sw.WriteLine($"{kvp.Key}\t{kvp.Value.Item1}\t{dtEpoch.ToString()}");
 				}
@@ -338,15 +399,12 @@ namespace MonkeyCache.FileStore
 
 		static readonly DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
-		static int DateTimeToEpochSeconds (DateTime date)
+		static int DateTimeToEpochSeconds(DateTime date)
 		{
 			var diff = date - epoch;
 			return (int)diff.TotalSeconds;
 		}
 
-		static DateTime EpochSecondsToDateTime (int seconds)
-		{
-			return epoch + TimeSpan.FromSeconds(seconds);
-		}
+		static DateTime EpochSecondsToDateTime(int seconds) => epoch + TimeSpan.FromSeconds(seconds);
 	}
 }
