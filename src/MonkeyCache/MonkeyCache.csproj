@@ -33,7 +33,7 @@
 
   <ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="11.0.2"/>
-    <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.6" />
+    <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.1.7" />
     <Reference Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' " Include="System.Net.Http" />
   </ItemGroup>
 </Project>
