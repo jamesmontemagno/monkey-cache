@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
-  </ItemGroup>
+		<Reference Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' " Include="netstandard" />
+	</ItemGroup>
 
 </Project>
