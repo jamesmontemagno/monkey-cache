@@ -80,7 +80,11 @@ namespace MonkeyCache.FileStore
 		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
 		/// <param name="eTag">Optional eTag information</param>
 		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
-		public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null, JsonSerializerSettings jsonSerializationSettings = null)
+		public void AddObject<T>(string key, 
+							T data, 
+							TimeSpan expireIn, 
+							string eTag = null,
+							JsonSerializerSettings jsonSerializationSettings = null)
 		{
 			var dataJson = JsonConvert.SerializeObject(data, jsonSerializationSettings ?? jsonSettings);
 
@@ -226,7 +230,7 @@ namespace MonkeyCache.FileStore
 		/// <param name="key">Unique identifier for the entry to get</param>
 		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
 		/// <returns>The data object that was stored if found, else default(T)</returns>
-		public T Get<T>(string key, JsonSerializerSettings jsonSerializationSettings = null)
+		public T GetObject<T>(string key, JsonSerializerSettings jsonSerializationSettings = null)
 		{
 			var result = default(T);
 
