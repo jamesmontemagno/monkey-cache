@@ -64,6 +64,9 @@ namespace MonkeyCache.LiteDB
 		/// <returns>If the key exists</returns>
 		public bool Exists(string key)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				throw new ArgumentException("Key can not be null or empty.", nameof(key));
+
 			var ent = col.FindById(key);
 
 			return ent != null;
@@ -76,6 +79,9 @@ namespace MonkeyCache.LiteDB
 		/// <returns>If the expiration data has been met</returns>
 		public bool IsExpired(string key)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				throw new ArgumentException("Key can not be null or empty.", nameof(key));
+
 			var ent = col.FindById(key);
 
 			if (ent == null)
@@ -94,30 +100,27 @@ namespace MonkeyCache.LiteDB
 		/// <param name="key">Unique identifier for the entry to get</param>
 		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
 		/// <returns>The data object that was stored if found, else default(T)</returns>
-		public T GetObject<T>(string key, JsonSerializerSettings jsonSerializationSettings = null)
+		public T Get<T>(string key, JsonSerializerSettings jsonSerializationSettings = null)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				throw new ArgumentException("Key can not be null or empty.", nameof(key));
+
+			var result = default(T);
+
 			var ent = col.FindById(key);
 
 			if (ent == null)
-				return default(T);
+				return result;
+
+			if (Utils.IsString(result))
+			{
+				object final = ent.Contents;
+				return (T)final;
+			}
 
 			return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSerializationSettings ?? jsonSettings);
 		}
 
-		/// <summary>
-		/// Gets the string entry for the specified key.
-		/// </summary>
-		/// <param name="key">Unique identifier for the entry to get</param>
-		/// <returns>The string that was stored if found, else null</returns>
-		public string Get(string key)
-		{
-			var ent = col.FindById(key);
-
-			if (ent == null)
-				return null;
-
-			return ent.Contents;
-		}
 
 		/// <summary>
 		/// Gets the ETag for the specified key.
@@ -126,6 +129,9 @@ namespace MonkeyCache.LiteDB
 		/// <returns>The ETag if the key is found, else null</returns>
 		public string GetETag(string key)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				throw new ArgumentException("Key can not be null or empty.", nameof(key));
+
 			var ent = col.FindById(key);
 
 			if (ent == null)
@@ -141,6 +147,9 @@ namespace MonkeyCache.LiteDB
 		/// <returns>The expiration date if the key is found, else null</returns>
 		public DateTime? GetExpiration(string key)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				throw new ArgumentException("Key can not be null or empty.", nameof(key));
+
 			var ent = col.FindById(key);
 
 			if (ent == null)
@@ -161,7 +170,7 @@ namespace MonkeyCache.LiteDB
 		/// <param name="data">Data string to store</param>
 		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
 		/// <param name="eTag">Optional eTag information</param>
-		public void Add(string key, string data, TimeSpan expireIn, string eTag = null)
+		void Add(string key, string data, TimeSpan expireIn, string eTag = null)
 		{
 			if (data == null)
 				return;
@@ -186,12 +195,26 @@ namespace MonkeyCache.LiteDB
 		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
 		/// <param name="eTag">Optional eTag information</param>
 		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
-		public void AddObject<T>(string key, T data, TimeSpan expireIn, string eTag = null, JsonSerializerSettings jsonSerializationSettings = null)
+		public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null, JsonSerializerSettings jsonSerializationSettings = null)
 		{
-			if (data == null)
-				return;
+			if (string.IsNullOrWhiteSpace(key))
+				throw new ArgumentException("Key can not be null or empty.", nameof(key));
 
-			Add(key, JsonConvert.SerializeObject(data, jsonSerializationSettings ?? jsonSettings), expireIn, eTag);
+			if (data == null)
+				throw new ArgumentNullException("Data can not be null.", nameof(data));
+
+			var dataJson = string.Empty;
+
+			if (Utils.IsString(data))
+			{
+				dataJson = data as string;
+			}
+			else
+			{
+				dataJson = JsonConvert.SerializeObject(data, jsonSerializationSettings ?? jsonSettings);
+			}
+
+			Add(key, dataJson, expireIn, eTag);
 		}
 
 		#endregion
@@ -217,7 +240,12 @@ namespace MonkeyCache.LiteDB
 		public void Empty(params string[] key)
 		{
 			foreach (var k in key)
+			{
+				if (string.IsNullOrWhiteSpace(k))
+					continue;
+
 				col.Delete(k);
+			}
 		}
 		#endregion
 	}

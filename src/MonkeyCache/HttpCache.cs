@@ -49,7 +49,7 @@ namespace MonkeyCache
 		{
 			var url = req.RequestUri.ToString();
 
-			var contents = barrel.Get(url);
+			var contents = barrel.Get<string>(url);
 			var eTag = barrel.GetETag(url);
 
 			if (!forceUpdate && !string.IsNullOrEmpty(contents) && !barrel.IsExpired(url))

@@ -64,13 +64,13 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
     //Dev handle online/offline scenario
     if(!CrossConnectivity.Current.IsConnected)
     {
-        return Barrel.Current.GetObject<IEnumerable<Monkey>>(key: url);
+        return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
     }
     
     //Dev handles checking if cache is expired
     if(!Barrel.Current.IsExpired(key: url))
     {
-        return Barrel.Current.GetObject<IEnumerable<Monkey>>(key: url);
+        return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
     }
 
 
@@ -79,7 +79,7 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
     var monkeys = JsonConvert.DeserializeObject<IEnumerable<Monkey>>(json);
 
     //Saves the cache and pass it a timespan for expiration
-    Barrel.Current.AddObject(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
+    Barrel.Current.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
 
 }
 ```
@@ -92,10 +92,10 @@ public async Task<T> GetAsync<T>(string url, int days = 7, bool forceRefresh = f
     var json = string.Empty;
 
     if (!CrossConnectivity.Current.IsConnected)
-        json = Barrel.Current.Get(url);
+        json = Barrel.Current.Get<string>(url);
 
     if (!forceRefresh && !Barrel.Current.IsExpired(url))
-        json = Barrel.Current.Get(url);
+        json = Barrel.Current.Get<string>(url);
 
     try
     {
@@ -104,7 +104,7 @@ public async Task<T> GetAsync<T>(string url, int days = 7, bool forceRefresh = f
             json = await client.GetStringAsync(url);
             Barrel.Current.Add(url, json, TimeSpan.FromDays(days));
         }
-        return await Task.Run(() => JsonConvert.DeserializeObject<T>(json));
+        return JsonConvert.DeserializeObject<T>(json);
     }
     catch (Exception ex)
     {

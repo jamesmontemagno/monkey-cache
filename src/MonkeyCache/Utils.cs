@@ -17,6 +17,17 @@ namespace MonkeyCache
 {
 	internal static class Utils
 	{
+		internal static bool IsString<T>(T item)
+		{
+			var typeOf = typeof(T);
+			if (typeOf.IsGenericType && typeOf.GetGenericTypeDefinition() == typeof(Nullable<>))
+			{
+				typeOf = Nullable.GetUnderlyingType(typeOf);
+			}
+			var typeCode = Type.GetTypeCode(typeOf);
+			return typeCode == TypeCode.String;
+		}
+
 		public static string GetBasePath(string applicationId)
 		{
 			if (string.IsNullOrWhiteSpace(applicationId))

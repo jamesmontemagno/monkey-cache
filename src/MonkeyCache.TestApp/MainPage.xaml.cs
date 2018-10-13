@@ -71,17 +71,22 @@ namespace MonkeyCache.TestApp
                 return;
             }
             var monkey = new Monkey { Name =  EntryName.Text};
-			GetCurrent().AddObject<Monkey>("monkey", monkey, TimeSpan.FromDays(1));
+			GetCurrent().Add<Monkey>("monkey", monkey, TimeSpan.FromDays(1));
             DisplayAlert(":)", "Saved!", "OK");
         }
 
         private void ButtonLoad_Clicked(object sender, EventArgs e)
         {
-            var monkey = GetCurrent().GetObject<Monkey>("monkey");
-            if (monkey == null)
-                DisplayAlert(":(", "No Monkey", "OK");
-            else
-                DisplayAlert(":)", monkey.Name, "OK");
+            var monkey = GetCurrent().Get<Monkey>("monkey");
+			if (monkey == null)
+				DisplayAlert(":(", "No Monkey", "OK");
+			else
+			{
+				DisplayAlert(":)", monkey.Name, "OK");
+				var expired = GetCurrent().GetExpiration("monkey");
+
+			}
+
         }
     }
 }
