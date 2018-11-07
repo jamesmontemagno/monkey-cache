@@ -13,4 +13,12 @@ namespace MonkeyCache.Tests
 			barrel = Barrel.Current;
 		}
 	}
+	public partial class BarrelUtilTests
+	{
+		void SetupBarrel(ref IBarrel barrel)
+		{
+			Barrel.ApplicationId = "com.refractored.monkeyfile";
+			barrel = Barrel.Current;
+		}
+	}
 }

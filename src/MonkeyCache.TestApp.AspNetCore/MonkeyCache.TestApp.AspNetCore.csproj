@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="4.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
     <PackageReference Include="Ooui" Version="0.10.222" />
     <PackageReference Include="Ooui.AspNetCore" Version="0.10.222" />
     <PackageReference Include="Ooui.Forms" Version="0.10.222" />
