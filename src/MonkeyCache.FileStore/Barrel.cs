@@ -58,7 +58,7 @@ namespace MonkeyCache.FileStore
 
 				File.WriteAllText(path, data);
 
-				index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, Utils.GetExpiration(expireIn));
+				index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, BarrelUtils.GetExpiration(expireIn));
 
 				WriteIndex();
 			}
@@ -92,7 +92,7 @@ namespace MonkeyCache.FileStore
 
 			var dataJson = string.Empty;
 
-			if (Utils.IsString(data))
+			if (BarrelUtils.IsString(data))
 			{
 				dataJson = data as string;
 			}
@@ -240,7 +240,7 @@ namespace MonkeyCache.FileStore
 				if (index.ContainsKey(key) && File.Exists(path))
 				{
 					var contents = File.ReadAllText(path);
-					if (Utils.IsString(result))
+					if (BarrelUtils.IsString(result))
 					{
 						object final = contents;
 						return (T)final;
@@ -340,7 +340,7 @@ namespace MonkeyCache.FileStore
 
 		Lazy<string> baseDirectory = new Lazy<string>(() =>
 		{
-			return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCacheFS");
+			return Path.Combine(BarrelUtils.GetBasePath(ApplicationId), "MonkeyCacheFS");
 		});
 
 		Dictionary<string, Tuple<string, DateTime>> index;

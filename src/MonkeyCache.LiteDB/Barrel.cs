@@ -16,7 +16,7 @@ namespace MonkeyCache.LiteDB
 
 		static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
 		{
-			return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCache");
+			return Path.Combine(BarrelUtils.GetBasePath(ApplicationId), "MonkeyCache");
 		});
 
 		readonly LiteDatabase db;
@@ -52,8 +52,6 @@ namespace MonkeyCache.LiteDB
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 				TypeNameHandling = TypeNameHandling.All,
 			};
-
-
 		}
 
 		#region Exist and Expiration Methods
@@ -112,7 +110,7 @@ namespace MonkeyCache.LiteDB
 			if (ent == null)
 				return result;
 
-			if (Utils.IsString(result))
+			if (BarrelUtils.IsString(result))
 			{
 				object final = ent.Contents;
 				return (T)final;
@@ -178,7 +176,7 @@ namespace MonkeyCache.LiteDB
 			var ent = new Banana
 			{
 				Id = key,
-				ExpirationDate = Utils.GetExpiration(expireIn),
+				ExpirationDate = BarrelUtils.GetExpiration(expireIn),
 				ETag = eTag,
 				Contents = data
 			};
@@ -205,7 +203,7 @@ namespace MonkeyCache.LiteDB
 
 			var dataJson = string.Empty;
 
-			if (Utils.IsString(data))
+			if (BarrelUtils.IsString(data))
 			{
 				dataJson = data as string;
 			}

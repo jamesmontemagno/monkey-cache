@@ -9,6 +9,7 @@
     <Import_RootNamespace>MonkeyCache.TestsShared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BarrelUtilTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BarrelTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpCacheTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Monkey.cs" />

@@ -15,10 +15,9 @@ namespace MonkeyCache.SQLite
 	{
 		public static string ApplicationId { get; set; } = string.Empty;
 
-
 		static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
 		{
-			return Path.Combine(Utils.GetBasePath(ApplicationId), "MonkeyCache");
+			return Path.Combine(BarrelUtils.GetBasePath(ApplicationId), "MonkeyCache");
 		});
 
 		readonly SQLiteConnection db;
@@ -121,7 +120,7 @@ namespace MonkeyCache.SQLite
 			if (ent == null)
 				return result;
 
-			if (Utils.IsString(result))
+			if (BarrelUtils.IsString(result))
 			{
 				object final = ent.Contents;
 				return (T)final;
@@ -189,7 +188,7 @@ namespace MonkeyCache.SQLite
 			var ent = new Banana
 			{
 				Id = key,
-				ExpirationDate = Utils.GetExpiration(expireIn),
+				ExpirationDate = BarrelUtils.GetExpiration(expireIn),
 				ETag = eTag,
 				Contents = data
 			};
@@ -220,7 +219,7 @@ namespace MonkeyCache.SQLite
 
 			var dataJson = string.Empty;
 
-			if (Utils.IsString(data))
+			if (BarrelUtils.IsString(data))
 			{
 				dataJson = data as string;
 			}
