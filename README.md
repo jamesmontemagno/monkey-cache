@@ -1,7 +1,7 @@
 # 🐒Cache
 Easily cache any data structure for a specific amount of time in any .NET application.
 
-Monkey Cache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for Monkey Cache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A lightweight file based Monkey Cache is also provided.
+Monkey Cache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for Monkey Cache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A lightweight file based Monkey Cache is also provided if you aren't already using one of these options.
 
 Listen to our podcast [Merge Conflict: Episode 76](http://www.mergeconflict.fm/76) for an overview of Monkey Cache and it's creation.
 
@@ -41,10 +41,16 @@ Monkey Cache is a .NET Standard 2.0 library, but has some platform specific twea
 
 It is required that you set an ApplicationId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
 
-```
+```csharp
 Barrel.ApplicationId = "your_unique_name_here";
 ```
 
+### LiteDB Encryption
+LiteDB offers [built in encryption support](https://github.com/mbdavid/LiteDB/wiki/Connection-String), which can be enabled with a static string on Barrel before calling ANY method. You must choose this up front before saving any data.
+
+```csharp
+Barrel.EncryptionKey = "SomeKey";
+```
 
 ### What is Monkey Cache?
 
@@ -156,6 +162,16 @@ Cache will always be stored in the default platform specific location:
 |.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |ASP.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
+
+
+#### Persisting Data Longer
+Since the default is to use the Cache directories the platform can clean this up at any time.  If you want to change the base path of where the data is stored you can call the following static method:
+
+```csharp
+BarrelUtils.SetBaseCachePath("Path");
+```
+
+You MUST call this before initializing or accessing anything in the Barrel, and it can only ever be called once else it will throw an `InvalidOperationException`.
 
 
 ### FAQ
