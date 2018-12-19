@@ -21,6 +21,8 @@
         <Button Text="Save Monkey" x:Name="ButtonSave"/>
         <Button Text="Load" x:Name="ButtonLoad"/>
         <Button Text="Is Expired" x:Name="ButtonExpired"/>
-    </StackLayout>
+		<Button Text="All Keys" x:Name="ButtonAllKeys" />
+		<Label x:Name="Message" />
+	</StackLayout>
 
 </ContentPage>

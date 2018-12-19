@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using LiteDB;
 using Newtonsoft.Json;
@@ -91,6 +92,10 @@ namespace MonkeyCache.LiteDB
 		#endregion
 
 		#region Get Methods
+		public IEnumerable<string> GetAllKeys()
+		{
+			return new string[0];
+		}
 
 		/// <summary>
 		/// Gets the data entry for the specified key.

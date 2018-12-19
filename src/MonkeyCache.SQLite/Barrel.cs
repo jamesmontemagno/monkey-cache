@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using SQLite;
 using Newtonsoft.Json;
-
+using System.Collections.Generic;
 
 namespace MonkeyCache.SQLite
 {
@@ -97,6 +97,14 @@ namespace MonkeyCache.SQLite
 		#endregion
 
 		#region Get Methods
+		public IEnumerable<string> GetAllKeys()
+		{
+			return new[]
+			{
+				"test",
+				"monkeY"
+			};
+		}
 
 		/// <summary>
 		/// Gets the data entry for the specified key.

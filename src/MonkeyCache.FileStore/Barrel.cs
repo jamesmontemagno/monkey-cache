@@ -216,6 +216,11 @@ namespace MonkeyCache.FileStore
 			return exists;
 		}
 
+		public IEnumerable<string> GetAllKeys()
+		{
+			return new string[0];
+		}
+
 
 		/// <summary>
 		/// Gets the data entry for the specified key.

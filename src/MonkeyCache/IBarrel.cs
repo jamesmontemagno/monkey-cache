@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace MonkeyCache
 {
@@ -10,6 +11,7 @@ namespace MonkeyCache
 		void EmptyAll();
 		void EmptyExpired();
 		bool Exists(string key);
+		IEnumerable<string> GetAllKeys();
 		T Get<T>(string key, JsonSerializerSettings jsonSettings = null);
 		string GetETag(string key);
 		bool IsExpired(string key);
