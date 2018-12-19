@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using LiteDB;
 using Newtonsoft.Json;
 
@@ -92,9 +93,17 @@ namespace MonkeyCache.LiteDB
 		#endregion
 
 		#region Get Methods
+		/// <summary>
+		/// Gets all the keys that are saved in the cache
+		/// </summary>
+		/// <returns>The IEnumerable of keys</returns>
 		public IEnumerable<string> GetAllKeys()
 		{
-			return new string[0];
+			var bananas = col.FindAll();
+
+			return bananas != null ?
+				bananas.Select(x => x.Id) :
+				new string[0];
 		}
 
 		/// <summary>
