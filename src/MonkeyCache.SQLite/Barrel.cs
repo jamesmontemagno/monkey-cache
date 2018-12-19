@@ -97,6 +97,10 @@ namespace MonkeyCache.SQLite
 		#endregion
 
 		#region Get Methods
+		/// <summary>
+		/// Gets all the keys that are saved in the cache
+		/// </summary>
+		/// <returns>The IEnumerable of keys</returns>
 		public IEnumerable<string> GetAllKeys()
 		{
 			IEnumerable<Banana> bananas;
