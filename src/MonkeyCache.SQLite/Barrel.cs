@@ -99,11 +99,15 @@ namespace MonkeyCache.SQLite
 		#region Get Methods
 		public IEnumerable<string> GetAllKeys()
 		{
-			return new[]
+			IEnumerable<Banana> bananas;
+			lock (dblock)
 			{
-				"test",
-				"monkeY"
-			};
+				bananas = db.Query<Banana>($"SELECT Id FROM {nameof(Banana)}");
+			}
+
+			return bananas != null ?
+				bananas.Select(x => x.Id) :
+				new string[0];
 		}
 
 		/// <summary>
