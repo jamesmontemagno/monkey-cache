@@ -216,9 +216,26 @@ namespace MonkeyCache.FileStore
 			return exists;
 		}
 
+		/// <summary>
+		/// Gets all the keys that are saved in the cache
+		/// </summary>
+		/// <returns>The IEnumerable of keys</returns>
 		public IEnumerable<string> GetAllKeys()
 		{
-			return new string[0];
+			indexLocker.EnterReadLock();
+
+			try
+			{
+				return index.Keys;
+			}
+			catch (Exception)
+			{
+				return new string[0];
+			}
+			finally
+			{
+				indexLocker.ExitReadLock();
+			}
 		}
 
 
