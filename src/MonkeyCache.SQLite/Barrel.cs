@@ -103,15 +103,32 @@ namespace MonkeyCache.SQLite
 		/// <returns>The IEnumerable of keys</returns>
 		public IEnumerable<string> GetAllKeys(CacheState state = CacheState.Active)
 		{
-			IEnumerable<Banana> bananas;
+			IEnumerable<Banana> allBananas;
 			lock (dblock)
 			{
-				bananas = db.Query<Banana>($"SELECT Id FROM {nameof(Banana)}");
+				allBananas = db.Query<Banana>($"SELECT Id FROM {nameof(Banana)}");
 			}
 
-			return bananas != null ?
-				bananas.Select(x => x.Id) :
-				new string[0];
+			if (allBananas != null)
+			{
+				var bananas = new List<Banana>();
+
+				if (state.HasFlag(CacheState.Active))
+				{
+					bananas = allBananas
+						.Where(x => GetExpiration(x.Id) >= DateTime.UtcNow)
+						.ToList();
+				}
+
+				if (state.HasFlag(CacheState.Expired))
+				{
+					bananas.AddRange(allBananas.Where(x => GetExpiration(x.Id) < DateTime.UtcNow));
+				}
+
+				return bananas.Select(x => x.Id);
+			}
+
+			return new string[0];
 		}
 
 		/// <summary>
