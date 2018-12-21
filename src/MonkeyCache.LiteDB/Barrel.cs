@@ -97,7 +97,7 @@ namespace MonkeyCache.LiteDB
 		/// Gets all the keys that are saved in the cache
 		/// </summary>
 		/// <returns>The IEnumerable of keys</returns>
-		public IEnumerable<string> GetAllKeys()
+		public IEnumerable<string> GetAllKeys(CacheState state = CacheState.Active)
 		{
 			var bananas = col.FindAll();
 
