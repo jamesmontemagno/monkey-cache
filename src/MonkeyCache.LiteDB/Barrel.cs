@@ -99,11 +99,28 @@ namespace MonkeyCache.LiteDB
 		/// <returns>The IEnumerable of keys</returns>
 		public IEnumerable<string> GetAllKeys(CacheState state = CacheState.Active)
 		{
-			var bananas = col.FindAll();
+			var allBananas = col.FindAll();
 
-			return bananas != null ?
-				bananas.Select(x => x.Id) :
-				new string[0];
+			if (allBananas != null)
+			{
+				var bananas = new List<Banana>();
+
+				if (state.HasFlag(CacheState.Active))
+				{
+					bananas = allBananas
+						.Where(x => GetExpiration(x.Id) >= DateTime.UtcNow)
+						.ToList();
+				}
+
+				if (state.HasFlag(CacheState.Expired))
+				{
+					bananas.AddRange(allBananas.Where(x => GetExpiration(x.Id) < DateTime.UtcNow));
+				}
+
+				return bananas.Select(x => x.Id);
+			}
+
+			return new string[0];
 		}
 
 		/// <summary>
