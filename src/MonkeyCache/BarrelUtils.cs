@@ -18,6 +18,9 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("MonkeyCache.TestsLiteDB")]
 namespace MonkeyCache
 {
+	/// <summary>
+	/// Barrel Utils
+	/// </summary>
 	public static class BarrelUtils
 	{
 		internal static string basePath;
@@ -69,6 +72,11 @@ namespace MonkeyCache
 			return Path.Combine(basePath, applicationId);
 		}
 
+		/// <summary>
+		/// Gets the expiration from a timespan
+		/// </summary>
+		/// <param name="timeSpan"></param>
+		/// <returns></returns>
 		internal static DateTime GetExpiration(TimeSpan timeSpan)
 		{
 			try
