@@ -19,9 +19,9 @@ You can follow the full project here: https://dev.azure.com/jamesmontemagno/Monk
 | ------------------- | -------- | :------------------: |
 |🐒 MonkeyCache|Contains base interfaces and helpers|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)|
 |🙊 MonkeyCache.SQLite|A SQLite backing for Monkey Cache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.SQLite.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.SQLite/)|
-|🙉 MonkeyCache.LiteDB|A LiteDB backing for Monkey Cache||[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.LiteDB.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.LiteDB/)|
-|🙈 MonkeyCache.FileStore|A local file based backing for Monkey Cache||[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.FileStore.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.FileStore/)|
-|Development Feed||[MyGet](http://myget.org/F/monkey-cache)|
+|🙉 MonkeyCache.LiteDB|A LiteDB backing for Monkey Cache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.LiteDB.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.LiteDB/)|
+|🙈 MonkeyCache.FileStore|A local file based backing for Monkey Cache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.FileStore.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.FileStore/)|
+|Development Feed| |[MyGet](http://myget.org/F/monkey-cache)|
 
 ## Platform Support
 
