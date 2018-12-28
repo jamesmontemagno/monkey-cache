@@ -57,7 +57,7 @@ namespace MonkeyCache
 			
 			if (string.IsNullOrWhiteSpace(basePath))
 			{
-				///Gets full path based on device type.
+				// Gets full path based on device type.
 	#if __IOS__ || __MACOS__
 				basePath = NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
 	#elif __ANDROID__
