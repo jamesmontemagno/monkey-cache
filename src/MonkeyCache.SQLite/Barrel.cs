@@ -101,7 +101,7 @@ namespace MonkeyCache.SQLite
 		/// Gets all the keys that are saved in the cache
 		/// </summary>
 		/// <returns>The IEnumerable of keys</returns>
-		public IEnumerable<string> GetAllKeys(CacheState state = CacheState.Active)
+		public IEnumerable<string> GetKeys(CacheState state = CacheState.Active)
 		{
 			IEnumerable<Banana> allBananas;
 			lock (dblock)

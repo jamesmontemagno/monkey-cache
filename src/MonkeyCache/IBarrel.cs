@@ -11,7 +11,7 @@ namespace MonkeyCache
 		void EmptyAll();
 		void EmptyExpired();
 		bool Exists(string key);
-		IEnumerable<string> GetAllKeys(CacheState state = CacheState.Active);
+		IEnumerable<string> GetKeys(CacheState state = CacheState.Active);
 		T Get<T>(string key, JsonSerializerSettings jsonSettings = null);
 		string GetETag(string key);
 		bool IsExpired(string key);

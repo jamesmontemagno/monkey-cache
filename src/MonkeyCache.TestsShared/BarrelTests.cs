@@ -80,7 +80,7 @@ namespace MonkeyCache.Tests
         }
 
 		[TestMethod]
-		public void GetAllKeysTest()
+		public void GetKeysTest()
 		{
 			barrel.EmptyAll();
 
@@ -90,14 +90,14 @@ namespace MonkeyCache.Tests
 				barrel.Add(key: item, data: item, expireIn: TimeSpan.FromDays(1));
 			}
 
-			var test1 = barrel.GetAllKeys(CacheState.Active | CacheState.Expired);
+			var test1 = barrel.GetKeys(CacheState.Active | CacheState.Expired);
 
-			var cachedKeys = barrel.GetAllKeys().OrderBy(x => x).ToArray();
+			var cachedKeys = barrel.GetKeys().OrderBy(x => x).ToArray();
 			Assert.IsNotNull(cachedKeys);
 			Assert.IsTrue(cachedKeys.Any());
-			for (int index = 0; index < cachedKeys.Length; index++)
+			for (var i = 0; i < cachedKeys.Length; i++)
 			{
-				Assert.AreEqual(keysToStore[index], cachedKeys[index]);
+				Assert.AreEqual(keysToStore[i], cachedKeys[i]);
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace MonkeyCache.Tests
 			barrel.Add("Two", "two", TimeSpan.FromDays(1));
 			barrel.Add("Three", "three", TimeSpan.FromDays(1));
 
-			var cachedKeys = barrel.GetAllKeys();
+			var cachedKeys = barrel.GetKeys();
 			Assert.IsNotNull(cachedKeys);
 			Assert.IsTrue(cachedKeys.Any());
 			Assert.AreEqual(2, cachedKeys.Count());
@@ -127,12 +127,13 @@ namespace MonkeyCache.Tests
 			barrel.Add("Two", "two", TimeSpan.FromDays(1));
 			barrel.Add("Three", "three", TimeSpan.FromDays(1));
 
-			var cachedKeys = barrel.GetAllKeys(CacheState.Active);
+			var cachedKeys = barrel.GetKeys(CacheState.Active);
 			Assert.IsNotNull(cachedKeys);
 			Assert.IsTrue(cachedKeys.Any());
 			Assert.AreEqual(2, cachedKeys.Count());
 			Assert.IsTrue(cachedKeys.Contains("Two"));
 			Assert.IsTrue(cachedKeys.Contains("Three"));
+			Assert.IsFalse(cachedKeys.Contains("One"));
 		}
 
 		[TestMethod]
@@ -144,11 +145,13 @@ namespace MonkeyCache.Tests
 			barrel.Add("Two", "two", TimeSpan.FromDays(1));
 			barrel.Add("Three", "three", TimeSpan.FromDays(1));
 
-			var cachedKeys = barrel.GetAllKeys(CacheState.Expired);
+			var cachedKeys = barrel.GetKeys(CacheState.Expired);
 			Assert.IsNotNull(cachedKeys);
 			Assert.IsTrue(cachedKeys.Any());
 			Assert.AreEqual(1, cachedKeys.Count());
 			Assert.IsTrue(cachedKeys.Contains("One"));
+			Assert.IsFalse(cachedKeys.Contains("Two"));
+			Assert.IsFalse(cachedKeys.Contains("Three"));
 		}
 
 		[TestMethod]
@@ -160,7 +163,7 @@ namespace MonkeyCache.Tests
 			barrel.Add("Two", "two", TimeSpan.FromDays(1));
 			barrel.Add("Three", "three", TimeSpan.FromDays(1));
 
-			var cachedKeys = barrel.GetAllKeys(CacheState.Active | CacheState.Expired);
+			var cachedKeys = barrel.GetKeys(CacheState.Active | CacheState.Expired);
 			Assert.IsNotNull(cachedKeys);
 			Assert.IsTrue(cachedKeys.Any());
 			Assert.AreEqual(3, cachedKeys.Count());
@@ -171,10 +174,10 @@ namespace MonkeyCache.Tests
 
 
 		[TestMethod]
-		public void GetAllKeysEmptyTest()
+		public void GetKeysEmptyTest()
 		{
 			barrel.EmptyAll();
-			var cachedKeys = barrel.GetAllKeys();
+			var cachedKeys = barrel.GetKeys();
 
 			Assert.IsNotNull(cachedKeys);
 			Assert.IsFalse(cachedKeys.Any());

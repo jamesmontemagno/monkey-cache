@@ -21,7 +21,16 @@
         <Button Text="Save Monkey" x:Name="ButtonSave"/>
         <Button Text="Load" x:Name="ButtonLoad"/>
         <Button Text="Is Expired" x:Name="ButtonExpired"/>
-		<Button Text="All Keys" x:Name="ButtonAllKeys" />
+		<Label Text="Get Keys Tests"/>
+		<Button Text="Get Keys" x:Name="ButtonAllKeys" />
+		<StackLayout Orientation="Horizontal">
+			<Label Text="Active"/>
+			<Switch x:Name="SwitchActive" IsToggled="True"/>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<Label Text="Expired"/>
+			<Switch x:Name="SwitchExpired" IsToggled="True"/>
+		</StackLayout>
 		<Label x:Name="Message" />
 	</StackLayout>
 

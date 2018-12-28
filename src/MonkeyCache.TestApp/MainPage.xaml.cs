@@ -46,7 +46,13 @@ namespace MonkeyCache.TestApp
 		{
 			if (string.IsNullOrEmpty(Message.Text))
 			{
-				var keys = GetCurrent().GetAllKeys();
+				var state = CacheState.None;
+				if (SwitchActive.IsToggled)
+					state = state | CacheState.Active;
+				if (SwitchExpired.IsToggled)
+					state = state | CacheState.Expired;
+
+				var keys = GetCurrent().GetKeys(state);
 				var message = new StringBuilder();
 				foreach (var item in keys)
 				{
