@@ -216,6 +216,47 @@ namespace MonkeyCache.FileStore
 			return exists;
 		}
 
+		/// <summary>
+		/// Gets all the keys that are saved in the cache
+		/// </summary>
+		/// <returns>The IEnumerable of keys</returns>
+		public IEnumerable<string> GetKeys(CacheState state = CacheState.Active)
+		{
+			indexLocker.EnterReadLock();
+
+			try
+			{
+				if (index != null)
+				{
+					var bananas = new List<KeyValuePair<string, Tuple<string, DateTime>>>();
+
+					if (state.HasFlag(CacheState.Active))
+					{
+						bananas = index
+							.Where(x => x.Value.Item2 >= DateTime.UtcNow)
+							.ToList();
+					}
+
+					if (state.HasFlag(CacheState.Expired))
+					{
+						bananas.AddRange(index.Where(x => x.Value.Item2 < DateTime.UtcNow));
+					}
+
+					return bananas.Select(x => x.Key);
+				}
+
+				return new string[0];
+			}
+			catch (Exception)
+			{
+				return new string[0];
+			}
+			finally
+			{
+				indexLocker.ExitReadLock();
+			}
+		}
+
 
 		/// <summary>
 		/// Gets the data entry for the specified key.

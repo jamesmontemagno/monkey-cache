@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.55">
+﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.61">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;Xamarin.WatchOS10;Xamarin.TVOS10;Xamarin.iOS10;MonoAndroid71;MonoAndroid80;MonoAndroid81;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
@@ -33,8 +33,7 @@
  
 
   <ItemGroup>
-    <PackageReference Condition=" '$(TargetFramework)' == 'uap10.0.16299' " Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.1.7" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
+	 <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 

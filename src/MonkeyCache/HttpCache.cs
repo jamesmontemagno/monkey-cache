@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MonkeyCache
 {
+	/// <summary>
+	/// Http cache utilities!
+	/// </summary>
 	public class HttpCache
 	{
 
@@ -28,11 +31,23 @@ namespace MonkeyCache
 				MaxAutomaticRedirections = 20,
 
 			};
-			var cli = new HttpClient(h);
-			cli.Timeout = timeout;
+			var cli = new HttpClient(h)
+			{
+				Timeout = timeout
+			};
 			return cli;
 		}
 
+		/// <summary>
+		/// Get a cahced item via web request.
+		/// </summary>
+		/// <param name="barrel">Barrel to use for cache</param>
+		/// <param name="url">Url to query</param>
+		/// <param name="timeout">Timeout to use</param>
+		/// <param name="expireIn">Set the item to expire in</param>
+		/// <param name="forceUpdate">Force an update from the server</param>
+		/// <param name="throttled">If the request should be throttled</param>
+		/// <returns>The cached or new active item.</returns>
 		public Task<string> GetCachedAsync(IBarrel barrel, string url, TimeSpan timeout, TimeSpan expireIn, bool forceUpdate = false, bool throttled = true)
 		{
 			var client = CreateClient(timeout);
@@ -41,10 +56,23 @@ namespace MonkeyCache
 		}
 	}
 
+	/// <summary>
+	/// Http cache extension helpers
+	/// </summary>
 	public static class HttpCacheExtensions
 	{
 		static System.Threading.SemaphoreSlim getThrottle = new System.Threading.SemaphoreSlim(4, 4);
 
+		/// <summary>
+		/// Send a cached requests
+		/// </summary>
+		/// <param name="http">Http client ot use</param>
+		/// <param name="barrel">Barrel to use for cache</param>
+		/// <param name="req">request to send</param>
+		/// <param name="expireIn">expire in</param>
+		/// <param name="forceUpdate">If we should force the update or not</param>
+		/// <param name="throttled">If throttled or not</param>
+		/// <returns>The new or cached response.</returns>
 		public static async Task<string> SendCachedAsync(this HttpClient http, IBarrel barrel, HttpRequestMessage req, TimeSpan expireIn, bool forceUpdate = false, bool throttled = true)
 		{
 			var url = req.RequestUri.ToString();
@@ -97,14 +125,25 @@ namespace MonkeyCache
 		}
 	}
 
+	/// <summary>
+	/// Http request exception
+	/// </summary>
 	public class HttpCacheRequestException : HttpRequestException
 	{
+		/// <summary>
+		/// Constructor for cache exception
+		/// </summary>
+		/// <param name="statusCode">The code</param>
+		/// <param name="message">Message</param>
 		public HttpCacheRequestException (HttpStatusCode statusCode, string message) 
 			: base (message)
 		{
 			StatusCode = statusCode;
 		}
 
+		/// <summary>
+		/// Status code
+		/// </summary>
 		public HttpStatusCode StatusCode { get; private set; }
 	}
 }

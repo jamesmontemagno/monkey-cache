@@ -38,10 +38,37 @@ namespace MonkeyCache.TestApp
 
 
 			ButtonExpired.Clicked += ButtonExpired_Clicked;
+			ButtonAllKeys.Clicked += ButtonAllKeys_Clicked;
 
         }
 
-        private void ButtonExpired_Clicked(object sender, EventArgs e)
+		private void ButtonAllKeys_Clicked(object sender, EventArgs e)
+		{
+			if (string.IsNullOrEmpty(Message.Text))
+			{
+				var state = CacheState.None;
+				if (SwitchActive.IsToggled)
+					state = state | CacheState.Active;
+				if (SwitchExpired.IsToggled)
+					state = state | CacheState.Expired;
+
+				var keys = GetCurrent().GetKeys(state);
+				var message = new StringBuilder();
+				foreach (var item in keys)
+				{
+					message.Append(item);
+					message.Append(Environment.NewLine);
+				}
+
+				Message.Text = message.ToString();
+			}
+			else
+			{
+				Message.Text = string.Empty;
+			}
+		}
+
+		private void ButtonExpired_Clicked(object sender, EventArgs e)
 		{
 			
 
