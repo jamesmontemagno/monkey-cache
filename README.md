@@ -13,17 +13,17 @@ You can follow the full project here: https://dev.azure.com/jamesmontemagno/Monk
 
 **Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/6/badge)
 
-**NuGets**
+## NuGets
 
-|Name|Info|
-| ------------------- | :------------------: |
-|🐒 MonkeyCache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)|
-|🙊 MonkeyCache.SQLite|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.SQLite.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.SQLite/)|
-|🙉 MonkeyCache.LiteDB|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.LiteDB.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.LiteDB/)|
-|🙈 MonkeyCache.FileStore|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.FileStore.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.FileStore/)|
-|Development Feed|[MyGet](http://myget.org/F/monkey-cache)|
+|Name|Description|NuGet|
+| ------------------- | -------- | :------------------: |
+|🐒 MonkeyCache|Contains base interfaces and helpers|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache/)|
+|🙊 MonkeyCache.SQLite|A SQLite backing for Monkey Cache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.SQLite.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.SQLite/)|
+|🙉 MonkeyCache.LiteDB|A LiteDB backing for Monkey Cache||[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.LiteDB.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.LiteDB/)|
+|🙈 MonkeyCache.FileStore|A local file based backing for Monkey Cache||[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.FileStore.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.FileStore/)|
+|Development Feed||[MyGet](http://myget.org/F/monkey-cache)|
 
-**Platform Support**
+## Platform Support
 
 Monkey Cache is a .NET Standard 2.0 library, but has some platform specific tweaks for storing data in the correct Cache directory.
 
@@ -38,6 +38,8 @@ Monkey Cache is a .NET Standard 2.0 library, but has some platform specific twea
 |.NET|4.6.1+|
 
 ## Setup
+
+First, select an implementation of **Monkey Cache** that you would like (LiteDB, SQLite, or FileStore). Install the specific NuGet for that implementation, which will also install the base **MonkeyCache** library. Installing **MonkeyCache** without an implementation will only give you the high level interfaces. 
 
 It is required that you set an ApplicationId for your application so a folder is created specifically for your app on disk. This can be done with a static string on Barrel before calling ANY method:
 
