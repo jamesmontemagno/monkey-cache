@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using LiteDB;
 using Newtonsoft.Json;
 
@@ -91,6 +93,35 @@ namespace MonkeyCache.LiteDB
 		#endregion
 
 		#region Get Methods
+		/// <summary>
+		/// Gets all the keys that are saved in the cache
+		/// </summary>
+		/// <returns>The IEnumerable of keys</returns>
+		public IEnumerable<string> GetAllKeys(CacheState state = CacheState.Active)
+		{
+			var allBananas = col.FindAll();
+
+			if (allBananas != null)
+			{
+				var bananas = new List<Banana>();
+
+				if (state.HasFlag(CacheState.Active))
+				{
+					bananas = allBananas
+						.Where(x => GetExpiration(x.Id) >= DateTime.UtcNow)
+						.ToList();
+				}
+
+				if (state.HasFlag(CacheState.Expired))
+				{
+					bananas.AddRange(allBananas.Where(x => GetExpiration(x.Id) < DateTime.UtcNow));
+				}
+
+				return bananas.Select(x => x.Id);
+			}
+
+			return new string[0];
+		}
 
 		/// <summary>
 		/// Gets the data entry for the specified key.
