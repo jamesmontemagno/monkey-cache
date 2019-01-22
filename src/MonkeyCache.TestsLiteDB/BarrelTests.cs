@@ -7,12 +7,21 @@ namespace MonkeyCache.Tests
 {
     public partial class BarrelTests
     {
-		void SetupBarrel()
+		public virtual void SetupBarrel()
 		{
 			Barrel.ApplicationId = "com.refractored.monkeylite";
 			barrel = Barrel.Current;
 		}
 	}
+	public partial class CustomDirBarrelTests
+	{
+		public override void SetupBarrel()
+		{
+			var dir = BarrelUtils.GetBasePath("com.refractored.monkeylite.customdir");
+			this.barrel = Barrel.Create(dir);
+		}
+	}
+
 	public partial class BarrelUtilTests
 	{
 		void SetupBarrel(ref IBarrel barrel)

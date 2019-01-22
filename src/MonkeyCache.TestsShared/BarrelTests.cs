@@ -17,7 +17,7 @@ namespace MonkeyCache.Tests
 
         string url;
         string json;
-        IBarrel barrel;
+        internal IBarrel barrel;
 
         [TestInitialize]
         public void Setup()
@@ -524,5 +524,10 @@ namespace MonkeyCache.Tests
 
 		[TestCleanup]
 		public void Teardown() => barrel?.EmptyAll();
+	}
+
+	[TestClass]
+	public partial class CustomDirBarrelTests : BarrelTests
+	{
 	}
 }
