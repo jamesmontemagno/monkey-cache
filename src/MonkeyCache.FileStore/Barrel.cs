@@ -13,9 +13,17 @@ namespace MonkeyCache.FileStore
 	{
 		ReaderWriterLockSlim indexLocker;
 		readonly JsonSerializerSettings jsonSettings;
+		Lazy<string> baseDirectory;
 
-		Barrel()
+		Barrel(string cacheDirectory = null)
 		{
+			baseDirectory = new Lazy<string>(() =>
+			{
+				return string.IsNullOrEmpty(cacheDirectory) ?
+					Path.Combine(BarrelUtils.GetBasePath(ApplicationId), "MonkeyCacheFS")
+					: cacheDirectory;
+			});
+
 			indexLocker = new ReaderWriterLockSlim();
 
 			jsonSettings = new JsonSerializerSettings
@@ -39,6 +47,9 @@ namespace MonkeyCache.FileStore
 		/// Gets the instance of the Barrel
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
+
+		public static IBarrel Create(string cacheDirectory) =>
+			new Barrel(cacheDirectory);
 
 		/// <summary>
 		/// Adds an entry to the barrel
@@ -378,11 +389,6 @@ namespace MonkeyCache.FileStore
 
 			return expired;
 		}
-
-		Lazy<string> baseDirectory = new Lazy<string>(() =>
-		{
-			return Path.Combine(BarrelUtils.GetBasePath(ApplicationId), "MonkeyCacheFS");
-		});
 
 		Dictionary<string, Tuple<string, DateTime>> index;
 

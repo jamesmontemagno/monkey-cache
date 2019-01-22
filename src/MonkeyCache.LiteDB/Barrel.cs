@@ -32,10 +32,13 @@ namespace MonkeyCache.LiteDB
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
+		public static IBarrel Create(string cacheDirectory)
+			=> new Barrel(cacheDirectory);
+
 		readonly JsonSerializerSettings jsonSettings;
-		Barrel()
+		Barrel(string cacheDirectory = null)
 		{
-			var directory = baseCacheDir.Value;
+			var directory = string.IsNullOrEmpty(cacheDirectory) ? baseCacheDir.Value : cacheDirectory;
 			var path = Path.Combine(directory, "Barrel.db");
 			if (!Directory.Exists(directory))
 			{
