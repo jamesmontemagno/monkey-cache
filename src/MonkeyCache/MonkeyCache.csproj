@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.61">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;Xamarin.WatchOS10;Xamarin.TVOS10;Xamarin.iOS10;MonoAndroid71;MonoAndroid80;MonoAndroid81;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;Xamarin.WatchOS10;Xamarin.TVOS10;Xamarin.iOS10;MonoAndroid71;MonoAndroid80;MonoAndroid81;MonoAndroid90;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
@@ -18,7 +18,7 @@
     <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
     <Title>🐒 MonkeyCache.Core - A .NET Caching Library</Title>
     <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data.</Description>
-    <Copyright>2017 Refractored LLC &amp; James Montemagno</Copyright>
+    <Copyright>2019 Refractored LLC &amp; James Montemagno</Copyright>
     <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
     <PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
 
@@ -28,11 +28,26 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RootNamespace>MonkeyCache</RootNamespace>
     <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
-  </PropertyGroup>
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
+		<!-- sourcelink: Declare that the Repository URL can be published to NuSpec -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<!-- sourcelink: Embed source files that are not tracked by the source control manager to the PDB -->
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<!-- sourcelink: Include PDB in the built .nupkg -->
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	</PropertyGroup>
+	<ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
+	</ItemGroup>
 
 
   <ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="11.0.2"/>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <Reference Condition=" '$(TargetFramework)' == 'Xamarin.Mac20' " Include="System.Net.Http" />
   </ItemGroup>
 </Project>
