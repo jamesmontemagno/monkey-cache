@@ -67,6 +67,9 @@ namespace MonkeyCache.FileStore
 				var hash = Hash(key);
 				var path = Path.Combine(baseDirectory.Value, hash);
 
+				if (!Directory.Exists(baseDirectory.Value))
+					Directory.CreateDirectory(baseDirectory.Value);
+
 				File.WriteAllText(path, data);
 
 				index[key] = new Tuple<string, DateTime>(eTag ?? string.Empty, BarrelUtils.GetExpiration(expireIn));
@@ -131,7 +134,10 @@ namespace MonkeyCache.FileStore
 					if (string.IsNullOrWhiteSpace(k))
 						continue;
 
-					File.Delete(Path.Combine(baseDirectory.Value, Hash(k)));
+					var file = Path.Combine(baseDirectory.Value, Hash(k));
+					if(File.Exists(file))
+						File.Delete(file);
+
 					index.Remove(k);
 				}
 
@@ -156,7 +162,9 @@ namespace MonkeyCache.FileStore
 				foreach (var item in index)
 				{
 					var hash = Hash(item.Key);
-					File.Delete(Path.Combine(baseDirectory.Value, hash));
+					var file = Path.Combine(baseDirectory.Value, hash);
+					if(File.Exists(file))
+						File.Delete(file);
 				}
 
 				index.Clear();
@@ -186,7 +194,9 @@ namespace MonkeyCache.FileStore
 				foreach (var item in expired)
 				{
 					var hash = Hash(item.Key);
-					File.Delete(Path.Combine(baseDirectory.Value, hash));
+					var file = Path.Combine(baseDirectory.Value, hash);
+					if (File.Exists(file))
+						File.Delete(file);
 					toRem.Add(item.Key);
 				}
 

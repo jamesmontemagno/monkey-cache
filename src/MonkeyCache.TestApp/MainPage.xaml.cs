@@ -39,8 +39,14 @@ namespace MonkeyCache.TestApp
 
 			ButtonExpired.Clicked += ButtonExpired_Clicked;
 			ButtonAllKeys.Clicked += ButtonAllKeys_Clicked;
+			ButtonEmpty.Clicked += ButtonEmpty_Clicked;
 
         }
+
+		private void ButtonEmpty_Clicked(object sender, EventArgs e)
+		{
+			GetCurrent().EmptyAll();
+		}
 
 		private void ButtonAllKeys_Clicked(object sender, EventArgs e)
 		{
