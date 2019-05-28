@@ -43,7 +43,7 @@ namespace MonkeyCache.SQLite
 				Directory.CreateDirectory(directory);
 			}
 
-			db = new SQLiteConnection(path);
+			db = new SQLiteConnection(path, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex);
 			db.CreateTable<Banana>();
 
 			jsonSettings = new JsonSerializerSettings
