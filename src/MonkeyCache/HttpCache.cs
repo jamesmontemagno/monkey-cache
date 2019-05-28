@@ -23,8 +23,6 @@ namespace MonkeyCache
 		{
 		}
 
-		internal static HttpClient client;
-
 		internal HttpClient CreateClient(TimeSpan timeout)
 		{
 			var h = new HttpClientHandler {
@@ -33,17 +31,11 @@ namespace MonkeyCache
 				MaxAutomaticRedirections = 20,
 
 			};
-			if(client == null)
+
+			var client = new HttpClient(h)
 			{
-				client = new HttpClient(h)
-				{
-					Timeout = timeout
-				};
-			}
-			else
-			{
-				client.Timeout = timeout;
-			}
+				Timeout = timeout
+			};
 
 			return client;
 		}
