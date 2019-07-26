@@ -45,8 +45,17 @@ namespace MonkeyCache.LiteDB
 				Directory.CreateDirectory(directory);
 			}
 
+#if __MACOS__
+
+			if (!string.IsNullOrWhiteSpace(EncryptionKey))
+				path = $"Filename={path}; Password={EncryptionKey}; Mode=Exclusive";
+			else
+				path = $"Filename={path}; Mode=Exclusive";
+#else
+			
 			if (!string.IsNullOrWhiteSpace(EncryptionKey))
 				path = $"Filename={path}; Password={EncryptionKey}";
+#endif
 
 			db = new LiteDatabase(path);
 			col = db.GetCollection<Banana>();
@@ -59,7 +68,7 @@ namespace MonkeyCache.LiteDB
 			};
 		}
 
-		#region Exist and Expiration Methods
+#region Exist and Expiration Methods
 		/// <summary>
 		/// Checks to see if the key exists in the Barrel.
 		/// </summary>
@@ -93,9 +102,9 @@ namespace MonkeyCache.LiteDB
 			return DateTime.UtcNow > ent.ExpirationDate.ToUniversalTime();
 		}
 
-		#endregion
+#endregion
 
-		#region Get Methods
+#region Get Methods
 		/// <summary>
 		/// Gets all the keys that are saved in the cache
 		/// </summary>
@@ -190,9 +199,9 @@ namespace MonkeyCache.LiteDB
 			return ent.ExpirationDate;
 		}
 
-		#endregion
+#endregion
 
-		#region Add Methods
+#region Add Methods
 
 		/// <summary>
 		/// Adds a string netry to the barrel
@@ -249,9 +258,9 @@ namespace MonkeyCache.LiteDB
 			Add(key, dataJson, expireIn, eTag);
 		}
 
-		#endregion
+#endregion
 
-		#region Empty Methods
+#region Empty Methods
 		/// <summary>
 		/// Empties all expired entries that are in the Barrel.
 		/// Throws an exception if any deletions fail and rolls back changes.
@@ -279,6 +288,6 @@ namespace MonkeyCache.LiteDB
 				col.Delete(k);
 			}
 		}
-		#endregion
+#endregion
 	}
 }
