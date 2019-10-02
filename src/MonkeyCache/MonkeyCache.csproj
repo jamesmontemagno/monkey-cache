@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.31">
+﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;Xamarin.WatchOS10;Xamarin.TVOS10;Xamarin.iOS10;MonoAndroid71;MonoAndroid80;MonoAndroid81;MonoAndroid90;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
