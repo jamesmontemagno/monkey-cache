@@ -24,7 +24,7 @@ namespace MonkeyCache.FileStore
 					: cacheDirectory;
 			});
 
-			indexLocker = new ReaderWriterLockSlim();
+			indexLocker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
 			jsonSettings = new JsonSerializerSettings
 			{
@@ -40,6 +40,8 @@ namespace MonkeyCache.FileStore
 		}
 
 		public static string ApplicationId { get; set; } = string.Empty;
+
+		public bool AutoExpire { get ; set; }
 
 		static Barrel instance = null;
 
@@ -278,7 +280,6 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
-
 		/// <summary>
 		/// Gets the data entry for the specified key.
 		/// </summary>
@@ -299,7 +300,7 @@ namespace MonkeyCache.FileStore
 				var hash = Hash(key);
 				var path = Path.Combine(baseDirectory.Value, hash);
 
-				if (index.ContainsKey(key) && File.Exists(path))
+				if (index.ContainsKey(key) && File.Exists(path) && (!AutoExpire || (AutoExpire && !IsExpired(key))))
 				{
 					var contents = File.ReadAllText(path);
 					if (BarrelUtils.IsString(result))
@@ -461,7 +462,6 @@ namespace MonkeyCache.FileStore
 			var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
 			return BitConverter.ToString(data);
 		}
-
 
 		static readonly DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 

@@ -4,34 +4,49 @@
              xmlns:local="clr-namespace:MonkeyCache.TestApp"
              x:Class="MonkeyCache.TestApp.MainPage">
 
-    <StackLayout Padding="20">
+	<StackLayout Padding="20">
 		<StackLayout Orientation="Horizontal">
 			<Label Text="Use SQLite"/>
 			<Switch x:Name="UseSQLite" IsToggled="True"/>
 		</StackLayout>
+		
 		<StackLayout Orientation="Horizontal">
-		<Label Text="Use LiteDB"/>
+			<Label Text="Use LiteDB"/>
 			<Switch x:Name="UseLiteDB" IsToggled="False"/>
 		</StackLayout>
+		
 		<StackLayout Orientation="Horizontal">
 			<Label Text="Use FileStore"/>
 			<Switch x:Name="UseFileStore" IsToggled="False"/>
 		</StackLayout>
+		
 		<Entry Placeholder="Enter Name" HeightRequest="40" x:Name="EntryName"/>
-        <Button Text="Save Monkey" x:Name="ButtonSave"/>
+
+		<StackLayout Orientation="Horizontal">
+			<Button Text="Save Monkey" x:Name="ButtonSave"/>
+			<Button Text="Save Monkey expired" x:Name="ButtonSaveExpired"/>
+		</StackLayout>
 		<Button Text="Load" x:Name="ButtonLoad"/>
 		<Button Text="Is Expired" x:Name="ButtonExpired"/>
 		<Button Text="Empty All" x:Name="ButtonEmpty"/>
 		<Label Text="Get Keys Tests"/>
 		<Button Text="Get Keys" x:Name="ButtonAllKeys" />
+		
 		<StackLayout Orientation="Horizontal">
 			<Label Text="Active"/>
 			<Switch x:Name="SwitchActive" IsToggled="True"/>
 		</StackLayout>
+		
 		<StackLayout Orientation="Horizontal">
 			<Label Text="Expired"/>
 			<Switch x:Name="SwitchExpired" IsToggled="True"/>
 		</StackLayout>
+
+		<StackLayout Orientation="Horizontal">
+			<Label Text="Auto expire"/>
+			<Switch x:Name="SwitchAutoExpire" IsToggled="False" Toggled="SwitchAutoExpire_Toggled"/>
+		</StackLayout>
+
 		<Label x:Name="Message" />
 	</StackLayout>
 
