@@ -23,6 +23,8 @@ namespace MonkeyCache.SQLite
 		readonly SQLiteConnection db;
 		readonly object dblock = new object();
 
+		public bool AutoExpire { get; set; }
+
 		static Barrel instance = null;
 
 		/// <summary>
@@ -152,7 +154,7 @@ namespace MonkeyCache.SQLite
 
 			var result = default(T);
 
-			if (ent == null)
+			if (ent == null || (AutoExpire && IsExpired(key)))
 				return result;
 
 			if (BarrelUtils.IsString(result))

@@ -10,6 +10,11 @@ namespace MonkeyCache
 	public interface IBarrel
 	{
 		/// <summary>
+		/// Enable / Disable auto expiring of items in the barrel
+		/// </summary>
+		bool AutoExpire { get; set; }
+
+		/// <summary>
 		/// Add an item to the barrel
 		/// </summary>
 		/// <typeparam name="T">Type of item</typeparam>
@@ -57,6 +62,9 @@ namespace MonkeyCache
 		/// <param name="key">Key to use</param>
 		/// <param name="jsonSettings">json serialization settings to use.</param>
 		/// <returns>The object back if it exists, else null</returns>
+		/// <remarks>
+		/// When AutoExpire is set to true, Get<T> will return NULL if the item is expired
+		/// </remarks>
 		T Get<T>(string key, JsonSerializerSettings jsonSettings = null);
 
 		/// <summary>

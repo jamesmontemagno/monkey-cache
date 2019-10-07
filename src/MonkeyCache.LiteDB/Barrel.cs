@@ -23,6 +23,7 @@ namespace MonkeyCache.LiteDB
 
 		readonly LiteDatabase db;
 
+		public bool AutoExpire { get; set; }
 
 		static Barrel instance = null;
 		static LiteCollection<Banana> col;
@@ -150,7 +151,7 @@ namespace MonkeyCache.LiteDB
 
 			var ent = col.FindById(key);
 
-			if (ent == null)
+			if (ent == null || (AutoExpire && IsExpired(key)))
 				return result;
 
 			if (BarrelUtils.IsString(result))
