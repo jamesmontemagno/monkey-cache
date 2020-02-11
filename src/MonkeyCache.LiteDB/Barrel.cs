@@ -26,7 +26,7 @@ namespace MonkeyCache.LiteDB
 		public bool AutoExpire { get; set; }
 
 		static Barrel instance = null;
-		static LiteCollection<Banana> col;
+		static ILiteCollection<Banana> col;
 
 		/// <summary>
 		/// Gets the instance of the Barrel
@@ -266,13 +266,13 @@ namespace MonkeyCache.LiteDB
 		/// Empties all expired entries that are in the Barrel.
 		/// Throws an exception if any deletions fail and rolls back changes.
 		/// </summary>
-		public void EmptyExpired() => col.Delete(b => b.ExpirationDate.ToUniversalTime() < DateTime.UtcNow);
+		public void EmptyExpired() => col.DeleteMany(b => b.ExpirationDate.ToUniversalTime() < DateTime.UtcNow);
 
 		/// <summary>
 		/// Empties all expired entries that are in the Barrel.
 		/// Throws an exception if any deletions fail and rolls back changes.
 		/// </summary>
-		public void EmptyAll() => col.Delete(Query.All());
+		public void EmptyAll() => col.DeleteMany(b => b.Id != null);
 
 		/// <summary>
 		/// Empties all specified entries regardless if they are expired.
