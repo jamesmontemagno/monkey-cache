@@ -11,7 +11,8 @@ using Newtonsoft.Json;
 namespace MonkeyCache.Tests
 {
     [TestClass]
-    public partial class BarrelTests
+	[DoNotParallelize()]
+	public partial class BarrelTests
     {
         IEnumerable<Monkey> monkeys;
 
@@ -527,6 +528,7 @@ namespace MonkeyCache.Tests
 	}
 
 	[TestClass]
+	[DoNotParallelize()]
 	public partial class CustomDirBarrelTests : BarrelTests
 	{
 	}

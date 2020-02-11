@@ -33,8 +33,15 @@ namespace MonkeyCache.LiteDB
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
-		public static IBarrel Create(string cacheDirectory)
-			=> new Barrel(cacheDirectory);
+		public static IBarrel Create(string cacheDirectory, bool cache = false)
+		{
+			if (!cache)
+				return new Barrel(cacheDirectory);
+
+			if(instance == null)
+				instance = new Barrel(cacheDirectory);
+			return instance;
+		}
 
 		readonly JsonSerializerSettings jsonSettings;
 		Barrel(string cacheDirectory = null)
@@ -259,14 +266,17 @@ namespace MonkeyCache.LiteDB
 			Add(key, dataJson, expireIn, eTag);
 		}
 
-#endregion
+		#endregion
 
-#region Empty Methods
+		#region Empty Methods
 		/// <summary>
 		/// Empties all expired entries that are in the Barrel.
 		/// Throws an exception if any deletions fail and rolls back changes.
 		/// </summary>
-		public void EmptyExpired() => col.DeleteMany(b => b.ExpirationDate.ToUniversalTime() < DateTime.UtcNow);
+		public void EmptyExpired()
+		{
+			col.DeleteMany(b => b.ExpirationDate < DateTime.UtcNow);
+		}
 
 		/// <summary>
 		/// Empties all expired entries that are in the Barrel.
