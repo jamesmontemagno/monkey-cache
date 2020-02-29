@@ -25,22 +25,22 @@ namespace MonkeyCache.LiteDB
 
 		public bool AutoExpire { get; set; }
 
-		static Barrel instance = null;
+		static Lazy<Barrel> instance = new Lazy<Barrel>(() => new Barrel());
 		static ILiteCollection<Banana> col;
 
 		/// <summary>
 		/// Gets the instance of the Barrel
 		/// </summary>
-		public static IBarrel Current => (instance ?? (instance = new Barrel()));
+		public static IBarrel Current => instance.Value;
 
 		public static IBarrel Create(string cacheDirectory, bool cache = false)
 		{
 			if (!cache)
 				return new Barrel(cacheDirectory);
 
-			if(instance == null)
-				instance = new Barrel(cacheDirectory);
-			return instance;
+			if(!instance.IsValueCreated)
+				instance = new Lazy<Barrel>(() => new Barrel(cacheDirectory));
+			return instance.Value;
 		}
 
 		readonly JsonSerializerSettings jsonSettings;
