@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonkeyCache.SQLite", "MonkeyCache.SQLite\MonkeyCache.SQLite.csproj", "{EA91CB9D-339A-410E-8EF0-8B765D3BFE3C}"
 EndProject
@@ -46,7 +46,10 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		MonkeyCache.TestsShared\MonkeyCache.TestsShared.projitems*{4b54b117-44fe-46f9-977e-7d5772da5d3f}*SharedItemsImports = 13
+		MonkeyCache.TestsShared\MonkeyCache.TestsShared.projitems*{7d31449f-ec13-44f5-8aa8-0c5cc928fbd9}*SharedItemsImports = 5
+		MonkeyCache.TestsShared\MonkeyCache.TestsShared.projitems*{8f2c43e8-9618-4733-a0a8-5de90782df0f}*SharedItemsImports = 5
 		MonkeyCache.Shared\MonkeyCache.Shared.projitems*{e0c1434c-0663-4c0b-b35d-e88f4de2a608}*SharedItemsImports = 13
+		MonkeyCache.TestsShared\MonkeyCache.TestsShared.projitems*{f1a8b5f0-2da6-4002-9ceb-b21f880897bd}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
