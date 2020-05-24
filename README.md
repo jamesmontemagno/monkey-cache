@@ -60,7 +60,7 @@ The goal of Monkey Cache is to enable developers to easily cache any data for a 
 
 All data for Monkey Cache is stored and retrieved in a Barrel. 
 
-For instance you are making a web request and you get some `json` back from the server. You would want the ability to cache this data incase you go offline, but also you need it to expire after 24 hours.
+For instance you are making a web request and you get some `json` back from the server. You would want the ability to cache this data in case you go offline, but also you need it to expire after 24 hours.
 
 That may look something like this:
 
@@ -189,7 +189,7 @@ Monkey Cache enables you to easily store any type of data or just a simple strin
 
 
 #### Isn't this just Akavache?
-Akavache offers up a great and super fast asnchronous, pesistent key-value store that is based on SQLite and Reactive Extensions. I love me some Akavache and works great for applications, but wasn't exactly what I was looking for in a data caching library. Akavache offers up a lot of different features and really cool Reactive type of programming, but Monkey Cache focuses in on trying to create a drop dead simple API with a focus on data expiration. My goal was also to minimize dependencies on the NuGet package, which is why Monkey Cache offers a SQLite, LiteDB, or a simple FileStore implementation for use.
+Akavache offers up a great and super fast asynchronous, persistent key-value store that is based on SQLite and Reactive Extensions. I love me some Akavache and works great for applications, but wasn't exactly what I was looking for in a data caching library. Akavache offers up a lot of different features and really cool Reactive type of programming, but Monkey Cache focuses in on trying to create a drop dead simple API with a focus on data expiration. My goal was also to minimize dependencies on the NuGet package, which is why Monkey Cache offers a SQLite, LiteDB, or a simple FileStore implementation for use.
 
 #### How about the link settings?
 
