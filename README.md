@@ -35,7 +35,7 @@ Monkey Cache is a .NET Standard 2.0 library, but has some platform specific twea
 |Windows 10 UWP|10.0.16299+|
 |.NET Core|2.0+|
 |ASP.NET Core|2.0+|
-|.NET|4.6.1+|
+|.NET Framework|4.6.1+|
 
 ## Setup
 
@@ -163,7 +163,7 @@ Cache will always be stored in the default platform specific location:
 |Windows 10 UWP|Windows.Storage.ApplicationData.Current.LocalFolder.Path|
 |.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |ASP.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
-|.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
+|.NET Framework|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 
 
 #### Persisting Data Longer
