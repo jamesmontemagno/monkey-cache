@@ -11,7 +11,7 @@ A full breakdown of performance can be found in the performance.xlsx. When deali
 
 You can follow the full project here: https://dev.azure.com/jamesmontemagno/MonkeyCache
 
-**Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/6/badge)
+**Build Status**: ![](https://jamesmontemagno.visualstudio.com/_apis/public/build/definitions/00ee1525-d4f2-42b3-ab63-16f5d8b8aba0/6/badge?WT.mc_id=monkeycache-github-jamont)
 
 ## NuGets
 
