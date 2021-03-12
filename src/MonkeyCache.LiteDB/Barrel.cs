@@ -15,6 +15,7 @@ namespace MonkeyCache.LiteDB
 	{
 		public static string ApplicationId { get; set; } = string.Empty;
 		public static string EncryptionKey { get; set; } = string.Empty;
+		public static bool Upgrade { get; set; } = false;
 
 		static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
 		{
@@ -64,6 +65,8 @@ namespace MonkeyCache.LiteDB
 			if (!string.IsNullOrWhiteSpace(EncryptionKey))
 				path = $"Filename={path}; Password={EncryptionKey}";
 #endif
+			if(Upgrade)
+				path += ";Upgrade=true ";
 
 			db = new LiteDatabase(path);
 			col = db.GetCollection<Banana>();
