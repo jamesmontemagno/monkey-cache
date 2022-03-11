@@ -1,8 +1,9 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.44">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;Xamarin.WatchOS10;Xamarin.TVOS10;Xamarin.iOS10;MonoAndroid71;MonoAndroid80;MonoAndroid81;MonoAndroid90;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
-    <Product>$(AssemblyName) ($(TargetFramework))</Product>
+	<TargetFrameworks>netstandard2.0;MonoAndroid10.0;Xamarin.iOS10;Xamarin.TVOS10;Xamarin.Mac20;net6.0-android;net6.0-ios;net6.0-maccatalyst</TargetFrameworks>
+	<TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);uap10.0.19041;net6.0-windows10.0.19041;net461</TargetFrameworks>
+	<Product>$(AssemblyName) ($(TargetFramework))</Product>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
     <Version>1.0.0.0</Version>
@@ -22,7 +23,7 @@
 
     <PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
-    <Copyright>2020 Refractored LLC &amp; James Montemagno</Copyright>
+    <Copyright>2022 Refractored LLC &amp; James Montemagno</Copyright>
     
     <RootNamespace>MonkeyCache.LiteDB</RootNamespace>
 
@@ -45,13 +46,25 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
+	<PropertyGroup>
+		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-ios'))">10.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-tvos'))">10.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-maccatalyst'))">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-macos'))">10.14</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-android'))">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-windows10'))">10.0.16299.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$(TargetFramework.Contains('-windows10'))">10.0.16299.0</TargetPlatformMinVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition=" $(TargetFramework.StartsWith('uap10.0')) ">
+		<TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+	</PropertyGroup>
 
 
-  <ItemGroup>
-		<PackageReference Include="LiteDB" Version="5.0.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	<ItemGroup>
+		<PackageReference Include="LiteDB" Version="5.0.11" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   
   <ItemGroup>
