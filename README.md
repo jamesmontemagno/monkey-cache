@@ -54,6 +54,16 @@ LiteDB offers [built in encryption support](https://github.com/mbdavid/LiteDB/wi
 Barrel.EncryptionKey = "SomeKey";
 ```
 
+### LiteDB Upgrade (4 -> 5) | NuGet 1.3 -> 1.5
+
+If you are upgrading from 1.3 to 1.5 of the NuGet package it also went through an upgrade of LiteDB.
+
+You may need to do an upgrade of the database before using it. In your project you can set the folowing after setting your EncryptionKey or Applicationid:
+
+```csharp
+Barrel.Upgrade = true;
+```
+
 ### What is Monkey Cache?
 
 The goal of Monkey Cache is to enable developers to easily cache any data for a limited amount of time. It is not Monkey Cache's mission to handle network requests to get or post data, only to cache data easily.

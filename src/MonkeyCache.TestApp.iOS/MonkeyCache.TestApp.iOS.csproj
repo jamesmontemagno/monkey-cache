@@ -120,10 +120,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteDB">
-      <Version>5.0.8</Version>
+      <Version>5.0.10</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
-      <Version>1.7.335</Version>
+      <Version>1.8.116</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="2.5.0.122203" />
   </ItemGroup>
