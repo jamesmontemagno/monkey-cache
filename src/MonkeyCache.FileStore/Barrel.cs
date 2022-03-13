@@ -14,8 +14,14 @@ namespace MonkeyCache.FileStore
 		ReaderWriterLockSlim indexLocker;
 		readonly JsonSerializerSettings jsonSettings;
 		Lazy<string> baseDirectory;
+		HashAlgorithm hashAlgorithm;
 
-		Barrel(string cacheDirectory = null)
+		/// <summary>
+		/// FileStore Barrel constructor
+		/// </summary>
+		/// <param name="cacheDirectory">Optionally specify directory where cache will live</param>
+		/// <param name="hash">Optionally specify hash algorithm</param>
+		Barrel(string cacheDirectory = null, HashAlgorithm hash = null)
 		{
 			baseDirectory = new Lazy<string>(() =>
 			{
@@ -23,6 +29,10 @@ namespace MonkeyCache.FileStore
 					Path.Combine(BarrelUtils.GetBasePath(ApplicationId), "MonkeyCacheFS")
 					: cacheDirectory;
 			});
+
+			hashAlgorithm = hash;
+			if (hashAlgorithm == null)
+				hashAlgorithm = MD5.Create();
 
 			indexLocker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
@@ -50,8 +60,13 @@ namespace MonkeyCache.FileStore
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
-		public static IBarrel Create(string cacheDirectory) =>
-			new Barrel(cacheDirectory);
+		/// <summary>
+		/// FileStore Barrel
+		/// </summary>
+		/// <param name="cacheDirectory">Optionally specify directory where cache will live</param>
+		/// <param name="hash">Optionally specify hash algorithm</param>
+		public static IBarrel Create(string cacheDirectory, HashAlgorithm hash = null) =>
+			new Barrel(cacheDirectory, hash);
 
 		/// <summary>
 		/// Adds an entry to the barrel
@@ -456,10 +471,9 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
-		static string Hash(string input)
+		string Hash(string input)
 		{
-			var md5Hasher = MD5.Create();
-			var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
+			var data = hashAlgorithm.ComputeHash(Encoding.Default.GetBytes(input));
 			return BitConverter.ToString(data);
 		}
 
