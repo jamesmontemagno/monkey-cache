@@ -66,7 +66,7 @@ namespace MonkeyCache.LiteDB
 				path = $"Filename={path}; Password={EncryptionKey}";
 #endif
 			if(Upgrade)
-				path += ";Upgrade=true ";
+				path += "; Upgrade=true";
 
 			db = new LiteDatabase(path);
 			col = db.GetCollection<Banana>();
