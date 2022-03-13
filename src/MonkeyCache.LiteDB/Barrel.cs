@@ -64,6 +64,8 @@ namespace MonkeyCache.LiteDB
 			
 			if (!string.IsNullOrWhiteSpace(EncryptionKey))
 				path = $"Filename={path}; Password={EncryptionKey}";
+			else
+				path = $"Filename={path}";
 #endif
 			if(Upgrade)
 				path += "; Upgrade=true";
