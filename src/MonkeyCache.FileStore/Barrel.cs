@@ -60,8 +60,13 @@ namespace MonkeyCache.FileStore
 		/// </summary>
 		public static IBarrel Current => (instance ?? (instance = new Barrel()));
 
-		public static IBarrel Create(string cacheDirectory) =>
-			new Barrel(cacheDirectory);
+		/// <summary>
+		/// FileStore Barrel
+		/// </summary>
+		/// <param name="cacheDirectory">Optionally specify directory where cache will live</param>
+		/// <param name="hash">Optionally specify hash algorithm</param>
+		public static IBarrel Create(string cacheDirectory, HashAlgorithm hash = null) =>
+			new Barrel(cacheDirectory, hash);
 
 		/// <summary>
 		/// Adds an entry to the barrel
