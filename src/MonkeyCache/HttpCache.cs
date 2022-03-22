@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -75,6 +76,7 @@ namespace MonkeyCache
 		/// <param name="forceUpdate">If we should force the update or not</param>
 		/// <param name="throttled">If throttled or not</param>
 		/// <returns>The new or cached response.</returns>
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Only using string in IBarrel.Get and Add.")]
 		public static async Task<string> SendCachedAsync(this HttpClient http, IBarrel barrel, HttpRequestMessage req, TimeSpan expireIn, bool forceUpdate = false, bool throttled = true)
 		{
 			var url = req.RequestUri.ToString();
@@ -118,7 +120,7 @@ namespace MonkeyCache
 				// Cache it?
 				var newEtag = r.Headers.ETag != null ? r.Headers.ETag.Tag : null;
 				if (!string.IsNullOrEmpty(newEtag) && newEtag != etag)
-					barrel.Add(url, c, expireIn, newEtag);
+					barrel.Add(url, c, expireIn, eTag: newEtag);
 
 				return c;
 			} else {
