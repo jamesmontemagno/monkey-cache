@@ -62,7 +62,7 @@ namespace MonkeyCache
 				basePath = NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
 	#elif __ANDROID__
 				basePath = Application.Context.CacheDir.AbsolutePath;
-	#elif __UWP__
+	#elif __UWP__ || WINDOWS
 				basePath = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path;
 	#else
 				basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
