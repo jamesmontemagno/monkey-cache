@@ -1,35 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios;net6.0-maccatalyst;net6.0-windows10.0.19041</TargetFrameworks>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
-    <Version>2.0.0.0</Version>
-    <PackageVersion>2.0.0.0</PackageVersion>
-    <Authors>James Montemagno</Authors>
-    <PackageId>MonkeyCache.LiteDB</PackageId>
-    <PackOnBuild>true</PackOnBuild>
-    <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
-    <NeutralLanguage>en</NeutralLanguage>
-    <PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
-    <Owners>James Montemagno</Owners>
-    <PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
-    <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
-    <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>🙉 MonkeyCache.LiteDB - A .NET Caching Library</Title>
-    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by LiteDB.</Description>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
+		<Version>2.0.0.0</Version>
+		<PackageVersion>2.0.0.0</PackageVersion>
+		<Authors>James Montemagno</Authors>
+		<PackageId>MonkeyCache.LiteDB</PackageId>
+		<PackOnBuild>true</PackOnBuild>
+		<PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
+		<NeutralLanguage>en</NeutralLanguage>
+		<PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
+		<Owners>James Montemagno</Owners>
+		<PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
+		<Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
+		<PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
+		<Title>🙉 MonkeyCache.LiteDB - A .NET Caching Library</Title>
+		<Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by LiteDB.</Description>
 
-    <PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
-    <Copyright>2022 Refractored LLC &amp; James Montemagno</Copyright>
-    
-    <RootNamespace>MonkeyCache.LiteDB</RootNamespace>
+		<PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
+		<RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
+		<Copyright>2022 Refractored LLC &amp; James Montemagno</Copyright>
 
-    <LangVersion>default</LangVersion>
+		<RootNamespace>MonkeyCache.LiteDB</RootNamespace>
 
-    <DefineConstants>$(DefineConstants);LITEDB</DefineConstants>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<LangVersion>default</LangVersion>
+
+		<DefineConstants>$(DefineConstants);LITEDB</DefineConstants>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
 		<DebugType>portable</DebugType>
 		<IsTrimmable>true</IsTrimmable>
@@ -58,14 +58,14 @@
 
 	<ItemGroup>
 		<PackageReference Include="LiteDB" Version="5.0.11" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
 	</ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
-  </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
+	</ItemGroup>
 
 </Project>

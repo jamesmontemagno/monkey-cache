@@ -1,33 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios;net6.0-maccatalyst;net6.0-windows10.0.19041</TargetFrameworks>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
-    <Version>2.0.0.0</Version>
-    <PackageVersion>2.0.0.0</PackageVersion>
-    <Authors>James Montemagno</Authors>
-    <PackageId>MonkeyCache</PackageId>
-    <PackOnBuild>true</PackOnBuild>
-    <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
-    <NeutralLanguage>en</NeutralLanguage>
-    <PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
-    <Owners>James Montemagno</Owners>
-    <PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
-    <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Requires backend MonkeyCache package to be installed.</Summary>
-    <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>🐒 MonkeyCache.Core - A .NET Caching Library</Title>
-    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data.</Description>
-    <Copyright>2022 Refractored LLC &amp; James Montemagno</Copyright>
-    <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
-    <PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
+		<Version>2.0.0.0</Version>
+		<PackageVersion>2.0.0.0</PackageVersion>
+		<Authors>James Montemagno</Authors>
+		<PackageId>MonkeyCache</PackageId>
+		<PackOnBuild>true</PackOnBuild>
+		<PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
+		<NeutralLanguage>en</NeutralLanguage>
+		<PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
+		<Owners>James Montemagno</Owners>
+		<PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
+		<Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Requires backend MonkeyCache package to be installed.</Summary>
+		<PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
+		<Title>🐒 MonkeyCache.Core - A .NET Caching Library</Title>
+		<Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data.</Description>
+		<Copyright>2022 Refractored LLC &amp; James Montemagno</Copyright>
+		<RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
+		<PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
 
-    <LangVersion>default</LangVersion>
+		<LangVersion>default</LangVersion>
 
-    <DefineConstants>$(DefineConstants);</DefineConstants>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RootNamespace>MonkeyCache</RootNamespace>
-    <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
+		<DefineConstants>$(DefineConstants);</DefineConstants>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RootNamespace>MonkeyCache</RootNamespace>
+		<GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
 		<DebugType>portable</DebugType>
 		<IsTrimmable>true</IsTrimmable>
 	</PropertyGroup>
@@ -52,8 +52,4 @@
 		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-windows10'))">10.0.16299.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$(TargetFramework.Contains('-windows10'))">10.0.16299.0</TargetPlatformMinVersion>
 	</PropertyGroup>
-
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'">
-		<PackageReference Include="System.Text.Json" Version="6.0.2" />
-	</ItemGroup>
 </Project>
