@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-ios;net6.0-maccatalyst;net6.0-windows10.0.19041</TargetFrameworks>
+		<TargetFramework>net6.0</TargetFramework>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<AssemblyVersion>2.0.0.0</AssemblyVersion>
 		<AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
@@ -48,14 +48,6 @@
 	<ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
-
-	<PropertyGroup>
-		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-android'))">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-ios'))">10.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-maccatalyst'))">13.1</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-windows10'))">10.0.16299.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$(TargetFramework.Contains('-windows10'))">10.0.16299.0</TargetPlatformMinVersion>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />

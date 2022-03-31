@@ -56,19 +56,14 @@ namespace MonkeyCache.LiteDB
 				Directory.CreateDirectory(directory);
 			}
 
-#if __MACOS__
-
-			if (!string.IsNullOrWhiteSpace(EncryptionKey))
-				path = $"Filename={path}; Password={EncryptionKey}; Mode=Exclusive";
-			else
-				path = $"Filename={path}; Mode=Exclusive";
-#else
-			
 			if (!string.IsNullOrWhiteSpace(EncryptionKey))
 				path = $"Filename={path}; Password={EncryptionKey}";
 			else
 				path = $"Filename={path}";
-#endif
+
+			if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
+				path += "; Mode=Exclusive";
+
 			if(Upgrade)
 				path += "; Upgrade=true";
 
