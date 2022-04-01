@@ -1,4 +1,7 @@
 # 🐒Cache
+
+> 2.0-beta -> This is a WIP and targets only .NET 6 using source generators instead of Newtonsoft.Json. This is cutting edge, please don't update yet unless you want to try out some crazy awesome stuff ;)
+
 Easily cache any data structure for a specific amount of time in any .NET application.
 
 Monkey Cache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for Monkey Cache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A lightweight file based Monkey Cache is also provided if you aren't already using one of these options.
