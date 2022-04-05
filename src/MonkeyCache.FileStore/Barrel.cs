@@ -285,7 +285,7 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
-		T Get<T>(string key, Func<string, T> deserialize)
+		T Get<T>(string key, Func<FileStream, T> deserialize)
 		{
 			if (string.IsNullOrWhiteSpace(key))
 				throw new ArgumentException("Key can not be null or empty.", nameof(key));
@@ -301,14 +301,13 @@ namespace MonkeyCache.FileStore
 
 				if (index.ContainsKey(key) && File.Exists(path) && (!AutoExpire || (AutoExpire && !IsExpired(key))))
 				{
-					var contents = File.ReadAllText(path);
 					if (BarrelUtils.IsString(result))
 					{
-						object final = contents;
-						return (T)final;
+						return (T)(object)File.ReadAllText(path);
 					}
 
-					result = deserialize(contents);
+					using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read);
+					result = deserialize(fileStream);
 				}
 			}
 			finally
@@ -322,15 +321,15 @@ namespace MonkeyCache.FileStore
 		/// <inheritdoc/>
 		[RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo, or make sure all of the required types are preserved.")]
 		public T Get<T>(string key, JsonSerializerOptions options = null) =>
-			Get(key, contents => JsonDeserialize<T>(contents, options));
+			Get(key, fileStream => JsonDeserialize<T>(fileStream, options));
 
 		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Workaround https://github.com/dotnet/linker/issues/2001")]
-		static T JsonDeserialize<T>(string contents, JsonSerializerOptions options) =>
-			JsonSerializer.Deserialize<T>(contents, options);
+		static T JsonDeserialize<T>(FileStream fileStream, JsonSerializerOptions options) =>
+			JsonSerializer.Deserialize<T>(fileStream, options);
 
 		/// <inheritdoc/>
-		public T Get<T>(string key, JsonTypeInfo<T> jsonTypeInfo) => Get(key, contents =>
-			JsonSerializer.Deserialize(contents, jsonTypeInfo));
+		public T Get<T>(string key, JsonTypeInfo<T> jsonTypeInfo) => Get(key, fileStream =>
+			JsonSerializer.Deserialize(fileStream, jsonTypeInfo));
 
 		/// <summary>
 		/// Gets the DateTime that the item will expire for the specified key.
