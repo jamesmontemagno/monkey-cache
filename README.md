@@ -80,25 +80,22 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
     var url = "http://montemagno.com/monkeys.json";
 
     //Dev handle online/offline scenario
-    if(!CrossConnectivity.Current.IsConnected)
+    if (!CrossConnectivity.Current.IsConnected)
     {
         return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
     }
     
     //Dev handles checking if cache is expired
-    if(!Barrel.Current.IsExpired(key: url))
+    if (!Barrel.Current.IsExpired(key: url))
     {
         return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
     }
 
-
     var client = new HttpClient();
-    var json = await client.GetStringAsync(url);
-    var monkeys = JsonConvert.DeserializeObject<IEnumerable<Monkey>>(json);
+    var monkeys = await client.GetFromJsonAsync<IEnumerable<Monkey>>(url);
 
     //Saves the cache and pass it a timespan for expiration
     Barrel.Current.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
-
 }
 ```
 
@@ -107,22 +104,17 @@ Ideally, you can make these calls extremely generic and just pass in a string:
 ```csharp
 public async Task<T> GetAsync<T>(string url, int days = 7, bool forceRefresh = false)
 {
-    var json = string.Empty;
-
     if (!CrossConnectivity.Current.IsConnected)
-        json = Barrel.Current.Get<string>(url);
+        return Barrel.Current.Get<T>(url);
 
     if (!forceRefresh && !Barrel.Current.IsExpired(url))
-        json = Barrel.Current.Get<string>(url);
+       return Barrel.Current.Get<T>(url);
 
     try
     {
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            json = await client.GetStringAsync(url);
-            Barrel.Current.Add(url, json, TimeSpan.FromDays(days));
-        }
-        return JsonConvert.DeserializeObject<T>(json);
+        T result = await httpClient.GetFromJsonAsync<T>(url);
+        Barrel.Current.Add(url, result, TimeSpan.FromDays(days));
+        return result;
     }
     catch (Exception ex)
     {
@@ -130,7 +122,7 @@ public async Task<T> GetAsync<T>(string url, int days = 7, bool forceRefresh = f
         //probably re-throw here :)
     }
 
-    return default(T);
+    return default;
 }
 ```
 
@@ -185,6 +177,14 @@ BarrelUtils.SetBaseCachePath("Path");
 
 You MUST call this before initializing or accessing anything in the Barrel, and it can only ever be called once else it will throw an `InvalidOperationException`.
 
+#### Json Serialization
+
+MonkeyCache v2.0 and higher uses System.Text.Json to serialize objects to/from the backing store. By default, the default System.Text.Json serialization behavior is used. There are two options for controlling this serialization:
+
+1. Pass an optional [JsonSerializationOptions](https://docs.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions) instance to `Barrel.Current.Add` and `Barrel.Current.Get`.
+2. Pass a `JsonTypeInfo<T>` instance to `Barrel.Current.Add` and `Barrel.Current.Get`. You can get a `JsonTypeInfo<T>` instance by using the System.Text.Json source generator. See [How to use source generation in System.Text.Json](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-source-generation) for more information.
+
+No matter which option you choose, it is recommended to use the same option between `Barrel.Current.Add` and `Barrel.Current.Get`. If the options are inconsistent, the information going into the backing store may not be read properly when retrieving it back from the Barrel.
 
 ### FAQ
 
