@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
-using Newtonsoft.Json;
 
 namespace MonkeyCache.FileStore
 {
 	public class Barrel : IBarrel
 	{
 		ReaderWriterLockSlim indexLocker;
-		readonly JsonSerializerSettings jsonSettings;
 		Lazy<string> baseDirectory;
 		HashAlgorithm hashAlgorithm;
 
@@ -35,13 +36,6 @@ namespace MonkeyCache.FileStore
 				hashAlgorithm = MD5.Create();
 
 			indexLocker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-
-			jsonSettings = new JsonSerializerSettings
-			{
-				ObjectCreationHandling = ObjectCreationHandling.Replace,
-				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-				TypeNameHandling = TypeNameHandling.All,
-			};
 
 			index = new Dictionary<string, Tuple<string, DateTime>>();
 
@@ -68,14 +62,7 @@ namespace MonkeyCache.FileStore
 		public static IBarrel Create(string cacheDirectory, HashAlgorithm hash = null) =>
 			new Barrel(cacheDirectory, hash);
 
-		/// <summary>
-		/// Adds an entry to the barrel
-		/// </summary>
-		/// <param name="key">Unique identifier for the entry</param>
-		/// <param name="data">Data object to store</param>
-		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
-		/// <param name="eTag">Optional eTag information</param>
-		void Add(string key, string data, TimeSpan expireIn, string eTag = null)
+		void Add(string key, string data, TimeSpan expireIn, string eTag)
 		{
 			indexLocker.EnterWriteLock();
 
@@ -99,41 +86,44 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
-		/// <summary>
-		/// Adds an entry to the barrel
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="key">Unique identifier for the entry</param>
-		/// <param name="data">Data object to store</param>
-		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
-		/// <param name="eTag">Optional eTag information</param>
-		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
-		public void Add<T>(string key, 
-							T data, 
-							TimeSpan expireIn, 
-							string eTag = null,
-							JsonSerializerSettings jsonSerializationSettings = null)
+		void Add<T>(
+			string key,
+			T data,
+			TimeSpan expireIn,
+			string eTag,
+			Func<T, string> serializer)
 		{
-
 			if (string.IsNullOrWhiteSpace(key))
 				throw new ArgumentException("Key can not be null or empty.", nameof(key));
 
 			if (data == null)
 				throw new ArgumentNullException("Data can not be null.", nameof(data));
 
-			var dataJson = string.Empty;
-
+			string dataJson;
 			if (BarrelUtils.IsString(data))
 			{
 				dataJson = data as string;
 			}
 			else
 			{
-				dataJson = JsonConvert.SerializeObject(data, jsonSerializationSettings ?? jsonSettings);
+				dataJson = serializer(data);
 			}
 
 			Add(key, dataJson, expireIn, eTag);
 		}
+
+		/// <inheritdoc/>
+		[RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo, or make sure all of the required types are preserved.")]
+		public void Add<T>(string key, T data, TimeSpan expireIn, JsonSerializerOptions options = null, string eTag = null) =>
+			Add(key, data, expireIn, eTag, data => JsonSerialize(data, options));
+
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Workaround https://github.com/dotnet/linker/issues/2001")]
+		static string JsonSerialize<T>(T data, JsonSerializerOptions options) =>
+			JsonSerializer.Serialize(data, options);
+
+		/// <inheritdoc/>
+		public void Add<T>(string key, T data, TimeSpan expireIn, JsonTypeInfo<T> jsonTypeInfo, string eTag = null) =>
+			Add(key, data, expireIn, eTag, data => JsonSerializer.Serialize(data, jsonTypeInfo));
 
 		/// <summary>
 		/// Empties all specified entries regardless if they are expired.
@@ -152,7 +142,7 @@ namespace MonkeyCache.FileStore
 						continue;
 
 					var file = Path.Combine(baseDirectory.Value, Hash(k));
-					if(File.Exists(file))
+					if (File.Exists(file))
 						File.Delete(file);
 
 					index.Remove(k);
@@ -180,7 +170,7 @@ namespace MonkeyCache.FileStore
 				{
 					var hash = Hash(item.Key);
 					var file = Path.Combine(baseDirectory.Value, hash);
-					if(File.Exists(file))
+					if (File.Exists(file))
 						File.Delete(file);
 				}
 
@@ -295,13 +285,7 @@ namespace MonkeyCache.FileStore
 			}
 		}
 
-		/// <summary>
-		/// Gets the data entry for the specified key.
-		/// </summary>
-		/// <param name="key">Unique identifier for the entry to get</param>
-		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
-		/// <returns>The data object that was stored if found, else default(T)</returns>
-		public T Get<T>(string key, JsonSerializerSettings jsonSerializationSettings = null)
+		T Get<T>(string key, Func<FileStream, T> deserialize)
 		{
 			if (string.IsNullOrWhiteSpace(key))
 				throw new ArgumentException("Key can not be null or empty.", nameof(key));
@@ -317,14 +301,13 @@ namespace MonkeyCache.FileStore
 
 				if (index.ContainsKey(key) && File.Exists(path) && (!AutoExpire || (AutoExpire && !IsExpired(key))))
 				{
-					var contents = File.ReadAllText(path);
 					if (BarrelUtils.IsString(result))
 					{
-						object final = contents;
-						return (T)final;
+						return (T)(object)File.ReadAllText(path);
 					}
 
-					result = JsonConvert.DeserializeObject<T>(contents, jsonSerializationSettings ?? jsonSettings);
+					using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read);
+					result = deserialize(fileStream);
 				}
 			}
 			finally
@@ -334,6 +317,19 @@ namespace MonkeyCache.FileStore
 
 			return result;
 		}
+
+		/// <inheritdoc/>
+		[RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo, or make sure all of the required types are preserved.")]
+		public T Get<T>(string key, JsonSerializerOptions options = null) =>
+			Get(key, fileStream => JsonDeserialize<T>(fileStream, options));
+
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Workaround https://github.com/dotnet/linker/issues/2001")]
+		static T JsonDeserialize<T>(FileStream fileStream, JsonSerializerOptions options) =>
+			JsonSerializer.Deserialize<T>(fileStream, options);
+
+		/// <inheritdoc/>
+		public T Get<T>(string key, JsonTypeInfo<T> jsonTypeInfo) => Get(key, fileStream =>
+			JsonSerializer.Deserialize(fileStream, jsonTypeInfo));
 
 		/// <summary>
 		/// Gets the DateTime that the item will expire for the specified key.
