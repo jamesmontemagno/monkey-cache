@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace MonkeyCache
 {
@@ -21,9 +23,21 @@ namespace MonkeyCache
 		/// <param name="key">Key to use</param>
 		/// <param name="data">Data to store of type T</param>
 		/// <param name="expireIn">How long in the future the item should expire</param>
+		/// <param name="options">Specific json serializer options to use</param>
 		/// <param name="eTag">eTag to use if needed</param>
-		/// <param name="jsonSerializationSettings">Specific json serialization to use</param>
-		void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null, JsonSerializerSettings jsonSerializationSettings = null);
+		[RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo, or make sure all of the required types are preserved.")] 
+		void Add<T>(string key, T data, TimeSpan expireIn, JsonSerializerOptions options = null, string eTag = null);
+
+		/// <summary>
+		/// Add an item to the barrel
+		/// </summary>
+		/// <typeparam name="T">Type of item</typeparam>
+		/// <param name="key">Key to use</param>
+		/// <param name="data">Data to store of type T</param>
+		/// <param name="expireIn">How long in the future the item should expire</param>
+		/// <param name="jsonTypeInfo">Metadata about the type to convert.</param>
+		/// <param name="eTag">eTag to use if needed</param>
+		void Add<T>(string key, T data, TimeSpan expireIn, JsonTypeInfo<T> jsonTypeInfo, string eTag = null);
 
 		/// <summary>
 		/// Empty a set of keys
@@ -54,18 +68,31 @@ namespace MonkeyCache
 		/// <param name="state">State to get: Multiple with flags: CacheState.Active | CacheState.Expired</param>
 		/// <returns>The keys</returns>
 		IEnumerable<string> GetKeys(CacheState state = CacheState.Active);
-		
+
 		/// <summary>
 		/// Get an object for the key
 		/// </summary>
 		/// <typeparam name="T">Type of object to get</typeparam>
 		/// <param name="key">Key to use</param>
-		/// <param name="jsonSettings">json serialization settings to use.</param>
+		/// <param name="options">Specific json serializer options to use</param>
 		/// <returns>The object back if it exists, else null</returns>
 		/// <remarks>
-		/// When AutoExpire is set to true, Get<T> will return NULL if the item is expired
+		/// When AutoExpire is set to true, Get{T} will return NULL if the item is expired
 		/// </remarks>
-		T Get<T>(string key, JsonSerializerSettings jsonSettings = null);
+		[RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo, or make sure all of the required types are preserved.")] 
+		T Get<T>(string key, JsonSerializerOptions options = null);
+
+		/// <summary>
+		/// Get an object for the key
+		/// </summary>
+		/// <typeparam name="T">Type of object to get</typeparam>
+		/// <param name="key">Key to use</param>
+		/// <param name="jsonTypeInfo">Metadata about the type to convert.</param>
+		/// <returns>The object back if it exists, else null</returns>
+		/// <remarks>
+		/// When AutoExpire is set to true, Get{T} will return NULL if the item is expired
+		/// </remarks>
+		T Get<T>(string key, JsonTypeInfo<T> jsonTypeInfo);
 
 		/// <summary>
 		/// Get the eTag for a key

@@ -1,35 +1,36 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;Xamarin.WatchOS10;Xamarin.TVOS10;Xamarin.iOS10;MonoAndroid71;MonoAndroid80;MonoAndroid81;MonoAndroid90;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
-    <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
-    <Version>1.0.0.0</Version>
-    <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>James Montemagno</Authors>
-    <PackageId>MonkeyCache.SQLite</PackageId>
-    <PackOnBuild>true</PackOnBuild>
-    <PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
-    <NeutralLanguage>en</NeutralLanguage>
-    <PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
-    <Owners>James Montemagno</Owners>
-    <PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
-    <Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
-    <PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
-    <Title>🙊 MonkeyCache.SQLite - A .NET Caching Library</Title>
-    <Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by SQLite.</Description>
-    <Copyright>2020 Refractored LLC &amp; James Montemagno</Copyright>
-    <RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
-    <PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
-    
-    <LangVersion>default</LangVersion>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
+		<Version>2.0.0.0</Version>
+		<PackageVersion>2.0.0.0</PackageVersion>
+		<Authors>James Montemagno</Authors>
+		<PackageId>MonkeyCache.SQLite</PackageId>
+		<PackOnBuild>true</PackOnBuild>
+		<PackageIconUrl>https://raw.githubusercontent.com/jamesmontemagno/monkey-cache/master/art/MonkeyCacheSmall.png</PackageIconUrl>
+		<NeutralLanguage>en</NeutralLanguage>
+		<PackageLicenseUrl>https://github.com/jamesmontemagno/monkey-cache/blob/master/LICENSE</PackageLicenseUrl>
+		<Owners>James Montemagno</Owners>
+		<PackageProjectUrl>https://github.com/jamesmontemagno/monkey-cache</PackageProjectUrl>
+		<Summary>A simple caching library to cache any data structure for a specific amount of time in any .NET application.</Summary>
+		<PackageTags>xamarin, windows, ios, android, cache, http</PackageTags>
+		<Title>🙊 MonkeyCache.SQLite - A .NET Caching Library</Title>
+		<Description>A simple caching library to cache any data structure for a specific amount of time in any .NET application. Additionally, offers simple HTTP methods for caching web request data. Powered by SQLite.</Description>
+		<Copyright>2022 Refractored LLC &amp; James Montemagno</Copyright>
+		<RepositoryUrl>https://github.com/jamesmontemagno/monkey-cache</RepositoryUrl>
+		<PackageReleaseNotes>See: https://github.com/jamesmontemagno/monkey-cache </PackageReleaseNotes>
 
-    <DefineConstants>$(DefineConstants);SQLITE</DefineConstants>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RootNamespace>MonkeyCache.SQLite</RootNamespace>
-    <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
+		<LangVersion>default</LangVersion>
+
+		<DefineConstants>$(DefineConstants);SQLITE</DefineConstants>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RootNamespace>MonkeyCache.SQLite</RootNamespace>
+		<GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
 		<DebugType>portable</DebugType>
+		<IsTrimmable>true</IsTrimmable>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -43,20 +44,18 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
- 
 
-  <ItemGroup>
-	 <PackageReference Include="sqlite-net-pcl" Version="1.6.292" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\MonkeyCache.Shared\**\*.cs" LinkBase="Shared" />
+	</ItemGroup>
 </Project>

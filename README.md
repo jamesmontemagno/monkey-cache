@@ -1,4 +1,7 @@
 # 🐒Cache
+
+> 2.0-beta -> This is a WIP and targets only .NET 6 using source generators instead of Newtonsoft.Json. This is cutting edge, please don't update yet unless you want to try out some crazy awesome stuff ;)
+
 Easily cache any data structure for a specific amount of time in any .NET application.
 
 Monkey Cache is comprised of one core package (MonkeyCache) and three providers which reference the core package as a dependency. At least one provider must be installed for Monkey Cache to work and each offer the same API (IBarrel). Depending on your existing application you may already have SQLite or LiteDB installed so these would be your natural choice. A lightweight file based Monkey Cache is also provided if you aren't already using one of these options.
@@ -35,7 +38,7 @@ Monkey Cache is a .NET Standard 2.0 library, but has some platform specific twea
 |Windows 10 UWP|10.0.16299+|
 |.NET Core|2.0+|
 |ASP.NET Core|2.0+|
-|.NET|4.6.1+|
+|.NET Framework|4.6.1+|
 
 ## Setup
 
@@ -54,13 +57,23 @@ LiteDB offers [built in encryption support](https://github.com/mbdavid/LiteDB/wi
 Barrel.EncryptionKey = "SomeKey";
 ```
 
+### LiteDB Upgrade (4 -> 5) | NuGet 1.3 -> 1.5
+
+If you are upgrading from 1.3 to 1.5 of the NuGet package it also went through an upgrade of LiteDB.
+
+You may need to do an upgrade of the database before using it. In your project you can set the folowing after setting your EncryptionKey or Applicationid:
+
+```csharp
+Barrel.Upgrade = true;
+```
+
 ### What is Monkey Cache?
 
 The goal of Monkey Cache is to enable developers to easily cache any data for a limited amount of time. It is not Monkey Cache's mission to handle network requests to get or post data, only to cache data easily.
 
 All data for Monkey Cache is stored and retrieved in a Barrel. 
 
-For instance you are making a web request and you get some `json` back from the server. You would want the ability to cache this data incase you go offline, but also you need it to expire after 24 hours.
+For instance you are making a web request and you get some `json` back from the server. You would want the ability to cache this data in case you go offline, but also you need it to expire after 24 hours.
 
 That may look something like this:
 
@@ -70,25 +83,22 @@ async Task<IEnumerable<Monkey>> GetMonkeysAsync()
     var url = "http://montemagno.com/monkeys.json";
 
     //Dev handle online/offline scenario
-    if(!CrossConnectivity.Current.IsConnected)
+    if (!CrossConnectivity.Current.IsConnected)
     {
         return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
     }
     
     //Dev handles checking if cache is expired
-    if(!Barrel.Current.IsExpired(key: url))
+    if (!Barrel.Current.IsExpired(key: url))
     {
         return Barrel.Current.Get<IEnumerable<Monkey>>(key: url);
     }
 
-
     var client = new HttpClient();
-    var json = await client.GetStringAsync(url);
-    var monkeys = JsonConvert.DeserializeObject<IEnumerable<Monkey>>(json);
+    var monkeys = await client.GetFromJsonAsync<IEnumerable<Monkey>>(url);
 
     //Saves the cache and pass it a timespan for expiration
     Barrel.Current.Add(key: url, data: monkeys, expireIn: TimeSpan.FromDays(1));
-
 }
 ```
 
@@ -97,22 +107,17 @@ Ideally, you can make these calls extremely generic and just pass in a string:
 ```csharp
 public async Task<T> GetAsync<T>(string url, int days = 7, bool forceRefresh = false)
 {
-    var json = string.Empty;
-
     if (!CrossConnectivity.Current.IsConnected)
-        json = Barrel.Current.Get<string>(url);
+        return Barrel.Current.Get<T>(url);
 
     if (!forceRefresh && !Barrel.Current.IsExpired(url))
-        json = Barrel.Current.Get<string>(url);
+       return Barrel.Current.Get<T>(url);
 
     try
     {
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            json = await client.GetStringAsync(url);
-            Barrel.Current.Add(url, json, TimeSpan.FromDays(days));
-        }
-        return JsonConvert.DeserializeObject<T>(json);
+        T result = await httpClient.GetFromJsonAsync<T>(url);
+        Barrel.Current.Add(url, result, TimeSpan.FromDays(days));
+        return result;
     }
     catch (Exception ex)
     {
@@ -120,7 +125,7 @@ public async Task<T> GetAsync<T>(string url, int days = 7, bool forceRefresh = f
         //probably re-throw here :)
     }
 
-    return default(T);
+    return default;
 }
 ```
 
@@ -163,7 +168,7 @@ Cache will always be stored in the default platform specific location:
 |Windows 10 UWP|Windows.Storage.ApplicationData.Current.LocalFolder.Path|
 |.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 |ASP.NET Core|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
-|.NET|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
+|.NET Framework|Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)|
 
 
 #### Persisting Data Longer
@@ -175,6 +180,14 @@ BarrelUtils.SetBaseCachePath("Path");
 
 You MUST call this before initializing or accessing anything in the Barrel, and it can only ever be called once else it will throw an `InvalidOperationException`.
 
+#### Json Serialization
+
+MonkeyCache v2.0 and higher uses System.Text.Json to serialize objects to/from the backing store. By default, the default System.Text.Json serialization behavior is used. There are two options for controlling this serialization:
+
+1. Pass an optional [JsonSerializationOptions](https://docs.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions) instance to `Barrel.Current.Add` and `Barrel.Current.Get`.
+2. Pass a `JsonTypeInfo<T>` instance to `Barrel.Current.Add` and `Barrel.Current.Get`. You can get a `JsonTypeInfo<T>` instance by using the System.Text.Json source generator. See [How to use source generation in System.Text.Json](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-source-generation) for more information.
+
+No matter which option you choose, it is recommended to use the same option between `Barrel.Current.Add` and `Barrel.Current.Get`. If the options are inconsistent, the information going into the backing store may not be read properly when retrieving it back from the Barrel.
 
 ### FAQ
 
@@ -189,7 +202,7 @@ Monkey Cache enables you to easily store any type of data or just a simple strin
 
 
 #### Isn't this just Akavache?
-Akavache offers up a great and super fast asnchronous, pesistent key-value store that is based on SQLite and Reactive Extensions. I love me some Akavache and works great for applications, but wasn't exactly what I was looking for in a data caching library. Akavache offers up a lot of different features and really cool Reactive type of programming, but Monkey Cache focuses in on trying to create a drop dead simple API with a focus on data expiration. My goal was also to minimize dependencies on the NuGet package, which is why Monkey Cache offers a SQLite, LiteDB, or a simple FileStore implementation for use.
+Akavache offers up a great and super fast asynchronous, persistent key-value store that is based on SQLite and Reactive Extensions. I love me some Akavache and works great for applications, but wasn't exactly what I was looking for in a data caching library. Akavache offers up a lot of different features and really cool Reactive type of programming, but Monkey Cache focuses in on trying to create a drop dead simple API with a focus on data expiration. My goal was also to minimize dependencies on the NuGet package, which is why Monkey Cache offers a SQLite, LiteDB, or a simple FileStore implementation for use.
 
 #### How about the link settings?
 

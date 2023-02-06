@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-#if __IOS__ || __MACOS__
+#if IOS || MACOS || MACCATALYST
 using Foundation;
-#elif __ANDROID__
+#elif ANDROID
 using Android.App;
 #endif
 
@@ -54,19 +54,19 @@ namespace MonkeyCache
 
 			if (applicationId.IndexOfAny(Path.GetInvalidPathChars()) != -1)
 				throw new ArgumentException("ApplicationId has invalid characters");
-			
+
 			if (string.IsNullOrWhiteSpace(basePath))
 			{
 				// Gets full path based on device type.
-	#if __IOS__ || __MACOS__
+#if IOS || MACCATALYST
 				basePath = NSSearchPath.GetDirectories(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
-	#elif __ANDROID__
+#elif ANDROID
 				basePath = Application.Context.CacheDir.AbsolutePath;
-	#elif __UWP__
+#elif WINDOWS
 				basePath = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path;
-	#else
+#else
 				basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-	#endif
+#endif
 			}
 
 			return Path.Combine(basePath, applicationId);

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using LiteDB;
-using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace MonkeyCache.LiteDB
 {
@@ -15,6 +18,7 @@ namespace MonkeyCache.LiteDB
 	{
 		public static string ApplicationId { get; set; } = string.Empty;
 		public static string EncryptionKey { get; set; } = string.Empty;
+		public static bool Upgrade { get; set; } = false;
 
 		static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
 		{
@@ -43,7 +47,6 @@ namespace MonkeyCache.LiteDB
 			return instance.Value;
 		}
 
-		readonly JsonSerializerSettings jsonSettings;
 		Barrel(string cacheDirectory = null)
 		{
 			var directory = string.IsNullOrEmpty(cacheDirectory) ? baseCacheDir.Value : cacheDirectory;
@@ -53,27 +56,19 @@ namespace MonkeyCache.LiteDB
 				Directory.CreateDirectory(directory);
 			}
 
-#if __MACOS__
-
-			if (!string.IsNullOrWhiteSpace(EncryptionKey))
-				path = $"Filename={path}; Password={EncryptionKey}; Mode=Exclusive";
-			else
-				path = $"Filename={path}; Mode=Exclusive";
-#else
-			
 			if (!string.IsNullOrWhiteSpace(EncryptionKey))
 				path = $"Filename={path}; Password={EncryptionKey}";
-#endif
+			else
+				path = $"Filename={path}";
+
+			if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
+				path += "; Mode=Exclusive";
+
+			if(Upgrade)
+				path += "; Upgrade=true";
 
 			db = new LiteDatabase(path);
 			col = db.GetCollection<Banana>();
-
-			jsonSettings = new JsonSerializerSettings
-			{
-				ObjectCreationHandling = ObjectCreationHandling.Replace,
-				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-				TypeNameHandling = TypeNameHandling.All,
-			};
 		}
 
 #region Exist and Expiration Methods
@@ -143,13 +138,7 @@ namespace MonkeyCache.LiteDB
 			return new string[0];
 		}
 
-		/// <summary>
-		/// Gets the data entry for the specified key.
-		/// </summary>
-		/// <param name="key">Unique identifier for the entry to get</param>
-		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
-		/// <returns>The data object that was stored if found, else default(T)</returns>
-		public T Get<T>(string key, JsonSerializerSettings jsonSerializationSettings = null)
+		T Get<T>(string key, Func<string, T> deserialize)
 		{
 			if (string.IsNullOrWhiteSpace(key))
 				throw new ArgumentException("Key can not be null or empty.", nameof(key));
@@ -167,9 +156,21 @@ namespace MonkeyCache.LiteDB
 				return (T)final;
 			}
 
-			return JsonConvert.DeserializeObject<T>(ent.Contents, jsonSerializationSettings ?? jsonSettings);
+			return deserialize(ent.Contents);
 		}
 
+		/// <inheritdoc/>
+		[RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo, or make sure all of the required types are preserved.")]
+		public T Get<T>(string key, JsonSerializerOptions options = null) =>
+			Get(key, contents => JsonDeserialize<T>(contents, options));
+
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Workaround https://github.com/dotnet/linker/issues/2001")]
+		private static T JsonDeserialize<T>(string contents, JsonSerializerOptions options) =>
+			JsonSerializer.Deserialize<T>(contents, options);
+
+		/// <inheritdoc/>
+		public T Get<T>(string key, JsonTypeInfo<T> jsonTypeInfo) =>
+			Get(key, contents => JsonSerializer.Deserialize(contents, jsonTypeInfo));
 
 		/// <summary>
 		/// Gets the ETag for the specified key.
@@ -211,15 +212,7 @@ namespace MonkeyCache.LiteDB
 
 #region Add Methods
 
-		/// <summary>
-		/// Adds a string netry to the barrel
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="key">Unique identifier for the entry</param>
-		/// <param name="data">Data string to store</param>
-		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
-		/// <param name="eTag">Optional eTag information</param>
-		void Add(string key, string data, TimeSpan expireIn, string eTag = null)
+		void Add(string key, string data, TimeSpan expireIn, string eTag)
 		{
 			if (data == null)
 				return;
@@ -235,16 +228,7 @@ namespace MonkeyCache.LiteDB
 			col.Upsert(ent);
 		}
 
-		/// <summary>
-		/// Adds an entry to the barrel
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="key">Unique identifier for the entry</param>
-		/// <param name="data">Data object to store</param>
-		/// <param name="expireIn">Time from UtcNow to expire entry in</param>
-		/// <param name="eTag">Optional eTag information</param>
-		/// <param name="jsonSerializationSettings">Custom json serialization settings to use</param>
-		public void Add<T>(string key, T data, TimeSpan expireIn, string eTag = null, JsonSerializerSettings jsonSerializationSettings = null)
+		void Add<T>(string key, T data, TimeSpan expireIn, string eTag, Func<T, string> serializer)
 		{
 			if (string.IsNullOrWhiteSpace(key))
 				throw new ArgumentException("Key can not be null or empty.", nameof(key));
@@ -252,19 +236,31 @@ namespace MonkeyCache.LiteDB
 			if (data == null)
 				throw new ArgumentNullException("Data can not be null.", nameof(data));
 
-			var dataJson = string.Empty;
-
+			string dataJson;
 			if (BarrelUtils.IsString(data))
 			{
 				dataJson = data as string;
 			}
 			else
 			{
-				dataJson = JsonConvert.SerializeObject(data, jsonSerializationSettings ?? jsonSettings);
+				dataJson = serializer(data);
 			}
 
 			Add(key, dataJson, expireIn, eTag);
 		}
+
+		/// <inheritdoc/>
+		[RequiresUnreferencedCode("JSON serialization and deserialization might require types that cannot be statically analyzed. Use the overload that takes a JsonTypeInfo, or make sure all of the required types are preserved.")]
+		public void Add<T>(string key, T data, TimeSpan expireIn, JsonSerializerOptions options = null, string eTag = null) =>
+			Add(key, data, expireIn, eTag, data => JsonSerialize(data, options));
+
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Workaround https://github.com/dotnet/linker/issues/2001")]
+		static string JsonSerialize<T>(T data, JsonSerializerOptions options) =>
+			JsonSerializer.Serialize(data, options);
+
+		/// <inheritdoc/>
+		public void Add<T>(string key, T data, TimeSpan expireIn, JsonTypeInfo<T> jsonTypeInfo, string eTag = null) =>
+			Add(key, data, expireIn, eTag, data => JsonSerializer.Serialize(data, jsonTypeInfo));
 
 		#endregion
 
