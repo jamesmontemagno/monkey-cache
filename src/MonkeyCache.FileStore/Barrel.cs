@@ -16,6 +16,7 @@ namespace MonkeyCache.FileStore
 		ReaderWriterLockSlim indexLocker;
 		Lazy<string> baseDirectory;
 		HashAlgorithm hashAlgorithm;
+		object locker = new object();
 
 		/// <summary>
 		/// FileStore Barrel constructor
@@ -32,8 +33,6 @@ namespace MonkeyCache.FileStore
 			});
 
 			hashAlgorithm = hash;
-			if (hashAlgorithm == null)
-				hashAlgorithm = MD5.Create();
 
 			indexLocker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
@@ -469,7 +468,18 @@ namespace MonkeyCache.FileStore
 
 		string Hash(string input)
 		{
-			var data = hashAlgorithm.ComputeHash(Encoding.Default.GetBytes(input));
+			byte[] data;
+			if(hashAlgorithm is null)
+			{
+				data = MD5.HashData(Encoding.Default.GetBytes(input));
+			}
+			else
+			{
+				lock(locker)
+				{
+					data = hashAlgorithm.ComputeHash(Encoding.Default.GetBytes(input));
+				}
+			}
 			return BitConverter.ToString(data);
 		}
 
