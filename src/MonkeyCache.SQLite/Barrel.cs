@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace MonkeyCache.SQLite
 {
 	/// <summary>
-	/// Persistant Key/Value data store for any data object.
+	/// Persistent Key/Value data store for any data object.
 	/// Allows for saving data along with expiration dates and ETags.
 	/// </summary>
 	public class Barrel : IBarrel
