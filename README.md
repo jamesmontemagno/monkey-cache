@@ -26,7 +26,22 @@ You can follow the full project here: https://dev.azure.com/jamesmontemagno/Monk
 |🙈 MonkeyCache.FileStore|A local file based backing for Monkey Cache|[![NuGet](https://img.shields.io/nuget/v/MonkeyCache.FileStore.svg?label=NuGet)](https://www.nuget.org/packages/MonkeyCache.FileStore/)|
 |Development Feed| |[MyGet](http://myget.org/F/monkey-cache)|
 
-## Platform Support
+
+## Platform Support v2.X
+
+Version 2.0 and above target .NET 6 and above
+
+|Platform|Version|
+| ------------------- | :------------------: |
+|.NET|6+|
+|.NET MAUI|All|
+|.NET for iOS|All|
+|.NET for Android|All|
+|.NET for MacCatalyst|All|
+|Windows 10 UWP (.NET 6+)|10.0.19041+|
+
+
+## Platform Support - v1.X
 
 Monkey Cache is a .NET Standard 2.0 library, but has some platform specific tweaks for storing data in the correct Cache directory.
 
