@@ -19,6 +19,7 @@ namespace MonkeyCache.LiteDB
 		public static string ApplicationId { get; set; } = string.Empty;
 		public static string EncryptionKey { get; set; } = string.Empty;
 		public static bool Upgrade { get; set; } = false;
+		public static bool AutoRebuildEnabled { get; set; } = false;
 
 		static readonly Lazy<string> baseCacheDir = new Lazy<string>(() =>
 		{
@@ -66,6 +67,9 @@ namespace MonkeyCache.LiteDB
 
 			if(Upgrade)
 				path += "; Upgrade=true";
+
+			if (AutoRebuildEnabled)
+				path += "; auto-rebuild=true";
 
 			db = new LiteDatabase(path);
 			col = db.GetCollection<Banana>();
