@@ -46,12 +46,12 @@ namespace MonkeyCache.FileStore
 
 		public bool AutoExpire { get ; set; }
 
-		static Barrel instance = null;
+		static readonly Lazy<Barrel> instance = new Lazy<Barrel>(() => new Barrel());
 
 		/// <summary>
 		/// Gets the instance of the Barrel
 		/// </summary>
-		public static IBarrel Current => (instance ?? (instance = new Barrel()));
+		public static IBarrel Current => instance.Value;
 
 		/// <summary>
 		/// FileStore Barrel
