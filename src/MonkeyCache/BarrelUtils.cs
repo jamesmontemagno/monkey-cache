@@ -63,7 +63,14 @@ namespace MonkeyCache
 #elif ANDROID
 				basePath = Application.Context.CacheDir.AbsolutePath;
 #elif WINDOWS
-				basePath = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path;
+				try
+				{
+					basePath = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path;
+				}
+				catch(Exception ex)
+				{
+					basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+				}
 #else
 				basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 #endif
