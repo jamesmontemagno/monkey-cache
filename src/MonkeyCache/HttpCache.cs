@@ -13,12 +13,12 @@ namespace MonkeyCache
 	public class HttpCache
 	{
 
-		static HttpCache instance = null;
+		static readonly Lazy<HttpCache> instance = new Lazy<HttpCache>(() => new HttpCache());
 
 		/// <summary>
 		/// Gets the instance of the HttpCache
 		/// </summary>
-		public static HttpCache Current => (instance ?? (instance = new HttpCache()));
+		public static HttpCache Current => instance.Value;
 
 		HttpCache()
 		{
