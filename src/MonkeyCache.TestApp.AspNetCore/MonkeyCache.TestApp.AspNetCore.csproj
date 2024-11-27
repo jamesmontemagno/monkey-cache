@@ -26,7 +26,6 @@
     <ProjectReference Include="..\MonkeyCache.FileStore\MonkeyCache.FileStore.csproj" />
     <ProjectReference Include="..\MonkeyCache.LiteDB\MonkeyCache.LiteDB.csproj" />
     <ProjectReference Include="..\MonkeyCache.SQLite\MonkeyCache.SQLite.csproj" />
-    <ProjectReference Include="..\MonkeyCache.TestApp\MonkeyCache.TestApp.csproj" />
     <ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />
   </ItemGroup>
 
