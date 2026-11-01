@@ -15,10 +15,11 @@ namespace MonkeyCache.Tests
 	}
 	public partial class CustomDirBarrelTests
 	{
+		static IBarrel custom;
 		public override void SetupBarrel()
 		{
 			var dir = BarrelUtils.GetBasePath("com.refractored.monkeylite.customdir");
-			this.barrel = Barrel.Create(dir, true);
+			this.barrel = custom ??= Barrel.Create(dir);
 		}
 	}
 

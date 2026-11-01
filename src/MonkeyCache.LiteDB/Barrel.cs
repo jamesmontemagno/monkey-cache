@@ -31,7 +31,7 @@ namespace MonkeyCache.LiteDB
 		public bool AutoExpire { get; set; }
 
 		static Barrel instance = null;
-		static ILiteCollection<Banana> col;
+		readonly ILiteCollection<Banana> col;
 
 		/// <summary>
 		/// Gets the instance of the Barrel

@@ -1,0 +1,119 @@
+name: Native target build checks (not runtime qualification)
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: native-build-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            framework: net8.0-android
+            workload: android
+          - os: macos-15
+            framework: net8.0-ios
+            workload: ios
+          - os: macos-15
+            framework: net8.0-maccatalyst
+            workload: maccatalyst
+          - os: windows-2025
+            framework: net8.0-windows10.0.19041
+            workload: ''
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-native
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: eng/native
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: 8.0.427
+      - name: Select the Xcode required by the retained .NET 8 Apple SDK
+        if: runner.os == 'macOS'
+        run: |
+          if (!(Test-Path /Applications/Xcode_16.app/Contents/Developer)) { throw 'Required Xcode 16.0 missing; do not silently substitute a newer Xcode.' }
+          sudo xcode-select --switch /Applications/Xcode_16.app/Contents/Developer
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          xcodebuild -version
+      - name: Install the pinned native workload set
+        if: matrix.workload != ''
+        run: dotnet workload install ${{ matrix.workload }} --version 8.0.427
+      - name: Select hosted JDK 17 for Android API 34
+        if: matrix.workload == 'android'
+        run: |
+          if (!(Test-Path $env:JAVA_HOME_17_X64)) { throw 'Required JDK 17 missing.' }
+          "JAVA_HOME=$env:JAVA_HOME_17_X64" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Capture toolchain
+        run: |
+          dotnet --info
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet workload list
+      - name: Compile native core and three-provider consumer (no signing or execution)
+        run: |
+          New-Item -ItemType Directory -Force ../../artifacts | Out-Null
+          dotnet build ../../tests/MonkeyCache.PlatformBuild/MonkeyCache.PlatformBuild.csproj -c Release -p:MonkeyCachePlatform=${{ matrix.framework }} -bl:../../artifacts/native-${{ matrix.framework }}.binlog
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: native-build-${{ matrix.framework }}
+          path: artifacts
+  modern-windows:
+    name: .NET 10 MAUI API Windows consumer (build only)
+    runs-on: windows-2025
+    timeout-minutes: 25
+    env:
+      DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-modern
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: 10.0.403
+      - name: Build with Windows PRI tooling and preserved net8 native core
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          dotnet build tests/MonkeyCache.MauiConsumer -c Release -p:MauiConsumerWindows=true -p:MonkeyCachePlatform=net8.0-windows10.0.19041 -bl:artifacts/modern-windows.binlog
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: modern-windows-build
+          path: artifacts
+  maui-example:
+    name: .NET 10 MAUI UI example (unpackaged build only)
+    runs-on: windows-2025
+    timeout-minutes: 30
+    env:
+      DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-maui-example
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: 10.0.403
+      - name: Install Windows MAUI workload from the pinned SDK workload set
+        run: dotnet workload install maui-windows --version 10.0.403
+      - name: Build actual MAUI UI startup (no launch, signing or packaging)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          dotnet build samples/MonkeyCache.Maui -c Release -p:MonkeyCachePlatform=net8.0-windows10.0.19041 -bl:artifacts/maui-example.binlog
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: maui-example-build
+          path: artifacts

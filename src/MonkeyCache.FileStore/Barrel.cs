@@ -458,8 +458,8 @@ namespace MonkeyCache.FileStore
 						var etag = parts[1];
 						var dt = parts[2];
 
-						int secondsSinceEpoch;
-						if (!string.IsNullOrEmpty(key) && int.TryParse(dt, out secondsSinceEpoch) && !index.ContainsKey(key))
+						long secondsSinceEpoch;
+						if (!string.IsNullOrEmpty(key) && long.TryParse(dt, out secondsSinceEpoch) && !index.ContainsKey(key))
 							index.Add(key, new Tuple<string, DateTime>(etag, EpochSecondsToDateTime(secondsSinceEpoch)));
 					}
 				}
@@ -485,12 +485,11 @@ namespace MonkeyCache.FileStore
 
 		static readonly DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
-		static int DateTimeToEpochSeconds(DateTime date)
+		static long DateTimeToEpochSeconds(DateTime date)
 		{
-			var diff = date - epoch;
-			return (int)diff.TotalSeconds;
+			return (date.Ticks - epoch.Ticks) / TimeSpan.TicksPerSecond;
 		}
 
-		static DateTime EpochSecondsToDateTime(int seconds) => epoch + TimeSpan.FromSeconds(seconds);
+		static DateTime EpochSecondsToDateTime(long seconds) => epoch.AddTicks(checked(seconds * TimeSpan.TicksPerSecond));
 	}
 }

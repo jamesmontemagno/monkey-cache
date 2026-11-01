@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(MonkeyCachePlatform)</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-android'))">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-ios'))">12.2</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-maccatalyst'))">13.1</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-windows'))">10.0.16299.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/MonkeyCache/MonkeyCache.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.FileStore/MonkeyCache.FileStore.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.SQLite/MonkeyCache.SQLite.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.LiteDB/MonkeyCache.LiteDB.csproj" />
+  </ItemGroup>
+</Project>

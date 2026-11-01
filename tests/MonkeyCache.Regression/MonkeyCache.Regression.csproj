@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(SmokePackageVersion)' == ''">
+    <ProjectReference Include="../../src/MonkeyCache.FileStore/MonkeyCache.FileStore.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.SQLite/MonkeyCache.SQLite.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.LiteDB/MonkeyCache.LiteDB.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(SmokePackageVersion)' != ''">
+    <PackageReference Include="MonkeyCache.FileStore" Version="$(SmokePackageVersion)" />
+    <PackageReference Include="MonkeyCache.SQLite" Version="$(SmokePackageVersion)" />
+    <PackageReference Include="MonkeyCache.LiteDB" Version="$(SmokePackageVersion)" />
+  </ItemGroup>
+</Project>

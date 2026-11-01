@@ -224,12 +224,10 @@ namespace MonkeyCache.Tests
 
 		#region Add Tests
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentNullException))]
-		public void AddStringNullTest() => barrel.Add<string>(key: url, data: null, expireIn: TimeSpan.FromDays(1));
+		public void AddStringNullTest() => Assert.ThrowsExactly<ArgumentNullException>(() => barrel.Add<string>(key: url, data: null, expireIn: TimeSpan.FromDays(1)));
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void AddNullKey() => barrel.Add<string>(key: null, data: json, expireIn: TimeSpan.FromDays(1));
+		public void AddNullKey() => Assert.ThrowsExactly<ArgumentException>(() => barrel.Add<string>(key: null, data: json, expireIn: TimeSpan.FromDays(1)));
 
 		[TestMethod]
 		public void AddMaxTime()
@@ -274,8 +272,7 @@ namespace MonkeyCache.Tests
         }
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentNullException))]
-		public void AddNullTest() => barrel.Add<Monkey>(key: url, data: null, expireIn: TimeSpan.FromDays(1));
+		public void AddNullTest() => Assert.ThrowsExactly<ArgumentNullException>(() => barrel.Add<Monkey>(key: url, data: null, expireIn: TimeSpan.FromDays(1)));
 
 		[TestMethod]
         public void AddTest()
@@ -321,8 +318,7 @@ namespace MonkeyCache.Tests
         }
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentNullException))]
-		public void AddTestNull() => barrel.Add<IEnumerable<Monkey>>(key: url, data: null, expireIn: TimeSpan.FromDays(1));
+		public void AddTestNull() => Assert.ThrowsExactly<ArgumentNullException>(() => barrel.Add<IEnumerable<Monkey>>(key: url, data: null, expireIn: TimeSpan.FromDays(1)));
 
 		#endregion
 

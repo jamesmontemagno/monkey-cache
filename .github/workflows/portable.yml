@@ -1,0 +1,51 @@
+name: Portable checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: portable-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Offline tooling fixtures (not NuGet or platform qualification)
+        run: python eng/test-tooling.py
+      - run: dotnet run --project samples/MonkeyCache.Console -f net8.0 -c Release -p:MonkeyCachePortable=true -- filestore
+      - run: dotnet run --project samples/MonkeyCache.Console -f net8.0 -c Release -p:MonkeyCachePortable=true -- sqlite
+      - run: dotnet run --project samples/MonkeyCache.Console -f net8.0 -c Release -p:MonkeyCachePortable=true -- litedb
+      - run: dotnet run --project samples/MonkeyCache.Console -f net10.0 -c Release -p:MonkeyCachePortable=true -- filestore
+      - run: dotnet run --project samples/MonkeyCache.Console -f net10.0 -c Release -p:MonkeyCachePortable=true -- sqlite
+      - run: dotnet run --project samples/MonkeyCache.Console -f net10.0 -c Release -p:MonkeyCachePortable=true -- litedb
+      - run: dotnet test src/MonkeyCache.Portable.slnx -p:MonkeyCachePortable=true --configuration Release --logger trx --results-directory artifacts/tests
+      - run: dotnet run --project tests/MonkeyCache.Regression -f net8.0 -c Release -p:MonkeyCachePortable=true
+      - run: dotnet run --project tests/MonkeyCache.Regression -f net10.0 -c Release -p:MonkeyCachePortable=true
+      - name: Current MAUI API consumer (portable assets, not native MAUI runtime)
+        run: dotnet run --project tests/MonkeyCache.MauiConsumer -c Release -p:MonkeyCachePortable=true
+      - run: bash eng/smoke-packages.sh
+        if: runner.os != 'Windows'
+      - name: Read-only dependency freshness and portable advisory report
+        if: runner.os == 'Linux'
+        run: |
+          python3 eng/dependency-report.py --include-transitive > artifacts/dependencies.json
+          dotnet list tests/MonkeyCache.Regression package --include-transitive --vulnerable --no-restore > artifacts/advisories.txt
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: portable-results-${{ matrix.os }}
+          path: artifacts

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework Condition="'$(MauiConsumerWindows)' == 'true'">net10.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion Condition="'$(MauiConsumerWindows)' == 'true'">10.0.17763.0</SupportedOSPlatformVersion>
+    <WindowsPackageType Condition="'$(MauiConsumerWindows)' == 'true'">None</WindowsPackageType>
+    <RuntimeIdentifier Condition="'$(MauiConsumerWindows)' == 'true'">win-x64</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);MAUI_CONSUMER</DefineConstants>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.120" />
+    <ProjectReference Include="../../src/MonkeyCache/MonkeyCache.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.FileStore/MonkeyCache.FileStore.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.SQLite/MonkeyCache.SQLite.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.LiteDB/MonkeyCache.LiteDB.csproj" />
+    <Compile Include="../MonkeyCache.Regression/Program.cs" Link="Program.cs" />
+  </ItemGroup>
+</Project>

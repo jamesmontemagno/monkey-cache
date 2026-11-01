@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/CacheWalkthrough.cs" Link="CacheWalkthrough.cs" />
+    <ProjectReference Include="../../src/MonkeyCache.FileStore/MonkeyCache.FileStore.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.SQLite/MonkeyCache.SQLite.csproj" />
+    <ProjectReference Include="../../src/MonkeyCache.LiteDB/MonkeyCache.LiteDB.csproj" />
+  </ItemGroup>
+</Project>
