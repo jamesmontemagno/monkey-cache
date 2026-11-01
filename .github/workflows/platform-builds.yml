@@ -27,8 +27,6 @@ jobs:
             workload: ''
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
-    env:
-      DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-native
     defaults:
       run:
         shell: pwsh
@@ -38,6 +36,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: actions/setup-dotnet@v6.0.0
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-native
         with:
           dotnet-version: 8.0.427
       - name: Select the Xcode required by the retained .NET 8 Apple SDK
@@ -73,13 +73,13 @@ jobs:
     name: .NET 10 MAUI API Windows consumer (build only)
     runs-on: windows-2025
     timeout-minutes: 25
-    env:
-      DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-modern
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-dotnet@v6.0.0
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-modern
         with:
           dotnet-version: 10.0.403
       - name: Build with Windows PRI tooling and preserved net8 native core
@@ -96,13 +96,13 @@ jobs:
     name: .NET 10 MAUI UI example (unpackaged build only)
     runs-on: windows-2025
     timeout-minutes: 30
-    env:
-      DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-maui-example
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-dotnet@v6.0.0
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet-maui-example
         with:
           dotnet-version: 10.0.403
       - name: Install Windows MAUI workload from the pinned SDK workload set
