@@ -2,6 +2,8 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net8.0-windows10.0.19041</TargetFrameworks>
+		<TargetFrameworks Condition="'$(MonkeyCachePortable)' == 'true'">net8.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(MonkeyCachePlatform)' != ''">net8.0;$(MonkeyCachePlatform)</TargetFrameworks>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<AssemblyVersion>2.0.0.0</AssemblyVersion>
 		<AssemblyFileVersion>2.0.0.0</AssemblyFileVersion>
@@ -43,9 +45,6 @@
 		<!-- sourcelink: Include PDB in the built .nupkg -->
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
-	<ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-	</ItemGroup>
 	<PropertyGroup>
 		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-android'))">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$(TargetFramework.Contains('-ios'))">10.0</SupportedOSPlatformVersion>

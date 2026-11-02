@@ -1,0 +1,31 @@
+name: Opt-in SQLite candidate qualification (portable assets)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  database-compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - run: python eng/qualify-sqlite.py --output artifacts/sqlite-qualification --framework net8.0 --framework net10.0
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: sqlite-qualification-${{ matrix.os }}
+          path: |
+            artifacts/sqlite-qualification/*.log
+            artifacts/sqlite-qualification/summary.json
+            artifacts/sqlite-qualification/results

@@ -43,13 +43,20 @@
 		<!-- sourcelink: Include PDB in the built .nupkg -->
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	</PropertyGroup>
-	<ItemGroup Condition=" '$(Configuration)'=='Release' And '$(OS)' == 'Windows_NT' ">
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+
+	<ItemGroup Condition="'$(MonkeyCacheSqliteCandidate)' != 'true'">
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
+		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.14" />
+		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.android" Version="2.1.14" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+	<ItemGroup Condition="'$(MonkeyCacheSqliteCandidate)' == 'true'">
+		<PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
 	</ItemGroup>
+	<Target Name="RejectUnqualifiedSqliteCandidatePackage" BeforeTargets="GenerateNuspec" Condition="'$(MonkeyCacheSqliteCandidate)' == 'true'">
+		<Error Text="The SQLite candidate graph is for compatibility qualification only. Native platform acceptance is outstanding; do not package it." />
+	</Target>
 
 	<ItemGroup>
 		<ProjectReference Include="..\MonkeyCache\MonkeyCache.csproj" />

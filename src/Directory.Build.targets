@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'MonkeyCache' Or '$(MSBuildProjectName)' == 'MonkeyCache.FileStore' Or '$(MSBuildProjectName)' == 'MonkeyCache.SQLite' Or '$(MSBuildProjectName)' == 'MonkeyCache.LiteDB'">
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseUrl />
+    <PackageIcon>MonkeyCacheSmall.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(PackageReadmeFile)' == 'README.md'">
+    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildThisFileDirectory)../art/MonkeyCacheSmall.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(MonkeyCachePortable)' == 'true' Or '$(MonkeyCachePlatform)' != ''">
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackOnBuild>false</PackOnBuild>
+  </PropertyGroup>
+  <Target Name="RequirePortablePackageConsent" BeforeTargets="GenerateNuspec" Condition="('$(MonkeyCachePortable)' == 'true' Or '$(MonkeyCachePlatform)' != '') And '$(AllowPortablePackage)' != 'true'">
+    <Error Text="Selected-target packages omit platform assets. For local smoke tests only, set AllowPortablePackage=true and use a distinct prerelease PackageVersion. Release packages require the full platform build." />
+  </Target>
+</Project>

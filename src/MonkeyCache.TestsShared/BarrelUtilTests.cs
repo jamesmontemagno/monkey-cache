@@ -14,7 +14,7 @@ namespace MonkeyCache.Tests
 			{
 				
 				BarrelUtils.basePath = string.Empty;
-				var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+				var folder = TestEnvironment.Root;
 				BarrelUtils.SetBaseCachePath(folder);
 
 				Assert.AreEqual(folder, BarrelUtils.basePath);
@@ -27,25 +27,30 @@ namespace MonkeyCache.Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
 		public void SetCacheDirectoryTwice()
 		{			
-			BarrelUtils.basePath = string.Empty;
-			var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			BarrelUtils.SetBaseCachePath(folder);
-			BarrelUtils.SetBaseCachePath(folder);
+			var path = BarrelUtils.basePath;
+			try
+			{
+				BarrelUtils.basePath = string.Empty;
+				BarrelUtils.SetBaseCachePath(TestEnvironment.Root);
+				Assert.ThrowsExactly<InvalidOperationException>(() => BarrelUtils.SetBaseCachePath(TestEnvironment.Root));
+			}
+			finally
+			{
+				BarrelUtils.basePath = path;
+			}
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
 		public void SetCacheDirectoryAfterInitialize()
 		{
 			IBarrel barrel = null;
-			var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			var folder = TestEnvironment.Root;
 			SetupBarrel(ref barrel);
 			barrel.EmptyAll();
 
-			BarrelUtils.SetBaseCachePath(folder);
+			Assert.ThrowsExactly<InvalidOperationException>(() => BarrelUtils.SetBaseCachePath(folder));
 		}
 	}
 }

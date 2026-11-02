@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MonkeyCache.TestsFileStore/MonkeyCache.TestsFileStore.csproj" />
+  <Project Path="MonkeyCache.TestsSQLite/MonkeyCache.TestsSQLite.csproj" />
+  <Project Path="MonkeyCache.TestsLiteDB/MonkeyCache.TestsLiteDB.csproj" />
+</Solution>
